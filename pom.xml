@@ -12,7 +12,6 @@
 	</parent>
 
 	<properties>
-		<log4j.version>1.2.14</log4j.version>
 		<hamcrest.version>1.1</hamcrest.version>
 		<mockito.version>1.8.2</mockito.version>
 		<junit.version>4.7</junit.version>
@@ -22,18 +21,6 @@
 
 
 	<dependencies>
-		 						
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-
-		<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-		    <version>1.6</version>
-		</dependency>
 
         <dependency>
           <groupId>dnsjava</groupId>
