@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class ConfigurationFactory {
 
-    private LocalHostResolver resolver = new LocalHostResolver();
+    private StageResolver stageResolver = new StageResolver();
     private ResourceLoader resourceLoader = new ResourceLoader();
 
     public Configuration getConfiguration() {
@@ -18,9 +18,8 @@ public class ConfigurationFactory {
 
         try {
             String propertiesFile = String.format("%s/%s.properties", prefix,
-                    resolver.getLocalHostDomain());
+                    stageResolver.getIntServiceDomain());
             InputStream inputStream = resourceLoader.getResource(propertiesFile);
-
             properties.load(inputStream);
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -29,8 +28,8 @@ public class ConfigurationFactory {
         return new Configuration(properties);
     }
 
-    void setResolver(LocalHostResolver resolver) {
-        this.resolver = resolver;
+    void setStageResolver(StageResolver stageResolver) {
+        this.stageResolver = stageResolver;
     }
 
     void setResourceLoader(ResourceLoader resourceLoader) {

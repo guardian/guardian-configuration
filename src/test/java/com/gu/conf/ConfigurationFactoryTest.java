@@ -20,17 +20,17 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigurationFactoryTest {
 
-    @Mock LocalHostResolver resolver;
+    @Mock StageResolver resolver;
     @Mock ResourceLoader resourceLoader;
     ConfigurationFactory factory;
 
     @Before
     public void setUp() throws IOException {
         factory = new ConfigurationFactory();
-        factory.setResolver(resolver);
+        factory.setStageResolver(resolver);
         factory.setResourceLoader(resourceLoader);
 
-        when(resolver.getLocalHostDomain()).thenReturn("domain.gnl");
+        when(resolver.getIntServiceDomain()).thenReturn("domain.gnl");
 
         String properties = "property=theft";
         InputStream inputStream = new ByteArrayInputStream(properties.getBytes("UTF-8"));
