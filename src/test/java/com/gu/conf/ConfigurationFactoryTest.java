@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class ConfigurationFactoryTest {
 
     @Mock StageResolver resolver;
-    @Mock ResourceLoader resourceLoader;
+    @Mock ConfigurationFactory.ResourceLoader resourceLoader;
     ConfigurationFactory factory;
 
     @Before

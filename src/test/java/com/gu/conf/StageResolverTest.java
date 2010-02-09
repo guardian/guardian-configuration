@@ -18,17 +18,17 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class StageResolverTest {
 
-    @Mock ResourceLoader resourceLoader;
+    @Mock StageResolver.FileLoader fileLoader;
     StageResolver resolver;
 
     @Before
     public void setUp() throws IOException {
         resolver = new StageResolver();
-        resolver.setResourceLoader(resourceLoader);
+        resolver.setFileLoader(fileLoader);
 
         String properties = "int.service.domain=domain.gnl";
         InputStream inputStream = new ByteArrayInputStream(properties.getBytes("UTF-8"));
-        when(resourceLoader.getResource(anyString())).thenReturn(inputStream);
+        when(fileLoader.getFile(anyString())).thenReturn(inputStream);
     }
 
     @Test

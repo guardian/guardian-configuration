@@ -1,36 +1,48 @@
 package com.gu.conf;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class StageResolver {
+class StageResolver {
 
     private static final String INSTALLATION_PROPERTIES_FILE = "/etc/gu/installation.properties";
 
-    private ResourceLoader resourceLoader = new ResourceLoader();
+    class FileLoader {
+        InputStream getFile(String filename) throws IOException {
+            return new FileInputStream(filename);
+        }
+    }
+
+    private FileLoader fileLoader = new FileLoader();
     private Properties stageProperties;
 
-    public Properties getStageProperties() {
+    Properties getStageProperties() {
         if (stageProperties == null) {
             stageProperties = new Properties();
 
+            InputStream inputStream = null;
             try {
-                InputStream inputStream = resourceLoader.getResource(INSTALLATION_PROPERTIES_FILE);
+                inputStream = fileLoader.getFile(INSTALLATION_PROPERTIES_FILE);
                 stageProperties.load(inputStream);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
+            } finally {
+                IOUtils.closeQuietly(inputStream);
             }
         }
 
         return stageProperties;
     }
 
-    public String getIntServiceDomain() {
+    String getIntServiceDomain() {
         return getStageProperties().getProperty("int.service.domain");
     }
 
-    void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    void setFileLoader(FileLoader fileLoader) {
+        this.fileLoader = fileLoader;
     }
 }
