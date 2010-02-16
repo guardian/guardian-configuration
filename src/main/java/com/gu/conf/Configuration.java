@@ -1,21 +1,38 @@
 package com.gu.conf;
 
-import java.util.Properties;
+import java.util.List;
 
 public class Configuration {
 
-    private Properties properties = new Properties();
+    private List<PropertiesWithSource> properties;
 
-    Configuration(Properties properties) {
+    Configuration(List<PropertiesWithSource> properties) {
         this.properties = properties;
     }
 
-    public String getProperty(String propertyName) {
-        return properties.getProperty(propertyName);
+    public PropertiesSource getPropertySource(String propertyName) {
+        for (PropertiesWithSource props : properties) {
+            if (props.getStringProperty(propertyName) != null) {
+                return props.getSource();
+            }
+        }
+
+        return null;
     }
 
-    public String getProperty(String propertyName, String defaultValue) {
-        return properties.getProperty(propertyName, defaultValue);
+    public String getStringProperty(String propertyName) {
+        return getStringProperty(propertyName, null);
+    }
+
+    public String getStringProperty(String propertyName, String defaultValue) {
+        for (PropertiesWithSource props : properties) {
+            String property = props.getStringProperty(propertyName);
+            if (property != null) {
+                return property;
+            }
+        }
+
+        return defaultValue;
     }
 
     public Integer getIntegerProperty(String propertyName) {
@@ -25,7 +42,7 @@ public class Configuration {
     public Integer getIntegerProperty(String propertyName, Integer defaultValue) {
         Integer property = defaultValue;
         try {
-            property = Integer.parseInt(getProperty(propertyName));
+            property = Integer.parseInt(getStringProperty(propertyName));
         } catch (NumberFormatException nfe) {
         }
 

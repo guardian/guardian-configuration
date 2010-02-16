@@ -1,10 +1,10 @@
 package com.gu.conf;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -16,29 +16,52 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() {
-        Properties properties = new Properties();
-        properties.setProperty("integer.property", "23");
-        properties.setProperty("double.property", "25.0");
-        properties.setProperty("nonnumeric.property", "qwe");
+        PropertiesBuilder systemWebapp = new PropertiesBuilder();
+        systemWebapp.property("precendence.test.property", "first");
+        systemWebapp.property("double.property", "25.0");
+        systemWebapp.systemWebappProperties();
+
+        PropertiesBuilder webappStage = new PropertiesBuilder();
+        webappStage.property("precendence.test.property", "second");
+        webappStage.property("integer.property", "23");
+        webappStage.property("nonnumeric.property", "qwe");
+        webappStage.webappStageProperties();
+
+        ImmutableList<PropertiesWithSource> properties = ImmutableList.of(
+                systemWebapp.toPropertiesWithSource(),
+                webappStage.toPropertiesWithSource()
+        );
 
         configuration = new Configuration(properties);
     }
 
     @Test
+    public void shouldGetPropertySource() throws IOException {
+        PropertiesSource propertySource = configuration.getPropertySource("nonnumeric.property");
+        assertThat(propertySource, is(PropertiesSource.WEBAPP_STAGE_PROPERTIES));
+    }
+
+    @Test
+    public void shouldGetNullForPropertySourceIfNotSet() throws IOException {
+        PropertiesSource propertySource = configuration.getPropertySource("nosuch.property");
+        assertThat(propertySource, nullValue());
+    }
+
+    @Test
     public void shouldGetProperty() throws IOException {
-        String property = configuration.getProperty("nonnumeric.property");
+        String property = configuration.getStringProperty("nonnumeric.property");
         assertThat(property, is("qwe"));
     }
 
     @Test
     public void shouldGetNullForPropertyIfNotSet() throws IOException {
-        String property = configuration.getProperty("nosuch.property");
+        String property = configuration.getStringProperty("nosuch.property");
         assertThat(property, nullValue());
     }
 
     @Test
     public void shouldGetDefaultForPropertyIfNotSet() throws IOException {
-        String property = configuration.getProperty("nosuch.property", "default");
+        String property = configuration.getStringProperty("nosuch.property", "default");
         assertThat(property, is("default"));
     }
 
@@ -77,4 +100,17 @@ public class ConfigurationTest {
         property = configuration.getIntegerProperty("nonnumeric.property", 65);
         assertThat(property, is(65));
     }
+
+    @Test
+    public void shouldRespectFirstDeclarationPrecedenceInGetPropertySource() throws IOException {
+        PropertiesSource propertySource = configuration.getPropertySource("precendence.test.property");
+        assertThat(propertySource, is(PropertiesSource.SYSTEM_WEBAPP_PROPERTIES));
+    }
+
+    @Test
+    public void shouldRespectFirstDeclarationPrecedenceInGetProperty() throws IOException {
+        String property = configuration.getStringProperty("precendence.test.property");
+        assertThat(property, is("first"));
+    }
+
 }
