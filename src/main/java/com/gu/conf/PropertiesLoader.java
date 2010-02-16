@@ -8,6 +8,7 @@ class PropertiesLoader {
 
     private static final String INSTALLATION_PROPERTIES_FILE = "/etc/gu/installation.properties";
 
+
     private FileAndResourceLoader loader = new FileAndResourceLoader();
     private PropertiesWithSource installationProperties;
 

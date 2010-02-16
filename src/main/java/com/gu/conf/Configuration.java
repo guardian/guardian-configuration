@@ -48,4 +48,14 @@ public class Configuration {
 
         return property;
     }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (PropertiesWithSource props : properties) {
+            stringBuilder.append(props);
+        }
+
+        return stringBuilder.toString();
+    }
 }

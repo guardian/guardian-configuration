@@ -1,6 +1,7 @@
 package com.gu.conf;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.net.URL;
 import java.util.Properties;
 
 public class FileAndResourceLoader {
+
+    private static final Logger LOG = Logger.getLogger(FileAndResourceLoader.class);
 
     public InputStream getFile(String filename) throws IOException {
         return new BufferedInputStream(new FileInputStream(filename));
@@ -23,13 +26,14 @@ public class FileAndResourceLoader {
     }
 
     public Properties getPropertiesFromFile(String filename) {
+        LOG.info("Reading properties from file " + filename);
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
             inputStream = getFile(filename);
             properties.load(inputStream);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (Exception e) {
+            LOG.info("Exception reading properties from file " + filename, e);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
@@ -38,13 +42,14 @@ public class FileAndResourceLoader {
     }
 
     public Properties getPropertiesFromResource(String resource) {
+        LOG.info("Reading properties from resource " + resource);
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
             inputStream = getResource(resource);
             properties.load(inputStream);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (Exception e) {
+            LOG.info("Exception reading properties from resource " + resource, e);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
