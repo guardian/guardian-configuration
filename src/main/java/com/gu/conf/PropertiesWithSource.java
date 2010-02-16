@@ -31,7 +31,13 @@ class PropertiesWithSource {
             stringBuilder.append("\t\t");
             stringBuilder.append(propertyName);
             stringBuilder.append(" : ");
-            stringBuilder.append(properties.getProperty(propertyName));
+            if (!propertyName.contains("pass")) {
+                stringBuilder.append(properties.getProperty(propertyName));
+            } else {
+                String password = properties.getProperty(propertyName);
+                stringBuilder.append(password.charAt(0));
+                stringBuilder.append("*******");
+            }
             stringBuilder.append("\n");
         }
 
