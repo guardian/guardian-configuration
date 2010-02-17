@@ -23,8 +23,6 @@ public class PropertiesLoaderTest {
 
     @Before
     public void setUp() throws IOException {
-        loader = new PropertiesLoader(fileLoader);
-
         // INSTALLATION_PROPERTIES
         Properties properties = new PropertiesBuilder()
             .property("source", "installation.properties")
@@ -57,6 +55,8 @@ public class PropertiesLoaderTest {
             .property("source", "webapp.stage.properties")
             .toProperties();
         when(fileLoader.getPropertiesFromResource("/conf/domain.gnl.properties")).thenReturn(properties);
+
+        loader = new PropertiesLoader(fileLoader);
     }
 
     @Test
@@ -70,14 +70,14 @@ public class PropertiesLoaderTest {
 	}
 
     @Test
-    public void shouldLoadInstallationProperties() {
+    public void shouldIncludeInstallationPropertiesInConfiguration() {
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
-        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, INSTALLATION_PROPERTIES);
 
-        assertThat(properties, notNullValue());
-        assertThat(loader.getStage(), is("DEV"));
-        assertThat(properties.getStringProperty("source"), is("installation.properties"));
-        assertThat(properties.getStringProperty("no-property"), nullValue());
+        for (PropertiesWithSource properties : propertiesList) {
+            assertThat(properties.getStringProperty("source"), not("installation.properties"));
+            assertThat(properties.getStringProperty("int.service.domain"), nullValue());
+            assertThat(properties.getStringProperty("stage"), nullValue());
+        }
     }
 
     @Test
@@ -98,6 +98,8 @@ public class PropertiesLoaderTest {
             .property("stage", "PROD")
             .toProperties();
         when(fileLoader.getPropertiesFromFile("/etc/gu/installation.properties")).thenReturn(installation);
+
+        loader = new PropertiesLoader(fileLoader);
 
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
         PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_SYSTEM_WEBAPP_PROPERTIES);

@@ -12,8 +12,8 @@ class PropertiesLoader {
     private static final String INSTALLATION_PROPERTIES_FILE = "/etc/gu/installation.properties";
     private static final Logger LOG = Logger.getLogger(PropertiesLoader.class);
 
-    private FileAndResourceLoader loader = new FileAndResourceLoader();
-    private PropertiesWithSource installationProperties;
+    private FileAndResourceLoader loader;
+    private Properties installationProperties;
 
     PropertiesLoader() {
         this(new FileAndResourceLoader());
@@ -21,21 +21,24 @@ class PropertiesLoader {
 
     PropertiesLoader(FileAndResourceLoader loader) {
         this.loader = loader;
+
+        LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_FILE);
+        installationProperties = loader.getPropertiesFromFile(INSTALLATION_PROPERTIES_FILE);
+
+        LOG.info("stage: " + getStage());
+        LOG.info("int.service.domain: " + getIntServiceDomain());
     }
 
     String getIntServiceDomain() {
-        return getInstallationProperties().getStringProperty("int.service.domain");
+        return installationProperties.getProperty("int.service.domain");
     }
 
     String getStage() {
-        return getInstallationProperties().getStringProperty("stage");
+        return installationProperties.getProperty("stage");
     }
 
     List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) {
         List<PropertiesWithSource> properties = new LinkedList<PropertiesWithSource>();
-
-        PropertiesWithSource installationProperties = getInstallationProperties();
-        properties.add(installationProperties);
 
         String stage = getStage();
         if (StringUtils.isBlank(stage)) {
@@ -49,17 +52,6 @@ class PropertiesLoader {
         properties.add(getWebappStageProperties(webappConfDirectory));
 
         return properties;
-    }
-
-    private PropertiesWithSource getInstallationProperties() {
-        if (installationProperties == null) {
-            LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_FILE);
-
-            Properties properties = loader.getPropertiesFromFile(INSTALLATION_PROPERTIES_FILE);
-            installationProperties = new PropertiesWithSource(properties, PropertiesSource.INSTALLATION_PROPERTIES);
-        }
-
-        return installationProperties;
     }
 
     private PropertiesWithSource getSystemWebappProperties(String applicationName) {

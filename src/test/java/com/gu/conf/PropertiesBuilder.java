@@ -24,10 +24,6 @@ public class PropertiesBuilder {
         return this;
     }
 
-    public PropertiesBuilder installationProperties() {
-        return source(PropertiesSource.INSTALLATION_PROPERTIES);
-    }
-
     public PropertiesBuilder devOverrideSystemWebappProperties() {
         return source(PropertiesSource.DEV_SYSTEM_WEBAPP_PROPERTIES);
     }

@@ -7,8 +7,7 @@ public enum PropertiesSource {
     WEBAPP_STAGE_PROPERTIES("Webapp Stage Specific Configuration Properties"),
     WEBAPP_GLOBAL_PROPERTIES("Webapp Global Configuration Properties"),
     SYSTEM_WEBAPP_PROPERTIES("/etc/gu/ Webapp Systems Configuration Properties"),
-    DEV_SYSTEM_WEBAPP_PROPERTIES("~/etc/gu/ DEV Webapp Systems Configuration Properties"),
-    INSTALLATION_PROPERTIES("/etc/gu/installations.properties Installation Properties");
+    DEV_SYSTEM_WEBAPP_PROPERTIES("~/etc/gu/ DEV Webapp Systems Configuration Properties");
 
     private String description;
 
