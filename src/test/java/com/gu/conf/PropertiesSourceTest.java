@@ -10,8 +10,8 @@ public class PropertiesSourceTest {
 
     @Test
 	public void shouldCompareInPrecendenceOrder() {
-		assertThat(INSTALLATION_PROPERTIES.compareTo(DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES), greaterThan(0));
-		assertThat(DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES.compareTo(SYSTEM_WEBAPP_PROPERTIES), greaterThan(0));
+		assertThat(INSTALLATION_PROPERTIES.compareTo(DEV_SYSTEM_WEBAPP_PROPERTIES), greaterThan(0));
+		assertThat(DEV_SYSTEM_WEBAPP_PROPERTIES.compareTo(SYSTEM_WEBAPP_PROPERTIES), greaterThan(0));
 		assertThat(SYSTEM_WEBAPP_PROPERTIES.compareTo(WEBAPP_GLOBAL_PROPERTIES), greaterThan(0));
 		assertThat(WEBAPP_GLOBAL_PROPERTIES.compareTo(WEBAPP_STAGE_PROPERTIES), greaterThan(0));
 	}

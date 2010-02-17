@@ -13,13 +13,13 @@ public class ConfigurationFactory {
     }
 
     public Configuration getConfiguration(String applicationName, String webappConfDirectory) {
-        LOG.info(String.format("Configuring webapp %s using in archive configuration directory %s",
+        LOG.info(String.format("Configuring application(%s) using classpath configuration directory(%s)",
             applicationName, webappConfDirectory));
         PropertiesLoader propertiesLocator = new PropertiesLoader();
         List<PropertiesWithSource> properties = propertiesLocator.getProperties(applicationName, webappConfDirectory);
 
         Configuration configuration = new Configuration(properties);
-        LOG.info(String.format("Configured webapp %s with properties:\n%s", applicationName, configuration));
+        LOG.info(String.format("Configured webapp %s with properties:\n\n%s", applicationName, configuration));
 
         return configuration;
     }

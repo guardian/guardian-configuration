@@ -29,7 +29,7 @@ public class PropertiesBuilder {
     }
 
     public PropertiesBuilder devOverrideSystemWebappProperties() {
-        return source(PropertiesSource.DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES);
+        return source(PropertiesSource.DEV_SYSTEM_WEBAPP_PROPERTIES);
     }
 
     public PropertiesBuilder systemWebappProperties() {

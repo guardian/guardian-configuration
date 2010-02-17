@@ -20,7 +20,6 @@ class PropertiesWithSource {
         return source;
     }
 
-    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\t");
@@ -34,9 +33,7 @@ class PropertiesWithSource {
             if (!propertyName.contains("pass")) {
                 stringBuilder.append(properties.getProperty(propertyName));
             } else {
-                String password = properties.getProperty(propertyName);
-                stringBuilder.append(password.charAt(0));
-                stringBuilder.append("*******");
+                stringBuilder.append("*** PASSWORD ****");
             }
             stringBuilder.append("\n");
         }
@@ -44,5 +41,17 @@ class PropertiesWithSource {
         stringBuilder.append("\n");
 
         return stringBuilder.toString();
+    }
+
+    public PropertiesWithSource getPropertiesActiveInConfiguration(Configuration configuration) {
+        Properties activeProperties = new Properties();
+
+        for (String propertyKey : properties.stringPropertyNames()) {
+            if (configuration.getPropertySource(propertyKey).equals(source)) {
+                activeProperties.setProperty(propertyKey, properties.getProperty(propertyKey));
+            }
+        }
+
+        return new PropertiesWithSource(activeProperties, source);
     }
 }

@@ -26,7 +26,6 @@ public class FileAndResourceLoader {
     }
 
     public Properties getPropertiesFromFile(String filename) {
-        LOG.info("Reading properties from file " + filename);
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
@@ -42,7 +41,6 @@ public class FileAndResourceLoader {
     }
 
     public Properties getPropertiesFromResource(String resource) {
-        LOG.info("Reading properties from resource " + resource);
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {

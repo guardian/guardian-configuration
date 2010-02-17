@@ -53,7 +53,8 @@ public class Configuration {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (PropertiesWithSource props : properties) {
-            stringBuilder.append(props);
+            PropertiesWithSource activeProperties = props.getPropertiesActiveInConfiguration(this);
+            stringBuilder.append(activeProperties);
         }
 
         return stringBuilder.toString();

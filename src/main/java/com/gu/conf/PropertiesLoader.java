@@ -39,7 +39,7 @@ class PropertiesLoader {
 
         String stage = getStage();
         if (StringUtils.isBlank(stage)) {
-             LOG.warn("STAGE variable unavailable from " + INSTALLATION_PROPERTIES_FILE);
+             LOG.warn("'stage' variable unavailable from " + INSTALLATION_PROPERTIES_FILE);
         } else if (stage.equals("DEV")) {
             properties.add(getDevOverrideSystemWebappProperties(applicationName));
         }
@@ -72,12 +72,13 @@ class PropertiesLoader {
     }
 
     private PropertiesWithSource getDevOverrideSystemWebappProperties(String applicationName) {
-        String propertiesFile = String.format("~/etc/gu/%s.properties", applicationName);
+        String home = System.getProperty("user.home");
+        String propertiesFile = String.format("%s/etc/gu/%s.properties", home, applicationName);
 
         LOG.info("Loading System Webapp properties from " + propertiesFile);
         Properties properties = loader.getPropertiesFromFile(propertiesFile);
 
-        return new PropertiesWithSource(properties, PropertiesSource.DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES);
+        return new PropertiesWithSource(properties, PropertiesSource.DEV_SYSTEM_WEBAPP_PROPERTIES);
     }
 
     private PropertiesWithSource getWebappGlobalProperties(String webappConfDirectory) {

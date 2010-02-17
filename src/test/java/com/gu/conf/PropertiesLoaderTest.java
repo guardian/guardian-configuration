@@ -33,11 +33,12 @@ public class PropertiesLoaderTest {
             .toProperties();
         when(fileLoader.getPropertiesFromFile("/etc/gu/installation.properties")).thenReturn(properties);
 
-        // DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES
+        // DEV_SYSTEM_WEBAPP_PROPERTIES
         properties = new PropertiesBuilder()
             .property("source", "dev.override.system.webapp.properties")
             .toProperties();
-        when(fileLoader.getPropertiesFromFile("~/etc/gu/webapp.properties")).thenReturn(properties);
+        String home = System.getProperty("user.home");
+        when(fileLoader.getPropertiesFromFile(home + "/etc/gu/webapp.properties")).thenReturn(properties);
 
         // SYSTEM_WEBAPP_PROPERTIES
         properties = new PropertiesBuilder()
@@ -82,7 +83,7 @@ public class PropertiesLoaderTest {
     @Test
     public void shouldLoadDevOverrideSystemWebappPropertiesIfDevStage() {
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
-        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES);
+        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_SYSTEM_WEBAPP_PROPERTIES);
 
         assertThat(properties, notNullValue());
         assertThat(loader.getStage(), is("DEV"));
@@ -99,7 +100,7 @@ public class PropertiesLoaderTest {
         when(fileLoader.getPropertiesFromFile("/etc/gu/installation.properties")).thenReturn(installation);
 
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
-        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_OVERRIDE_SYSTEM_WEBAPP_PROPERTIES);
+        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_SYSTEM_WEBAPP_PROPERTIES);
 
         assertThat(loader.getStage(), not("DEV"));
         assertThat(properties, nullValue());
