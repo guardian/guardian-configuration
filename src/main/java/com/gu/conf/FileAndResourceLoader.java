@@ -3,10 +3,7 @@ package com.gu.conf;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 
@@ -14,40 +11,47 @@ public class FileAndResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(FileAndResourceLoader.class);
 
-    public InputStream getFile(String filename) throws IOException {
+    public boolean exists(String location) {
+        return new File(location).exists();
+    }
+
+    private InputStream getFile(String filename) throws IOException {
+        if (!exists(filename)) {
+            LOG.error("File does not exist trying to load properties from " + filename);
+            throw new FileNotFoundException(filename);
+        }
+
         return new BufferedInputStream(new FileInputStream(filename));
     }
 
-    public InputStream getResource(String resource) throws IOException {
+    private InputStream getResource(String resource) throws IOException {
         ClassLoader classloader = FileAndResourceLoader.class.getClassLoader();
         URL url = classloader.getResource(resource);
 
-        return new BufferedInputStream(url.openStream());
-    }
-
-    public Properties getPropertiesFromFile(String filename) {
-        Properties properties = new Properties();
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
-            inputStream = getFile(filename);
-            properties.load(inputStream);
-        } catch (Exception e) {
-            LOG.info("Exception reading properties from file " + filename, e);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
+             inputStream = url.openStream();
+        } catch (IOException ioe) {
+            LOG.info("Cannot open resource trying to load properties from " + resource);
+            throw ioe;
         }
 
-        return properties;
+        return new BufferedInputStream(inputStream);
     }
 
-    public Properties getPropertiesFromResource(String resource) {
+    public Properties getPropertiesFrom(String descriptor) throws IOException {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
-            inputStream = getResource(resource);
+            if (descriptor.startsWith("file://")) {
+                inputStream = getFile(descriptor.substring(7));
+            } else if (descriptor.startsWith("classpath:")) {
+                inputStream = getResource(descriptor.substring(10));
+            } else {
+                LOG.error("Unknown protocol trying to load properties from " + descriptor);
+            }
+
             properties.load(inputStream);
-        } catch (Exception e) {
-            LOG.info("Exception reading properties from resource " + resource, e);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }

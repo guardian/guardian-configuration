@@ -16,20 +16,20 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() {
-        PropertiesBuilder systemWebapp = new PropertiesBuilder();
-        systemWebapp.property("precendence.test.property", "first");
-        systemWebapp.property("double.property", "25.0");
-        systemWebapp.systemWebappProperties();
+        PropertiesBuilder sysProperties = new PropertiesBuilder();
+        sysProperties.property("precendence.test.property", "first");
+        sysProperties.property("double.property", "25.0");
+        sysProperties.source("file:///sys.properties");
 
-        PropertiesBuilder webappStage = new PropertiesBuilder();
-        webappStage.property("precendence.test.property", "second");
-        webappStage.property("integer.property", "23");
-        webappStage.property("nonnumeric.property", "qwe");
-        webappStage.webappStageProperties();
+        PropertiesBuilder environmentalProperties = new PropertiesBuilder();
+        environmentalProperties.property("precendence.test.property", "second");
+        environmentalProperties.property("integer.property", "23");
+        environmentalProperties.property("nonnumeric.property", "qwe");
+        environmentalProperties.source("classpath:///env.dev.properties");
 
         ImmutableList<PropertiesWithSource> properties = ImmutableList.of(
-                systemWebapp.toPropertiesWithSource(),
-                webappStage.toPropertiesWithSource()
+                sysProperties.toPropertiesWithSource(),
+                environmentalProperties.toPropertiesWithSource()
         );
 
         configuration = new Configuration(properties);
@@ -37,13 +37,13 @@ public class ConfigurationTest {
 
     @Test
     public void shouldGetPropertySource() throws IOException {
-        PropertiesSource propertySource = configuration.getPropertySource("nonnumeric.property");
-        assertThat(propertySource, is(PropertiesSource.WEBAPP_STAGE_PROPERTIES));
+        String propertySource = configuration.getPropertySource("nonnumeric.property");
+        assertThat(propertySource, is("classpath:///env.dev.properties"));
     }
 
     @Test
     public void shouldGetNullForPropertySourceIfNotSet() throws IOException {
-        PropertiesSource propertySource = configuration.getPropertySource("nosuch.property");
+        String propertySource = configuration.getPropertySource("nosuch.property");
         assertThat(propertySource, nullValue());
     }
 
@@ -103,8 +103,8 @@ public class ConfigurationTest {
 
     @Test
     public void shouldRespectFirstDeclarationPrecedenceInGetPropertySource() throws IOException {
-        PropertiesSource propertySource = configuration.getPropertySource("precendence.test.property");
-        assertThat(propertySource, is(PropertiesSource.SYSTEM_WEBAPP_PROPERTIES));
+        String propertySource = configuration.getPropertySource("precendence.test.property");
+        assertThat(propertySource, is("file:///sys.properties"));
     }
 
     @Test

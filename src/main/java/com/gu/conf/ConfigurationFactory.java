@@ -2,17 +2,18 @@ package com.gu.conf;
 
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ConfigurationFactory {
 
     private static final Logger LOG = Logger.getLogger(ConfigurationFactory.class);
 
-    public Configuration getConfiguration(String applicationName) {
+    public Configuration getConfiguration(String applicationName) throws IOException {
         return getConfiguration(applicationName, "conf");
     }
 
-    public Configuration getConfiguration(String applicationName, String webappConfDirectory) {
+    public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
         LOG.info(String.format("Configuring application(%s) using classpath configuration directory(%s)",
             applicationName, webappConfDirectory));
         PropertiesLoader propertiesLoader = new PropertiesLoader();

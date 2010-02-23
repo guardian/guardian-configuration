@@ -3,29 +3,29 @@ package com.gu.conf;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 class PropertiesLoader {
 
-    private static final String INSTALLATION_PROPERTIES_FILE = "/etc/gu/installation.properties";
+    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/installation.properties";
     private static final Logger LOG = Logger.getLogger(PropertiesLoader.class);
 
     private FileAndResourceLoader loader;
     private Properties installationProperties;
 
-    PropertiesLoader() {
+    PropertiesLoader() throws IOException {
         this(new FileAndResourceLoader());
     }
 
-    PropertiesLoader(FileAndResourceLoader loader) {
+    PropertiesLoader(FileAndResourceLoader loader) throws IOException {
         this.loader = loader;
 
-        LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_FILE);
-        installationProperties = loader.getPropertiesFromFile(INSTALLATION_PROPERTIES_FILE);
+        LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
+        installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
 
-        LOG.info("stage: " + getStage());
         LOG.info("int.service.domain: " + getIntServiceDomain());
     }
 
@@ -33,61 +33,72 @@ class PropertiesLoader {
         return installationProperties.getProperty("int.service.domain");
     }
 
-    String getStage() {
-        return installationProperties.getProperty("stage");
-    }
-
-    List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) {
+    List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) throws IOException {
         List<PropertiesWithSource> properties = new LinkedList<PropertiesWithSource>();
 
-        String stage = getStage();
-        if (StringUtils.isBlank(stage)) {
-             LOG.warn("'stage' variable unavailable from " + INSTALLATION_PROPERTIES_FILE);
-        } else if (stage.equals("DEV")) {
-            properties.add(getDevOverrideSystemWebappProperties(applicationName));
+        PropertiesWithSource overrideProperties = getDevOverrideSysProperties(applicationName);
+        if (overrideProperties != null) {
+            properties.add(overrideProperties);
         }
 
-        properties.add(getSystemWebappProperties(applicationName));
-        properties.add(getWebappGlobalProperties(webappConfDirectory));
-        properties.add(getWebappStageProperties(webappConfDirectory));
+        properties.add(getSysProperties(applicationName));
+        properties.add(getGlobalProperties(webappConfDirectory));
+        properties.add(getServiceDomainProperties(webappConfDirectory));
 
         return properties;
     }
 
-    private PropertiesWithSource getSystemWebappProperties(String applicationName) {
-        String propertiesFile = String.format("/etc/gu/%s.properties", applicationName);
+    private PropertiesWithSource getDevOverrideSysProperties(String applicationName) throws IOException {
+        String serviceDomain = getIntServiceDomain();
+        if (StringUtils.isBlank(serviceDomain)) {
+            String message = "'int.service.domain' variable unavailable from " + INSTALLATION_PROPERTIES_LOCATION;
+            LOG.warn(message);
 
-        LOG.info("Overriding System Webapp properties with " + propertiesFile);
-        Properties properties = loader.getPropertiesFromFile(propertiesFile);
+            throw new RuntimeException(message);
+        }
 
-        return new PropertiesWithSource(properties, PropertiesSource.SYSTEM_WEBAPP_PROPERTIES);
-    }
+        if (!serviceDomain.equals("gudev.gnl")) {         
+            return null;
+        }
 
-    private PropertiesWithSource getDevOverrideSystemWebappProperties(String applicationName) {
         String home = System.getProperty("user.home");
-        String propertiesFile = String.format("%s/etc/gu/%s.properties", home, applicationName);
+        String propertiesLocation = String.format("file://%s/.gu/%s.properties", home, applicationName);
 
-        LOG.info("Loading System Webapp properties from " + propertiesFile);
-        Properties properties = loader.getPropertiesFromFile(propertiesFile);
+        if (!loader.exists(propertiesLocation)) {
+            LOG.info("No optional DEV Override sys properties file at " + propertiesLocation);
+            return null;
+        }
 
-        return new PropertiesWithSource(properties, PropertiesSource.DEV_SYSTEM_WEBAPP_PROPERTIES);
+        LOG.info("Loading DEV override sys properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
+
+        return new PropertiesWithSource(properties, propertiesLocation);
     }
 
-    private PropertiesWithSource getWebappGlobalProperties(String webappConfDirectory) {
-        String propertiesResource = String.format("%s/global.properties", webappConfDirectory);
+    private PropertiesWithSource getSysProperties(String applicationName) throws IOException {
+        String propertiesLocation = String.format("file:///etc/gu/%s.properties", applicationName);
 
-        LOG.info("Loading Webapp global properties from classpath:" + propertiesResource);
-        Properties properties = loader.getPropertiesFromResource(propertiesResource);
+        LOG.info("Loading sys properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
-        return new PropertiesWithSource(properties, PropertiesSource.WEBAPP_GLOBAL_PROPERTIES);
+        return new PropertiesWithSource(properties, propertiesLocation);
     }
 
-    private PropertiesWithSource getWebappStageProperties(String webappConfDirectory) {
-        String propertiesResource = String.format("%s/%s.properties", webappConfDirectory, getIntServiceDomain());
+    private PropertiesWithSource getGlobalProperties(String webappConfDirectory) throws IOException {
+        String propertiesLocation = String.format("classpath:%s/global.properties", webappConfDirectory);
 
-        LOG.info("Loading Webapp stage properties from classpath:" + propertiesResource);
-        Properties properties = loader.getPropertiesFromResource(propertiesResource);
+        LOG.info("Loading global properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
-        return new PropertiesWithSource(properties, PropertiesSource.WEBAPP_STAGE_PROPERTIES);
+        return new PropertiesWithSource(properties, propertiesLocation);
+    }
+
+    private PropertiesWithSource getServiceDomainProperties(String confPrefix) throws IOException {
+        String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, getIntServiceDomain());
+
+        LOG.info("Loading service domain properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
+
+        return new PropertiesWithSource(properties, propertiesLocation);
     }
 }

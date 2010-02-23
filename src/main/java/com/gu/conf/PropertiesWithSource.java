@@ -5,9 +5,9 @@ import java.util.Properties;
 class PropertiesWithSource {
 
     private Properties properties;
-    private PropertiesSource source;
+    private String source;
 
-    PropertiesWithSource(Properties properties, PropertiesSource source) {
+    PropertiesWithSource(Properties properties, String source) {
         this.properties = properties;
         this.source = source;
     }
@@ -16,14 +16,15 @@ class PropertiesWithSource {
         return properties.getProperty(propertyName);
     }
 
-    PropertiesSource getSource() {
+    String getSource() {
         return source;
     }
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\t");
-        stringBuilder.append(source.getDescription());
+        stringBuilder.append("# Properties from ");
+        stringBuilder.append(source);
         stringBuilder.append("\n");
 
         for (String propertyName : properties.stringPropertyNames()) {

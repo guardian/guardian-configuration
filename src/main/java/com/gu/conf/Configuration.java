@@ -10,7 +10,7 @@ public class Configuration {
         this.properties = properties;
     }
 
-    public PropertiesSource getPropertySource(String propertyName) {
+    public String getPropertySource(String propertyName) {
         for (PropertiesWithSource props : properties) {
             if (props.getStringProperty(propertyName) != null) {
                 return props.getSource();
