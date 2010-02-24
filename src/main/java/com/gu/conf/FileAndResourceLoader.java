@@ -6,13 +6,29 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileAndResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(FileAndResourceLoader.class);
+    private static final Pattern protocolMatcher = Pattern.compile("(?:file|classpath):(?://)?(.*)");
 
     public boolean exists(String location) {
+        if (location.startsWith("file:")) {
+            location = stripProtocol(location);
+        }
+
         return new File(location).exists();
+    }
+
+    private String stripProtocol(String location) {
+        Matcher match = protocolMatcher.matcher(location);
+        if (match.matches()) {
+            return match.group(1);
+        }
+
+        return location;
     }
 
     private InputStream getFile(String filename) throws IOException {
@@ -21,12 +37,12 @@ public class FileAndResourceLoader {
             throw new FileNotFoundException(filename);
         }
 
-        return new BufferedInputStream(new FileInputStream(filename));
+        return new BufferedInputStream(new FileInputStream(stripProtocol(filename)));
     }
 
     private InputStream getResource(String resource) throws IOException {
         ClassLoader classloader = FileAndResourceLoader.class.getClassLoader();
-        URL url = classloader.getResource(resource);
+        URL url = classloader.getResource(stripProtocol(resource));
 
         InputStream inputStream;
         try {
@@ -43,10 +59,10 @@ public class FileAndResourceLoader {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
-            if (descriptor.startsWith("file://")) {
-                inputStream = getFile(descriptor.substring(7));
+            if (descriptor.startsWith("file:")) {
+                inputStream = getFile(descriptor);
             } else if (descriptor.startsWith("classpath:")) {
-                inputStream = getResource(descriptor.substring(10));
+                inputStream = getResource(descriptor);
             } else {
                 LOG.error("Unknown protocol trying to load properties from " + descriptor);
             }
