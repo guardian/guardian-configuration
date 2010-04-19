@@ -42,8 +42,8 @@ class PropertiesLoader {
         }
 
         properties.add(getSysProperties(applicationName));
-        properties.add(getGlobalProperties(webappConfDirectory));
         properties.add(getServiceDomainProperties(webappConfDirectory));
+        properties.add(getGlobalProperties(webappConfDirectory));
 
         return properties;
     }

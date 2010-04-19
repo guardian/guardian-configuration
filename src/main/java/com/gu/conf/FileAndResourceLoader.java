@@ -34,7 +34,7 @@ public class FileAndResourceLoader {
     private InputStream getFile(String filename) throws IOException {
         if (!exists(filename)) {
             LOG.error("File does not exist trying to load properties from " + filename);
-            throw new FileNotFoundException(filename);
+            return null;
         }
 
         return new BufferedInputStream(new FileInputStream(stripProtocol(filename)));
@@ -49,7 +49,7 @@ public class FileAndResourceLoader {
              inputStream = url.openStream();
         } catch (IOException ioe) {
             LOG.info("Cannot open resource trying to load properties from " + resource);
-            throw ioe;
+            return null;
         }
 
         return new BufferedInputStream(inputStream);
@@ -67,8 +67,12 @@ public class FileAndResourceLoader {
                 LOG.error("Unknown protocol trying to load properties from " + descriptor);
             }
 
-            properties.load(inputStream);
-        } finally {
+            if (inputStream != null) {
+                properties.load(inputStream);
+            }
+        } catch (IOException ioe) {
+            LOG.info("IO Exception reading properties: " + ioe.getMessage());
+        }finally {
             IOUtils.closeQuietly(inputStream);
         }
 
