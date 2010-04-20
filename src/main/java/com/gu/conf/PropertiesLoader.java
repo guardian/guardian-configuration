@@ -57,10 +57,6 @@ class PropertiesLoader {
             throw new RuntimeException(message);
         }
 
-        if (!serviceDomain.equals("gudev.gnl")) {         
-            return null;
-        }
-
         String home = System.getProperty("user.home");
         String propertiesLocation = String.format("file://%s/.gu/%s.properties", home, applicationName);
 

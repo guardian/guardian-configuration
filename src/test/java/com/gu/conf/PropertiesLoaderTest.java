@@ -92,7 +92,7 @@ public class PropertiesLoaderTest {
     }
 
     @Test
-    public void shouldNotLoadDevOverrideSysPropertiesIfNotDevServiceDomain() throws IOException {
+    public void shouldLoadDevOverrideSysPropertiesIfNotDevServiceDomain() throws IOException {
         // INSTALLATION_PROPERTIES
         Properties installation = new PropertiesBuilder()
             .property("int.service.domain", "gutc.gnl")
@@ -105,7 +105,9 @@ public class PropertiesLoaderTest {
         PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_OVERRIDE_SYS_PROPERTIES);
 
         assertThat(loader.getIntServiceDomain(), not("gudev.gnl"));
-        assertThat(properties, nullValue());
+        assertThat(properties, notNullValue());
+        assertThat(properties.getStringProperty("source"), is("dev.override.sys.properties"));
+        assertThat(properties.getStringProperty("no-property"), nullValue());
     }
 
     @Test
