@@ -1,6 +1,7 @@
 package com.gu.conf;
 
 import com.google.common.collect.ImmutableList;
+import com.gu.conf.exceptions.PropertyNotSetException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.fail;
 
 public class ConfigurationTest {
 
@@ -36,54 +38,74 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void shouldGetPropertySource() throws IOException {
+    public void shouldGetPropertySource() {
         String propertySource = configuration.getPropertySource("nonnumeric.property");
         assertThat(propertySource, is("classpath:///env.dev.properties"));
     }
 
     @Test
-    public void shouldGetNullForPropertySourceIfNotSet() throws IOException {
+    public void shouldGetNullForPropertySourceIfNotSet() {
         String propertySource = configuration.getPropertySource("nosuch.property");
         assertThat(propertySource, nullValue());
     }
 
     @Test
-    public void shouldGetProperty() throws IOException {
+    public void shouldGetProperty() throws Exception {
         String property = configuration.getStringProperty("nonnumeric.property");
         assertThat(property, is("qwe"));
     }
 
     @Test
-    public void shouldGetNullForPropertyIfNotSet() throws IOException {
-        String property = configuration.getStringProperty("nosuch.property");
-        assertThat(property, nullValue());
+    public void shouldThrowForPropertyIfNotSet()  {
+        try {
+            configuration.getStringProperty("nosuch.property");
+            fail("exception expected");
+        } catch (PropertyNotSetException ex) {
+            assertThat(ex.getProperty(), is("nosuch.property"));
+            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found in any " +
+                    "of file:///sys.properties classpath:///env.dev.properties "));
+        }
     }
 
     @Test
-    public void shouldGetDefaultForPropertyIfNotSet() throws IOException {
+    public void shouldGetDefaultForPropertyIfNotSet() {
         String property = configuration.getStringProperty("nosuch.property", "default");
         assertThat(property, is("default"));
     }
 
     @Test
-    public void shouldGetIntegerProperty() throws IOException {
+    public void shouldGetIntegerProperty() throws Exception {
         Integer property = configuration.getIntegerProperty("integer.property");
         assertThat(property, is(23));
     }
 
     @Test
-    public void shouldGetNullForIntegerPropertyIfNotSet() throws IOException {
-        Integer property = configuration.getIntegerProperty("nosuch.property");
-        assertThat(property, nullValue());
+    public void shouldThrowForIntegerPropertyIfNotSet()  {
+        try {
+            configuration.getIntegerProperty("nosuch.property");
+            fail("exception expected");
+        } catch (PropertyNotSetException ex) {
+            assertThat(ex.getProperty(), is("nosuch.property"));
+            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found in any " +
+                    "of file:///sys.properties classpath:///env.dev.properties "));
+        }
     }
 
     @Test
-    public void shouldGetNullForIntegerPropertyIfNotInteger() throws IOException {
-        Integer property = configuration.getIntegerProperty("double.property");
-        assertThat(property, nullValue());
+    public void shouldThrowForIntegerPropertyIfNotInteger() throws PropertyNotSetException {
+        try {
+            configuration.getIntegerProperty("double.property");
+            fail("exception expected");
+        } catch (NumberFormatException ex) {
+            //expected
+        }
 
-        property = configuration.getIntegerProperty("nonnumeric.property");
-        assertThat(property, nullValue());
+        try {
+            configuration.getIntegerProperty("nonnumeric.property");
+            fail("exception expected");
+        } catch (NumberFormatException ex) {
+            //expected
+        }
     }
 
     @Test
@@ -108,7 +130,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void shouldRespectFirstDeclarationPrecedenceInGetProperty() throws IOException {
+    public void shouldRespectFirstDeclarationPrecedenceInGetProperty() throws Exception {
         String property = configuration.getStringProperty("precendence.test.property");
         assertThat(property, is("first"));
     }

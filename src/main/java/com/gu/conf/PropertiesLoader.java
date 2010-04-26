@@ -1,7 +1,7 @@
 package com.gu.conf;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -10,27 +10,20 @@ import java.util.Properties;
 
 class PropertiesLoader {
 
-    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/installation.properties";
-    private static final Logger LOG = Logger.getLogger(PropertiesLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
 
-    private FileAndResourceLoader loader;
-    private Properties installationProperties;
+    private final FileAndResourceLoader loader;
+    private final String serviceDomain;
 
     PropertiesLoader() throws IOException {
-        this(new FileAndResourceLoader());
+        this(new FileAndResourceLoader(), new ServiceDomainProvider());
     }
 
-    PropertiesLoader(FileAndResourceLoader loader) throws IOException {
+    PropertiesLoader(FileAndResourceLoader loader, ServiceDomainProvider serviceDomainProvider) throws IOException {
         this.loader = loader;
+        this.serviceDomain = serviceDomainProvider.getServiceDomain();
 
-        LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
-        installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
-
-        LOG.info("int.service.domain: " + getIntServiceDomain());
-    }
-
-    String getIntServiceDomain() {
-        return installationProperties.getProperty("int.service.domain");
+        LOG.info("int.service.domain: " + serviceDomain);
     }
 
     List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) throws IOException {
@@ -49,21 +42,8 @@ class PropertiesLoader {
     }
 
     private PropertiesWithSource getDevOverrideSysProperties(String applicationName) throws IOException {
-        String serviceDomain = getIntServiceDomain();
-        if (StringUtils.isBlank(serviceDomain)) {
-            String message = "'int.service.domain' variable unavailable from " + INSTALLATION_PROPERTIES_LOCATION;
-            LOG.warn(message);
-
-            throw new RuntimeException(message);
-        }
-
         String home = System.getProperty("user.home");
         String propertiesLocation = String.format("file://%s/.gu/%s.properties", home, applicationName);
-
-        if (!loader.exists(propertiesLocation)) {
-            LOG.info("No optional DEV Override sys properties file at " + propertiesLocation);
-            return null;
-        }
 
         LOG.info("Loading DEV override sys properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
@@ -90,7 +70,7 @@ class PropertiesLoader {
     }
 
     private PropertiesWithSource getServiceDomainProperties(String confPrefix) throws IOException {
-        String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, getIntServiceDomain());
+        String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
 
         LOG.info("Loading service domain properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);

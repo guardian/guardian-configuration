@@ -1,7 +1,8 @@
 package com.gu.conf;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class FileAndResourceLoader {
 
-    private static final Logger LOG = Logger.getLogger(FileAndResourceLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FileAndResourceLoader.class);
     private static final Pattern protocolMatcher = Pattern.compile("(?:file|classpath):(?://)?(.*)");
 
     public boolean exists(String location) {
@@ -32,11 +33,6 @@ public class FileAndResourceLoader {
     }
 
     private InputStream getFile(String filename) throws IOException {
-        if (!exists(filename)) {
-            LOG.error("File does not exist trying to load properties from " + filename);
-            return null;
-        }
-
         return new BufferedInputStream(new FileInputStream(stripProtocol(filename)));
     }
 
@@ -71,7 +67,7 @@ public class FileAndResourceLoader {
                 properties.load(inputStream);
             }
         } catch (IOException ioe) {
-            LOG.info("IO Exception reading properties: " + ioe.getMessage());
+            LOG.info("No properties read from " + descriptor + ": " + ioe.getMessage());
         }finally {
             IOUtils.closeQuietly(inputStream);
         }

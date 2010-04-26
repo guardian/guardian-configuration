@@ -22,15 +22,13 @@ class PropertiesWithSource {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\t");
         stringBuilder.append("# Properties from ");
         stringBuilder.append(source);
         stringBuilder.append("\n");
 
         for (String propertyName : properties.stringPropertyNames()) {
-            stringBuilder.append("\t\t");
             stringBuilder.append(propertyName);
-            stringBuilder.append(" : ");
+            stringBuilder.append("=");
             if (!propertyName.contains("pass")) {
                 stringBuilder.append(properties.getProperty(propertyName));
             } else {

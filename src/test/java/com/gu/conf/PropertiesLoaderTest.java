@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesLoaderTest {
 
-    private static String INSTALLATION_PROPERTIES = "file:///etc/gu/installation.properties";
+    //private static String INSTALLATION_PROPERTIES = "file:///etc/gu/installation.properties";
     private static String DEV_OVERRIDE_SYS_PROPERTIES =
             String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
     private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
@@ -25,19 +25,15 @@ public class PropertiesLoaderTest {
     private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
 
     @Mock FileAndResourceLoader fileLoader;
+    @Mock ServiceDomainProvider serviceDomainProvider;
     PropertiesLoader loader;
 
     @Before
     public void setUp() throws IOException {
-        // INSTALLATION_PROPERTIES
-        Properties properties = new PropertiesBuilder()
-            .property("source", "installation.properties")
-            .property("int.service.domain", "gudev.gnl")
-            .toProperties();
-        when(fileLoader.getPropertiesFrom(INSTALLATION_PROPERTIES)).thenReturn(properties);
+        when(serviceDomainProvider.getServiceDomain()).thenReturn("gudev.gnl");
 
         // DEV_OVERRIDE_SYS_PROPERTIES
-        properties = new PropertiesBuilder()
+        Properties properties = new PropertiesBuilder()
             .property("source", "dev.override.sys.properties")
             .toProperties();
         when(fileLoader.getPropertiesFrom(DEV_OVERRIDE_SYS_PROPERTIES)).thenReturn(properties);
@@ -61,13 +57,8 @@ public class PropertiesLoaderTest {
             .toProperties();
         when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(properties);
 
-        loader = new PropertiesLoader(fileLoader);
+        loader = new PropertiesLoader(fileLoader, serviceDomainProvider);
     }
-
-    @Test
-	public void shouldReadIntServiceDomain() throws IOException {
-		assertThat(loader.getIntServiceDomain(), is("gudev.gnl"));
-	}
 
     @Test
     public void shouldIncludeInstallationPropertiesInConfiguration() throws IOException {
@@ -81,30 +72,10 @@ public class PropertiesLoaderTest {
     }
 
     @Test
-    public void shouldLoadDevOverrideSysPropertiesIfDevServiceDomain() throws IOException {
+    public void shouldLoadDevOverrideSysProperties() throws IOException {
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
         PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_OVERRIDE_SYS_PROPERTIES);
 
-        assertThat(loader.getIntServiceDomain(), is("gudev.gnl"));
-        assertThat(properties, notNullValue());
-        assertThat(properties.getStringProperty("source"), is("dev.override.sys.properties"));
-        assertThat(properties.getStringProperty("no-property"), nullValue());
-    }
-
-    @Test
-    public void shouldLoadDevOverrideSysPropertiesIfNotDevServiceDomain() throws IOException {
-        // INSTALLATION_PROPERTIES
-        Properties installation = new PropertiesBuilder()
-            .property("int.service.domain", "gutc.gnl")
-            .toProperties();
-        when(fileLoader.getPropertiesFrom("file:///etc/gu/installation.properties")).thenReturn(installation);
-
-        loader = new PropertiesLoader(fileLoader);
-
-        List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
-        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, DEV_OVERRIDE_SYS_PROPERTIES);
-
-        assertThat(loader.getIntServiceDomain(), not("gudev.gnl"));
         assertThat(properties, notNullValue());
         assertThat(properties.getStringProperty("source"), is("dev.override.sys.properties"));
         assertThat(properties.getStringProperty("no-property"), nullValue());
