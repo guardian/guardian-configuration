@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gu</groupId>
   <artifactId>configuration</artifactId>
-  <version>1.14</version>
+  <version>1.15-SNAPSHOT</version>
   <name>Configuration Property Utils</name>
   
 	<parent>
@@ -82,8 +82,8 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:svn+ssh://svn.gudev.gnl/home/svn/repository/GUsrc/guardian-shared-libraries/tags/configuration-1.14</connection>
-        <developerConnection>scm:svn:svn+ssh://svn.gudev.gnl/home/svn/repository/GUsrc/guardian-shared-libraries/tags/configuration-1.14</developerConnection>
+        <connection>scm:svn:svn+ssh://svn.gudev.gnl/home/svn/repository/GUsrc/guardian-shared-libraries/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://svn.gudev.gnl/home/svn/repository/GUsrc/guardian-shared-libraries/trunk</developerConnection>
     </scm>
     
 </project>
