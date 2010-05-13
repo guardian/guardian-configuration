@@ -60,13 +60,11 @@ public class ServiceDomainProvider {
 
             return domain;
         } catch (IOException e) {
-            throw new UnknownServiceDomainException("FATAL: could not read " +
-                    INSTALLATION_PROPERTIES_LOCATION +
-                    "; either create this file (probably using puppet) or set the int.service.domain system property", e);
+            LOG.info("unable to find " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"open.source\"");
+            return "open.source";
         } catch (PropertyNotSetException e) {
-            throw new UnknownServiceDomainException("FATAL: " + INSTALLATION_PROPERTIES_LOCATION +
-                    " exists but does not contain int.service.domain; " +
-                    "either update this file (probably using puppet) or set the int.service.domain system property", e);
+            LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"open.source\"");
+            return "open.source";
         }
     }
 }

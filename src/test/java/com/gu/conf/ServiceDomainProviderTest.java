@@ -71,34 +71,21 @@ public class ServiceDomainProviderTest {
     }
 
     @Test
-    public void shouldReturnASensibleErrorMessageWhenInstallationPropertiesFileIsRequiredButNotPresent() throws Exception {
+    public void shouldDefaultToOpenSourceWhenInstallationPropertiesFileIsNotPresent() throws Exception {
         when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenThrow(new FileNotFoundException());
 
-        try {
-            provider.getServiceDomain();
-            fail("expected exception");
-        } catch (UnknownServiceDomainException ex) {
-            assertThat(ex.getMessage(), is("FATAL: could not read file:///etc/gu/installation.properties; " +
-                    "either create this file (probably using puppet) or set the int.service.domain system property"));
-            assertThat(ex.getCause(), is(FileNotFoundException.class));
-        }
+        assertThat(provider.getServiceDomain(), is("open.source"));
+
     }
     
     @Test
-    public void shouldReturnASensibleErrorMessageWhenInstallationPropertiesFileExistsButDoesNotContainValue() throws Exception {
+    public void shouldDefaultToOpenSourceWhenInstallationPropertiesFileExistsButDoesNotContainValue() throws Exception {
         Properties properties = new PropertiesBuilder()
                 .toProperties();
 
         when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenReturn(properties);
 
-        try {
-            provider.getServiceDomain();
-            fail("expected exception");
-        } catch (UnknownServiceDomainException ex) {
-            assertThat(ex.getMessage(), is("FATAL: file:///etc/gu/installation.properties exists but does not contain int.service.domain; " +
-                    "either update this file (probably using puppet) or set the int.service.domain system property"));
-            assertThat(ex.getCause(), is(PropertyNotSetException.class));
-        }
+        assertThat(provider.getServiceDomain(), is("open.source"));
     }
 
 }
