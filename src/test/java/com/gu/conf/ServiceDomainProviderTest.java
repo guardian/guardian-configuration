@@ -16,8 +16,6 @@
 
 package com.gu.conf;
 
-import com.gu.conf.exceptions.PropertyNotSetException;
-import com.gu.conf.exceptions.UnknownServiceDomainException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +28,6 @@ import java.util.Properties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,7 +71,7 @@ public class ServiceDomainProviderTest {
     public void shouldDefaultToOpenSourceWhenInstallationPropertiesFileIsNotPresent() throws Exception {
         when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenThrow(new FileNotFoundException());
 
-        assertThat(provider.getServiceDomain(), is("open.source"));
+        assertThat(provider.getServiceDomain(), is("default"));
 
     }
     
@@ -85,7 +82,7 @@ public class ServiceDomainProviderTest {
 
         when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenReturn(properties);
 
-        assertThat(provider.getServiceDomain(), is("open.source"));
+        assertThat(provider.getServiceDomain(), is("default"));
     }
 
 }

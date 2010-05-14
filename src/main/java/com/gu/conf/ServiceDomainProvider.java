@@ -17,7 +17,6 @@
 package com.gu.conf;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
-import com.gu.conf.exceptions.UnknownServiceDomainException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,11 +59,11 @@ public class ServiceDomainProvider {
 
             return domain;
         } catch (IOException e) {
-            LOG.info("unable to find " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"open.source\"");
-            return "open.source";
+            LOG.info("unable to find " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
+            return "default";
         } catch (PropertyNotSetException e) {
-            LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"open.source\"");
-            return "open.source";
+            LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
+            return "default";
         }
     }
 }
