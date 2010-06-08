@@ -18,6 +18,7 @@ package com.gu.conf;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Configuration {
@@ -119,6 +120,22 @@ public class Configuration {
         }
 
         return property;
+    }
+
+    /**
+     * Return the value of property
+     * @param propertyName name of the property
+     * @return value of the property
+     * @throws PropertyNotSetException if property has not been set
+     */
+    public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException {
+        String value = getStringProperty(propertyName, null);
+
+        if (value == null) {
+            throw new PropertyNotSetException(propertyName, sources);
+        }
+
+        return Arrays.asList(value.split(","));
     }
 
     public String toString() {

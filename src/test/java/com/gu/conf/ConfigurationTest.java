@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -43,6 +44,7 @@ public class ConfigurationTest {
         environmentalProperties.property("precendence.test.property", "second");
         environmentalProperties.property("integer.property", "23");
         environmentalProperties.property("nonnumeric.property", "qwe");
+        environmentalProperties.property("list.property", "rimbaud,verlaine");
         environmentalProperties.source("classpath:///env.dev.properties");
 
         ImmutableList<PropertiesWithSource> properties = ImmutableList.of(
@@ -149,6 +151,14 @@ public class ConfigurationTest {
     public void shouldRespectFirstDeclarationPrecedenceInGetProperty() throws Exception {
         String property = configuration.getStringProperty("precendence.test.property");
         assertThat(property, is("first"));
+    }
+
+    @Test
+    public void shouldGetPropertyList() throws Exception {
+        List<String> properties = configuration.getStringPropertiesSplitByComma("list.property");
+        assertThat(properties.size(), is(2));
+        assertThat(properties.get(0), is("rimbaud"));
+        assertThat(properties.get(1), is("verlaine"));
     }
 
 }
