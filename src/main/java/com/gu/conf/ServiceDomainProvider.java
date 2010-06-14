@@ -16,11 +16,9 @@
 
 package com.gu.conf;
 
-import com.gu.conf.exceptions.PropertyNotSetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -43,27 +41,22 @@ public class ServiceDomainProvider {
 
     public String getServiceDomain() {
         String domain = System.getProperty("int.service.domain");
-        
+
         if (domain != null) {
             LOG.info("Service domain overriden by int.service.domain system property to '" + domain + "'");
             return domain;
         }
 
         LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
-        try {
-            Properties installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
-            domain = installationProperties.getProperty("int.service.domain");
 
-            if (domain == null)
-                throw new PropertyNotSetException("int.service.domain", INSTALLATION_PROPERTIES_LOCATION);
+        Properties installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
+        domain = installationProperties.getProperty("int.service.domain");
 
-            return domain;
-        } catch (IOException e) {
-            LOG.info("unable to find " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
-            return "default";
-        } catch (PropertyNotSetException e) {
+        if (domain == null) {
             LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
             return "default";
         }
+
+        return domain;
     }
 }

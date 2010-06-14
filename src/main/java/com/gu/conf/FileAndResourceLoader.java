@@ -31,14 +31,6 @@ public class FileAndResourceLoader {
     private static final Logger LOG = LoggerFactory.getLogger(FileAndResourceLoader.class);
     private static final Pattern protocolMatcher = Pattern.compile("(?:file|classpath):(?://)?(.*)");
 
-    public boolean exists(String location) {
-        if (location.startsWith("file:")) {
-            location = stripProtocol(location);
-        }
-
-        return new File(location).exists();
-    }
-
     private String stripProtocol(String location) {
         Matcher match = protocolMatcher.matcher(location);
         if (match.matches()) {
@@ -48,26 +40,36 @@ public class FileAndResourceLoader {
         return location;
     }
 
-    private InputStream getFile(String filename) throws IOException {
-        return new BufferedInputStream(new FileInputStream(stripProtocol(filename)));
+    private InputStream getFile(String resource) throws IOException {
+        File file = new File(stripProtocol(resource));
+        if (!file.canRead()) {
+            LOG.info("Ignoring missing configuration file " + resource);
+            return null;
+        }
+        return new BufferedInputStream(new FileInputStream(file));
     }
 
-    private InputStream getResource(String resource) throws IOException {
+    private InputStream getResource(String resource) {
         ClassLoader classloader = FileAndResourceLoader.class.getClassLoader();
         URL url = classloader.getResource(stripProtocol(resource));
+
+        if (url == null) {
+            LOG.info("Ignoring missing configuration file " + resource);
+            return null;
+        }
 
         InputStream inputStream;
         try {
              inputStream = url.openStream();
         } catch (IOException ioe) {
-            LOG.info("Cannot open resource trying to load properties from " + resource);
+            LOG.warn("Cannot open resource trying to load properties from " + resource, ioe);
             return null;
         }
 
         return new BufferedInputStream(inputStream);
     }
 
-    public Properties getPropertiesFrom(String descriptor) throws IOException {
+    public Properties getPropertiesFrom(String descriptor) {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
@@ -76,14 +78,14 @@ public class FileAndResourceLoader {
             } else if (descriptor.startsWith("classpath:")) {
                 inputStream = getResource(descriptor);
             } else {
-                LOG.error("Unknown protocol trying to load properties from " + descriptor);
+                throw new RuntimeException("Unknown protocol trying to load properties from " + descriptor);
             }
 
             if (inputStream != null) {
                 properties.load(inputStream);
             }
         } catch (IOException ioe) {
-            LOG.info("No properties read from " + descriptor + ": " + ioe.getMessage());
+            LOG.warn("unexpected error reading from file " + descriptor, ioe);
         }finally {
             IOUtils.closeQuietly(inputStream);
         }

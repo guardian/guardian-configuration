@@ -53,7 +53,6 @@ public class PropertiesLoaderTest {
             .property("source", "dev.override.sys.properties")
             .toProperties();
         when(fileLoader.getPropertiesFrom(DEV_OVERRIDE_SYS_PROPERTIES)).thenReturn(properties);
-        when(fileLoader.exists(DEV_OVERRIDE_SYS_PROPERTIES)).thenReturn(true);
 
         // SYS_PROPERTIES
         properties = new PropertiesBuilder()

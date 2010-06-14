@@ -45,11 +45,7 @@ class PropertiesLoader {
     List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) throws IOException {
         List<PropertiesWithSource> properties = new LinkedList<PropertiesWithSource>();
 
-        PropertiesWithSource overrideProperties = getDevOverrideSysProperties(applicationName);
-        if (overrideProperties != null) {
-            properties.add(overrideProperties);
-        }
-
+        properties.add(getUserOverrideProperties(applicationName));
         properties.add(getSysProperties(applicationName));
         properties.add(getServiceDomainProperties(webappConfDirectory));
         properties.add(getGlobalProperties(webappConfDirectory));
@@ -57,11 +53,11 @@ class PropertiesLoader {
         return properties;
     }
 
-    private PropertiesWithSource getDevOverrideSysProperties(String applicationName) throws IOException {
+    private PropertiesWithSource getUserOverrideProperties(String applicationName) throws IOException {
         String home = System.getProperty("user.home");
         String propertiesLocation = String.format("file://%s/.gu/%s.properties", home, applicationName);
 
-        LOG.info("Loading DEV override sys properties from " + propertiesLocation);
+        LOG.info("Loading user override properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);
@@ -70,7 +66,7 @@ class PropertiesLoader {
     private PropertiesWithSource getSysProperties(String applicationName) throws IOException {
         String propertiesLocation = String.format("file:///etc/gu/%s.properties", applicationName);
 
-        LOG.info("Loading sys properties from " + propertiesLocation);
+        LOG.info("Loading machine properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);
@@ -79,7 +75,7 @@ class PropertiesLoader {
     private PropertiesWithSource getGlobalProperties(String webappConfDirectory) throws IOException {
         String propertiesLocation = String.format("classpath:%s/global.properties", webappConfDirectory);
 
-        LOG.info("Loading global properties from " + propertiesLocation);
+        LOG.info("Loading webapp global properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);
@@ -88,7 +84,7 @@ class PropertiesLoader {
     private PropertiesWithSource getServiceDomainProperties(String confPrefix) throws IOException {
         String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
 
-        LOG.info("Loading service domain properties from " + propertiesLocation);
+        LOG.info("Loading webapp service domain properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);

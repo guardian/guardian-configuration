@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.FileNotFoundException;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,15 +67,7 @@ public class ServiceDomainProviderTest {
     }
 
     @Test
-    public void shouldDefaultToOpenSourceWhenInstallationPropertiesFileIsNotPresent() throws Exception {
-        when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenThrow(new FileNotFoundException());
-
-        assertThat(provider.getServiceDomain(), is("default"));
-
-    }
-    
-    @Test
-    public void shouldDefaultToOpenSourceWhenInstallationPropertiesFileExistsButDoesNotContainValue() throws Exception {
+    public void shouldDefaultWhenInstallationPropertiesFileExistsButDoesNotContainValue() throws Exception {
         Properties properties = new PropertiesBuilder()
                 .toProperties();
 
