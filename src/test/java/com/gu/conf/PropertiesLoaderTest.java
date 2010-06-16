@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesLoaderTest {
 
-    //private static String INSTALLATION_PROPERTIES = "file:///etc/gu/installation.properties";
     private static String DEV_OVERRIDE_SYS_PROPERTIES =
             String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
     private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";

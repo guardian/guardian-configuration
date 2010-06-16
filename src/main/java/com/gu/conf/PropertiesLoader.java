@@ -39,7 +39,7 @@ class PropertiesLoader {
         this.loader = loader;
         this.serviceDomain = serviceDomainProvider.getServiceDomain();
 
-        LOG.info("int.service.domain: " + serviceDomain);
+        LOG.info("INT_SERVICE_DOMAIN: " + serviceDomain);
     }
 
     List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) throws IOException {

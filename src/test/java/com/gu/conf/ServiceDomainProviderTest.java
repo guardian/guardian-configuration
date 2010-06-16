@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceDomainProviderTest {
 
-    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/installation.properties";
+    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
 
     private ServiceDomainProvider provider;
     @Mock
@@ -58,7 +58,7 @@ public class ServiceDomainProviderTest {
         assertThat(System.getProperty("int.service.domain"), is(nullValue()));
 
         Properties properties = new PropertiesBuilder()
-                .property("int.service.domain", "myservicedomain")
+                .property("INT_SERVICE_DOMAIN", "myservicedomain")
                 .toProperties();
 
         when(loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION)).thenReturn(properties);

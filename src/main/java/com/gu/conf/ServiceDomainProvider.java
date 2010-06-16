@@ -27,7 +27,7 @@ import java.util.Properties;
  */
 public class ServiceDomainProvider {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDomainProvider.class);
-    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/installation.properties";
+    private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
 
     private final FileAndResourceLoader loader;
 
@@ -50,7 +50,7 @@ public class ServiceDomainProvider {
         LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
 
         Properties installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
-        domain = installationProperties.getProperty("int.service.domain");
+        domain = installationProperties.getProperty("INT_SERVICE_DOMAIN");
 
         if (domain == null) {
             LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
