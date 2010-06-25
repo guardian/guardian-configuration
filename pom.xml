@@ -92,18 +92,18 @@
     </dependencies>
 
     <distributionManagement>
-        <!-- to do a release, you will need to clone  git@github.com:tackley/tackley.github.com.git
+        <!-- to do a release, you will need to clone  git@github.com:guardian/guardian.github.com.git
          to a directory under your home directory.  After release:perform, add commit & push -->
         <repository>
             <id>guardian-github-releases</id>
-            <url>file:///${user.home}/tackley.github.com/maven/repo-releases</url>
+            <url>file:///${user.home}/guardian.github.com/maven/repo-releases</url>
         </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:http://github.com/tackley/guardian-configuration.git</connection>
-        <developerConnection>scm:git:git://git@github.com/tackley/guardian-configuration.git</developerConnection>
-        <url>http://github.com/tackley/guardian-configuration</url>
+        <connection>scm:git:http://github.com/guardian/guardian-configuration.git</connection>
+        <developerConnection>scm:git:git://git@github.com/guardian/guardian-configuration.git</developerConnection>
+        <url>http://github.com/guardian/guardian-configuration</url>
     </scm>
 
     <licenses>
@@ -116,7 +116,7 @@
     <repositories>
         <repository>
             <id>guardian-github-releases</id>
-            <url>http://tackley.github.com/maven/repo-releases</url>
+            <url>http://guardian.github.com/maven/repo-releases</url>
         </repository>
     </repositories>
 
