@@ -17,6 +17,7 @@
 package com.gu.conf;
 
 import java.util.Properties;
+import java.util.Set;
 
 class PropertiesWithSource {
 
@@ -30,6 +31,10 @@ class PropertiesWithSource {
 
     String getStringProperty(String propertyName) {
         return properties.getProperty(propertyName);
+    }
+
+    public Set<Object> propertyKeys() {
+        return properties.keySet();
     }
 
     String getSource() {

@@ -20,9 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 class PropertiesLoader {
 
@@ -43,12 +41,13 @@ class PropertiesLoader {
     }
 
     List<PropertiesWithSource> getProperties(String applicationName, String webappConfDirectory) throws IOException {
-        List<PropertiesWithSource> properties = new LinkedList<PropertiesWithSource>();
+        LinkedList<PropertiesWithSource> properties = new LinkedList<PropertiesWithSource>();
 
         properties.add(getUserOverrideProperties(applicationName));
         properties.add(getSysProperties(applicationName));
         properties.add(getServiceDomainProperties(webappConfDirectory));
         properties.add(getGlobalProperties(webappConfDirectory));
+        properties.addFirst(getSystemOverrideProperties(getAllPropertyKeys(properties)));
 
         return properties;
     }
@@ -88,5 +87,30 @@ class PropertiesLoader {
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);
+    }
+
+    private PropertiesWithSource getSystemOverrideProperties(List<Object> keys) {
+        Properties properties = new Properties();
+        String propertiesLocation = "System";
+
+        LOG.info("Loading override System properties");
+        for (Object key : keys) {
+            if (System.getProperties().containsKey(key)) {
+                String value = System.getProperty((String) key);
+                properties.setProperty((String) key, value);
+            }
+        }
+
+        return new PropertiesWithSource(properties, propertiesLocation);
+    }
+
+    private List<Object> getAllPropertyKeys(List<PropertiesWithSource> properties) {
+        List<Object> keys = new ArrayList<Object>();
+
+        for (PropertiesWithSource propertiesWithSource : properties) {
+            keys.addAll(propertiesWithSource.propertyKeys());
+        }
+
+        return keys;
     }
 }

@@ -33,14 +33,17 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesLoaderTest {
 
+    private static String SYSTEM_OVERRIDE_PROPERTIES = "System";
     private static String DEV_OVERRIDE_SYS_PROPERTIES =
             String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
     private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
     private static String GLOBAL_PROPERTIES = "classpath:/conf/global.properties";
     private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
 
-    @Mock FileAndResourceLoader fileLoader;
-    @Mock ServiceDomainProvider serviceDomainProvider;
+    @Mock
+    FileAndResourceLoader fileLoader;
+    @Mock
+    ServiceDomainProvider serviceDomainProvider;
     PropertiesLoader loader;
 
     @Before
@@ -49,26 +52,26 @@ public class PropertiesLoaderTest {
 
         // DEV_OVERRIDE_SYS_PROPERTIES
         Properties properties = new PropertiesBuilder()
-            .property("source", "dev.override.sys.properties")
-            .toProperties();
+                .property("source", "dev.override.sys.properties")
+                .toProperties();
         when(fileLoader.getPropertiesFrom(DEV_OVERRIDE_SYS_PROPERTIES)).thenReturn(properties);
 
         // SYS_PROPERTIES
         properties = new PropertiesBuilder()
-            .property("source", "sys.properties")
-            .toProperties();
+                .property("source", "sys.properties")
+                .toProperties();
         when(fileLoader.getPropertiesFrom(SYS_PROPERTIES)).thenReturn(properties);
 
         // GLOBAL_DEV_PROPERTIES
         properties = new PropertiesBuilder()
-            .property("source", "global.dev.properties")
-            .toProperties();
+                .property("source", "global.dev.properties")
+                .toProperties();
         when(fileLoader.getPropertiesFrom(GLOBAL_PROPERTIES)).thenReturn(properties);
 
         // ENVIRONMENTAL_DEV_PROPERTIES
         properties = new PropertiesBuilder()
-            .property("source", "env.dev.properties")
-            .toProperties();
+                .property("source", "env.dev.properties")
+                .toProperties();
         when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(properties);
 
         loader = new PropertiesLoader(fileLoader, serviceDomainProvider);
@@ -82,6 +85,30 @@ public class PropertiesLoaderTest {
             assertThat(properties.getStringProperty("source"), not("installation.properties"));
             assertThat(properties.getStringProperty("int.service.domain"), nullValue());
             assertThat(properties.getStringProperty("stage"), nullValue());
+        }
+    }
+
+    @Test
+    public void shouldLoadSystemOverrideProperties() throws IOException {
+        try {
+            System.setProperty("source", "system.override.property");
+            List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
+            PropertiesWithSource properties = getPropertiesWithSource(propertiesList, SYSTEM_OVERRIDE_PROPERTIES);
+            assertThat(properties.getStringProperty("source"), is("system.override.property"));
+        }
+        finally {
+            System.clearProperty("source");
+        }
+    }
+
+    @Test
+    public void shouldOrderTheSystemOverridePropertiesBeforeAllOthers() throws IOException {
+        try {
+            System.setProperty("source", "system.override.property");
+            List<PropertiesWithSource> properties = loader.getProperties("webapp", "/conf");
+            assertThat(properties.get(0).getStringProperty("source"), is("system.override.property"));
+        } finally {
+            System.clearProperty("source");
         }
     }
 
@@ -124,7 +151,7 @@ public class PropertiesLoaderTest {
         assertThat(properties.getStringProperty("source"), is("env.dev.properties"));
         assertThat(properties.getStringProperty("no-property"), nullValue());
     }
-    
+
     private PropertiesWithSource getPropertiesWithSource(List<PropertiesWithSource> propertiesList, String source) {
         for (PropertiesWithSource properties : propertiesList) {
             if (properties.getSource().equals(source)) {
