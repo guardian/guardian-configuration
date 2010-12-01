@@ -22,41 +22,48 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 /**
- * This class provides a "service domain" value, which indicates
- * the type of server the app is currently executing in.
+ * Provides information on the the nature of the environment that the machine forms a part of
  */
-public class ServiceDomainProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceDomainProvider.class);
+public class SystemEnvironmentProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(SystemEnvironmentProvider.class);
     private static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
 
     private final FileAndResourceLoader loader;
 
-    public ServiceDomainProvider() {
+    public SystemEnvironmentProvider() {
         this(new FileAndResourceLoader());
     }
 
-    public ServiceDomainProvider(FileAndResourceLoader loader) {
+    public SystemEnvironmentProvider(FileAndResourceLoader loader) {
         this.loader = loader;
     }
 
     public String getServiceDomain() {
-        String domain = System.getProperty("int.service.domain");
+        return getProperty("int.service.domain", "INT_SERVICE_DOMAIN");
+    }
 
-        if (domain != null) {
-            LOG.info("Service domain overriden by int.service.domain system property to '" + domain + "'");
-            return domain;
+    public String getStage() {
+        return getProperty("stage", "STAGE");
+    }
+
+    private String getProperty(String systemPropertyName, String installationPropertyName) {
+        String property = System.getProperty(systemPropertyName);
+
+        if (property != null) {
+            LOG.info("Property overriden by " + systemPropertyName +" system property to '" + property + "'");
+            return property;
         }
 
         LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
 
         Properties installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
-        domain = installationProperties.getProperty("INT_SERVICE_DOMAIN");
+        property = installationProperties.getProperty(installationPropertyName);
 
-        if (domain == null) {
-            LOG.info("unable to find int.service.domain in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
+        if (property == null) {
+            LOG.info("unable to find " + installationPropertyName + " in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
             return "default";
         }
 
-        return domain;
+        return property;
     }
 }

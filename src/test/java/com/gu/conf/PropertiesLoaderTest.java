@@ -43,12 +43,12 @@ public class PropertiesLoaderTest {
     @Mock
     FileAndResourceLoader fileLoader;
     @Mock
-    ServiceDomainProvider serviceDomainProvider;
+    SystemEnvironmentProvider systemEnvironmentProvider;
     PropertiesLoader loader;
 
     @Before
     public void setUp() throws IOException {
-        when(serviceDomainProvider.getServiceDomain()).thenReturn("gudev.gnl");
+        when(systemEnvironmentProvider.getServiceDomain()).thenReturn("gudev.gnl");
 
         // DEV_OVERRIDE_SYS_PROPERTIES
         Properties properties = new PropertiesBuilder()
@@ -74,7 +74,7 @@ public class PropertiesLoaderTest {
                 .toProperties();
         when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(properties);
 
-        loader = new PropertiesLoader(fileLoader, serviceDomainProvider);
+        loader = new PropertiesLoader(fileLoader, systemEnvironmentProvider);
     }
 
     @Test

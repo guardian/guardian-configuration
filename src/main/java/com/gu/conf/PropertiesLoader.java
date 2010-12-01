@@ -30,12 +30,12 @@ class PropertiesLoader {
     private final String serviceDomain;
 
     PropertiesLoader() throws IOException {
-        this(new FileAndResourceLoader(), new ServiceDomainProvider());
+        this(new FileAndResourceLoader(), new SystemEnvironmentProvider());
     }
 
-    PropertiesLoader(FileAndResourceLoader loader, ServiceDomainProvider serviceDomainProvider) throws IOException {
+    PropertiesLoader(FileAndResourceLoader loader, SystemEnvironmentProvider systemEnvironmentProvider) throws IOException {
         this.loader = loader;
-        this.serviceDomain = serviceDomainProvider.getServiceDomain();
+        this.serviceDomain = systemEnvironmentProvider.getServiceDomain();
 
         LOG.info("INT_SERVICE_DOMAIN: " + serviceDomain);
     }
