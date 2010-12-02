@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,6 +40,7 @@ public class PropertiesLoaderTest {
     private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
     private static String GLOBAL_PROPERTIES = "classpath:/conf/global.properties";
     private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
+    private static String STAGE_PROPERTIES = "classpath:/conf/DEV.properties";
 
     @Mock
     FileAndResourceLoader fileLoader;
@@ -49,6 +51,7 @@ public class PropertiesLoaderTest {
     @Before
     public void setUp() throws IOException {
         when(systemEnvironmentProvider.getServiceDomain()).thenReturn("gudev.gnl");
+        when(systemEnvironmentProvider.getStage()).thenReturn("DEV");
 
         // DEV_OVERRIDE_SYS_PROPERTIES
         Properties properties = new PropertiesBuilder()
@@ -73,6 +76,12 @@ public class PropertiesLoaderTest {
                 .property("source", "env.dev.properties")
                 .toProperties();
         when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(properties);
+
+        // STAGE_PROPERTIES
+        properties = new PropertiesBuilder()
+                .property("source", "stage.dev.properties")
+                .toProperties();
+        when(fileLoader.getPropertiesFrom(STAGE_PROPERTIES)).thenReturn(properties);
 
         loader = new PropertiesLoader(fileLoader, systemEnvironmentProvider);
     }
@@ -143,13 +152,38 @@ public class PropertiesLoaderTest {
     }
 
     @Test
-    public void shouldLoadWebappStageProperties() throws IOException {
+    public void shouldLoadWebappServiceDomainProperties() throws IOException {
         List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
         PropertiesWithSource properties = getPropertiesWithSource(propertiesList, ENVIRONMENTAL_PROPERTIES);
 
         assertThat(properties, notNullValue());
         assertThat(properties.getStringProperty("source"), is("env.dev.properties"));
         assertThat(properties.getStringProperty("no-property"), nullValue());
+    }
+
+    @Test
+    public void shouldLoadWebappStageProperties() throws IOException {
+        List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
+        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, STAGE_PROPERTIES);
+
+        assertThat(properties, notNullValue());
+        assertThat(properties.getStringProperty("source"), is("stage.dev.properties"));
+        assertThat(properties.getStringProperty("no-property"), nullValue());
+    }
+
+    @Test
+    public void shouldProvideWebappStagePropertiesInPreferenceToServiceDomainProperties() throws IOException {
+        List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
+
+        for (PropertiesWithSource properties : propertiesList) {
+            String source = properties.getSource();
+            if (source.equals(STAGE_PROPERTIES)) {
+                break;
+            }
+            if (source.equals(ENVIRONMENTAL_PROPERTIES)) {
+                fail("Service domain properties unexpectedly found before stage properties");
+            }
+        }
     }
 
     private PropertiesWithSource getPropertiesWithSource(List<PropertiesWithSource> propertiesList, String source) {

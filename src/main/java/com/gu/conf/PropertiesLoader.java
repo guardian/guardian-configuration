@@ -28,6 +28,7 @@ class PropertiesLoader {
 
     private final FileAndResourceLoader loader;
     private final String serviceDomain;
+    private final String stage;
 
     PropertiesLoader() throws IOException {
         this(new FileAndResourceLoader(), new SystemEnvironmentProvider());
@@ -36,6 +37,7 @@ class PropertiesLoader {
     PropertiesLoader(FileAndResourceLoader loader, SystemEnvironmentProvider systemEnvironmentProvider) throws IOException {
         this.loader = loader;
         this.serviceDomain = systemEnvironmentProvider.getServiceDomain();
+        this.stage = systemEnvironmentProvider.getStage();
 
         LOG.info("INT_SERVICE_DOMAIN: " + serviceDomain);
     }
@@ -45,6 +47,7 @@ class PropertiesLoader {
 
         properties.add(getUserOverrideProperties(applicationName));
         properties.add(getSysProperties(applicationName));
+        properties.add(getStageProperties(webappConfDirectory));
         properties.add(getServiceDomainProperties(webappConfDirectory));
         properties.add(getGlobalProperties(webappConfDirectory));
         properties.addFirst(getSystemOverrideProperties(getAllPropertyKeys(properties)));
@@ -82,6 +85,15 @@ class PropertiesLoader {
 
     private PropertiesWithSource getServiceDomainProperties(String confPrefix) throws IOException {
         String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
+
+        LOG.info("Loading webapp service domain properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
+
+        return new PropertiesWithSource(properties, propertiesLocation);
+    }
+
+    private PropertiesWithSource getStageProperties(String confPrefix) throws IOException {
+        String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, stage);
 
         LOG.info("Loading webapp service domain properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
