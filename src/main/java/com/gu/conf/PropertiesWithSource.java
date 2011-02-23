@@ -48,14 +48,8 @@ class PropertiesWithSource {
         stringBuilder.append("\n");
 
         for (String propertyName : properties.stringPropertyNames()) {
-            stringBuilder.append(propertyName);
-            stringBuilder.append("=");
-            if (!propertyName.contains("pass")) {
-                stringBuilder.append(properties.getProperty(propertyName));
-            } else {
-                stringBuilder.append("*** PASSWORD ****");
-            }
-            stringBuilder.append("\n");
+            String propertyValue = properties.getProperty(propertyName);
+            stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
         }
 
         stringBuilder.append("\n");

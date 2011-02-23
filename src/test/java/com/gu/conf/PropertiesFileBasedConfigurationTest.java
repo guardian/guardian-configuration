@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
 
-public class ConfigurationTest {
+public class PropertiesFileBasedConfigurationTest {
 
     Configuration configuration;
 
@@ -52,7 +52,7 @@ public class ConfigurationTest {
                 environmentalProperties.toPropertiesWithSource()
         );
 
-        configuration = new Configuration(properties);
+        configuration = new PropertiesFileBasedConfiguration(properties);
     }
 
     @Test

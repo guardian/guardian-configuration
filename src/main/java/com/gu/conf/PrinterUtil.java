@@ -14,22 +14,17 @@
  *    limitations under the License.
  */
 
-package com.gu.conf.exceptions;
+package com.gu.conf;
 
-public class PropertyNotSetException extends Exception {
-    private final String property;
+public class PrinterUtil {
 
-    public PropertyNotSetException(String property) {
-        super("Mandatory configuration property '"+ property +"' was not found.");
-        this.property = property;
+    public static String propertyString(String propertyName, String propertyValue) {
+        String protectedValue = propertyValue;
+        if (propertyName.contains("pass")) {
+            protectedValue = "*** PASSWORD ****";
+        }
+
+        return String.format("%s=%s\n", propertyName, protectedValue);
     }
 
-    public PropertyNotSetException(String property, String sources) {
-        super("Mandatory configuration property '"+ property +"' was not found in any of "+ sources);
-        this.property = property;
-    }
-
-    public String getProperty() {
-        return property;
-    }
 }

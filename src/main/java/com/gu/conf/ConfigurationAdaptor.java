@@ -18,43 +18,37 @@ package com.gu.conf;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
 
+import java.util.Arrays;
 import java.util.List;
 
-interface Configuration {
-
-
-    /**
-     * Get the source of a property
-     * @param propertyName name of the property
-     * @return the source of the property, e.g. classpath:/WEB-INF/conf/blah.properties,
-     *   or null if the property is unknown
-     */
-    public String getPropertySource(String propertyName);
+abstract class ConfigurationAdaptor implements Configuration {
 
     /**
      * Return the value of property
      * @param propertyName name of the property
      * @return value of the property
-     * @throws PropertyNotSetException if property has not been set
+     * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      */
-    public String getStringProperty(String propertyName) throws PropertyNotSetException;
+    public String getStringProperty(String propertyName) throws PropertyNotSetException {
+        String value = getStringProperty(propertyName, null);
 
-    /**
-     * Return the value of property, or default if property is not set
-     * @param propertyName name of the property
-     * @param defaultValue value to return if property not set
-     * @return value of the property or defaultValue if property not set
-     */
-    public String getStringProperty(String propertyName, String defaultValue);
+        if (value == null) {
+            throw new PropertyNotSetException(propertyName);
+        }
+
+        return value;
+    }
 
     /**
      * Returns the value of a property converted to an int
      * @param propertyName name of the property
      * @return integer value
-     * @throws PropertyNotSetException if property has not been set
+     * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      * @throws NumberFormatException if the property was found but was not an integer
      */
-    public int getIntegerProperty(String propertyName) throws PropertyNotSetException, NumberFormatException;
+    public int getIntegerProperty(String propertyName) throws PropertyNotSetException, NumberFormatException {
+        return Integer.parseInt(getStringProperty(propertyName));
+    }
 
 
     /**
@@ -64,14 +58,32 @@ interface Configuration {
      * @param defaultValue value to return if property not set
      * @return alue of the property or defaultValue if property not set or not an integer
      */
-    public int getIntegerProperty(String propertyName, int defaultValue);
+    public int getIntegerProperty(String propertyName, int defaultValue) {
+        int property = defaultValue;
+        try {
+            property = Integer.parseInt(getStringProperty(propertyName));
+        } catch (NumberFormatException nfe) {
+            // ignore
+        } catch (PropertyNotSetException e) {
+            // ignore
+        }
+
+        return property;
+    }
 
     /**
      * Return the value of property
      * @param propertyName name of the property
      * @return value of the property
-     * @throws PropertyNotSetException if property has not been set
+     * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      */
-    public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException;
+    public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException {
+        String value = getStringProperty(propertyName, null);
 
+        if (value == null) {
+            throw new PropertyNotSetException(propertyName);
+        }
+
+        return Arrays.asList(value.split(","));
+    }
 }
