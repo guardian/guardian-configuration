@@ -20,7 +20,7 @@ import com.gu.conf.exceptions.PropertyNotSetException;
 
 import java.util.List;
 
-interface Configuration {
+public interface Configuration {
 
 
     /**
