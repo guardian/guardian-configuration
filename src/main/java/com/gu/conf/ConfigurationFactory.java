@@ -36,6 +36,7 @@ public class ConfigurationFactory {
             applicationName, webappConfDirectory);
         PropertiesLoader propertiesLoader = new PropertiesLoader();
         List<PropertiesWithSource> properties = propertiesLoader.getProperties(applicationName, webappConfDirectory);
+        properties = new PlaceholderProcessor().resolvePlaceholders(properties);
 
         Configuration configuration = new PropertiesFileBasedConfiguration(properties);
         LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, configuration);
