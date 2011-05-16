@@ -16,12 +16,20 @@
 
 package com.gu.conf;
 
+import java.util.regex.Pattern;
+
 public class PrinterUtil {
+    private static final Pattern keyRegEx = Pattern.compile("\\bkey\\b");
+    private static final Pattern passwordRegEx = Pattern.compile("\\bpass(?:word)?\\b");
 
     public static String propertyString(String propertyName, String propertyValue) {
         String protectedValue = propertyValue;
-        if (propertyName.contains("pass")) {
+        if (passwordRegEx.matcher("pass").find()) {
             protectedValue = "*** PASSWORD ****";
+        }
+
+        if(keyRegEx.matcher(propertyName).find()) {
+            protectedValue = "*** KEY ****";
         }
 
         return String.format("%s=%s\n", propertyName, protectedValue);
