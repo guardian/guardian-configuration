@@ -24,7 +24,7 @@ public class PrinterUtil {
 
     public static String propertyString(String propertyName, String propertyValue) {
         String protectedValue = propertyValue;
-        if (passwordRegEx.matcher("pass").find()) {
+        if (passwordRegEx.matcher(propertyName).find()) {
             protectedValue = "*** PASSWORD ****";
         }
 

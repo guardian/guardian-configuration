@@ -35,4 +35,8 @@ public class PrinterUtilTest {
         assertThat(PrinterUtil.propertyString("key", "abc123"), endsWith("*** KEY ****\n"));
         assertThat(PrinterUtil.propertyString("foo.key.blah", "abc123"), endsWith("*** KEY ****\n"));
     }
+    @Test
+    public void shouldFormatKeyValue() {
+        assertThat(PrinterUtil.propertyString("akey", "value"), is("akey=value\n"));
+    }
 }
