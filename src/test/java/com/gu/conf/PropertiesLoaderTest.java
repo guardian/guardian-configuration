@@ -40,6 +40,7 @@ public class PropertiesLoaderTest {
     private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
     private static String GLOBAL_PROPERTIES = "classpath:/conf/global.properties";
     private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
+    private static String ENVIRONMENTAL_APPLICATION_PROPERTIES = "classpath:/conf/gudev.gnl.webapp.properties";
     private static String STAGE_PROPERTIES = "classpath:/conf/DEV.properties";
 
     @Mock
@@ -76,6 +77,12 @@ public class PropertiesLoaderTest {
                 .property("source", "env.dev.properties")
                 .toProperties();
         when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(properties);
+
+        // ENVIRONMENTAL_APPLICATION_DEV_PROPERTIES
+        properties = new PropertiesBuilder()
+                .property("source", "env.application.dev.properties")
+                .toProperties();
+        when(fileLoader.getPropertiesFrom(ENVIRONMENTAL_APPLICATION_PROPERTIES)).thenReturn(properties);
 
         // STAGE_PROPERTIES
         properties = new PropertiesBuilder()
@@ -158,6 +165,16 @@ public class PropertiesLoaderTest {
 
         assertThat(properties, notNullValue());
         assertThat(properties.getStringProperty("source"), is("env.dev.properties"));
+        assertThat(properties.getStringProperty("no-property"), nullValue());
+    }
+
+    @Test
+    public void shouldLoadWebappServiceDomainApplicationProperties() throws IOException {
+        List<PropertiesWithSource> propertiesList = loader.getProperties("webapp", "/conf");
+        PropertiesWithSource properties = getPropertiesWithSource(propertiesList, ENVIRONMENTAL_APPLICATION_PROPERTIES);
+
+        assertThat(properties, notNullValue());
+        assertThat(properties.getStringProperty("source"), is("env.application.dev.properties"));
         assertThat(properties.getStringProperty("no-property"), nullValue());
     }
 

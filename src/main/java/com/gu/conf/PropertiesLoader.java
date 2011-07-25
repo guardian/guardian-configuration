@@ -50,6 +50,7 @@ class PropertiesLoader {
 
         properties.add(getUserOverrideProperties(applicationName));
         properties.add(getSysProperties(applicationName));
+        properties.add(getServiceDomainApplicationProperties(webappConfDirectory, applicationName));
         properties.add(getStageProperties(webappConfDirectory));
         properties.add(getServiceDomainProperties(webappConfDirectory));
         properties.add(getGlobalProperties(webappConfDirectory));
@@ -90,6 +91,15 @@ class PropertiesLoader {
         String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
 
         LOG.info("Loading webapp service domain properties from " + propertiesLocation);
+        Properties properties = loader.getPropertiesFrom(propertiesLocation);
+
+        return new PropertiesWithSource(properties, propertiesLocation);
+    }
+
+    private PropertiesWithSource getServiceDomainApplicationProperties(String confPrefix, String applicationName) throws IOException {
+        String propertiesLocation = String.format("classpath:%s/%s.%s.properties", confPrefix, serviceDomain, applicationName);
+
+        LOG.info("Loading webapp service domain application properties from " + propertiesLocation);
         Properties properties = loader.getPropertiesFrom(propertiesLocation);
 
         return new PropertiesWithSource(properties, propertiesLocation);
