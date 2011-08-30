@@ -20,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 class PropertiesLoader {
 
@@ -114,23 +111,23 @@ class PropertiesLoader {
         return new PropertiesWithSource(properties, propertiesLocation);
     }
 
-    private PropertiesWithSource getSystemOverrideProperties(List<Object> keys) {
+    private PropertiesWithSource getSystemOverrideProperties(Set<String> keys) {
         Properties properties = new Properties();
         String propertiesLocation = "System";
 
         LOG.info("Loading override System properties");
-        for (Object key : keys) {
+        for (String key : keys) {
             if (System.getProperties().containsKey(key)) {
-                String value = System.getProperty((String) key);
-                properties.setProperty((String) key, value);
+                String value = System.getProperty(key);
+                properties.setProperty(key, value);
             }
         }
 
         return new PropertiesWithSource(properties, propertiesLocation);
     }
 
-    private List<Object> getAllPropertyKeys(List<PropertiesWithSource> properties) {
-        List<Object> keys = new ArrayList<Object>();
+    private Set<String> getAllPropertyKeys(List<PropertiesWithSource> properties) {
+        Set<String> keys = new HashSet<String>();
 
         for (PropertiesWithSource propertiesWithSource : properties) {
             keys.addAll(propertiesWithSource.propertyKeys());

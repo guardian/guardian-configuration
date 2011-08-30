@@ -47,7 +47,7 @@ public class PlaceholderProcessor {
 
         for (PropertiesWithSource propertiesWithSource : propertiesWithSourcesList) {
             Properties resolvedProperties = new Properties();
-            for (Object key : propertiesWithSource.propertyKeys()) {
+            for (String key : propertiesWithSource.propertyKeys()) {
                 resolvedProperties.put(
                         key,
                         substitutePlaceholders(propertiesWithSource.getStringProperty((String) key)));

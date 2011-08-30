@@ -23,8 +23,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
@@ -159,6 +161,17 @@ public class PropertiesFileBasedConfigurationTest {
         assertThat(properties.size(), is(2));
         assertThat(properties.get(0), is("rimbaud"));
         assertThat(properties.get(1), is("verlaine"));
+    }
+
+    @Test
+    public void shouldGetPropertyNames() throws Exception {
+        Set<String> names = configuration.getPropertyNames();
+        assertThat(names.size(), is(5));
+        assertThat(names, hasItem("precendence.test.property"));
+        assertThat(names, hasItem("double.property"));
+        assertThat(names, hasItem("integer.property"));
+        assertThat(names, hasItem("nonnumeric.property"));
+        assertThat(names, hasItem("list.property"));
     }
 
 }

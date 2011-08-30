@@ -16,6 +16,7 @@
 
 package com.gu.conf;
 
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,8 +34,13 @@ class PropertiesWithSource {
         return properties.getProperty(propertyName);
     }
 
-    public Set<Object> propertyKeys() {
-        return properties.keySet();
+    public Set<String> propertyKeys() {
+        Set<String> keys = new HashSet<String>();
+        for (Object key: properties.keySet()) {
+            keys.add(key.toString());
+        }
+
+        return keys;
     }
 
     String getSource() {

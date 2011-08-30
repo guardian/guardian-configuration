@@ -18,7 +18,9 @@ package com.gu.conf;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
 
@@ -99,6 +101,16 @@ public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
         } catch(PropertyNotSetException pnse) {
             throw new PropertyNotSetException(propertyName, sources);
         }
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        Set<String> names = new HashSet<String>();
+        for (PropertiesWithSource props : properties) {
+            names.addAll(props.propertyKeys());
+        }
+
+        return names;
     }
 
     public String toString() {

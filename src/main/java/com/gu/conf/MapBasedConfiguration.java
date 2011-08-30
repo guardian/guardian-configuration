@@ -18,6 +18,7 @@ package com.gu.conf;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MapBasedConfiguration extends ConfigurationAdaptor {
 
@@ -61,6 +62,11 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
         }
 
         return value;
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return properties.keySet();
     }
 
     public String toString() {
