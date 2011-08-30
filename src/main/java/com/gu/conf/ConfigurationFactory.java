@@ -27,11 +27,11 @@ public class ConfigurationFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    public Configuration getConfiguration(String applicationName) throws IOException {
+    public static Configuration getConfiguration(String applicationName) throws IOException {
         return getConfiguration(applicationName, "conf");
     }
 
-    public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
+    public static Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
         LOG.info("Configuring application {} using classpath configuration directory {}",
             applicationName, webappConfDirectory);
         PropertiesLoader propertiesLoader = new PropertiesLoader();
