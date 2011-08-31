@@ -23,6 +23,11 @@ import java.util.List;
 
 abstract class ConfigurationAdaptor implements Configuration {
 
+    @Override
+    public boolean hasProperty(String propertyName) {
+        return getStringProperty(propertyName, null) != null;
+    }
+
     /**
      * Return the value of property
      * @param propertyName name of the property

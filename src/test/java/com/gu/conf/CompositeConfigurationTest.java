@@ -61,6 +61,16 @@ public class CompositeConfigurationTest {
    }
 
    @Test
+   public void shouldGetFalseForHasPropertyIfNotSet() {
+      assertThat(configuration.hasProperty("nosuch.property"), is(false));
+   }
+
+   @Test
+   public void shouldGetTrueForHasPropertyIfSet() {
+      assertThat(configuration.hasProperty("nonnumeric.property"), is(true));
+   }
+
+   @Test
    public void shouldGetProperty() throws Exception {
       String property = configuration.getStringProperty("nonnumeric.property");
       assertThat(property, is("qwe"));

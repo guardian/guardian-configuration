@@ -23,7 +23,6 @@ import java.util.Set;
 
 public interface Configuration {
 
-
    /**
       * Get the source of a property
       * @param propertyName name of the property
@@ -31,6 +30,19 @@ public interface Configuration {
       *   or null if the property is unknown
       */
    public String getPropertySource(String propertyName);
+
+   /**
+      * Return true if configuration has a property with the given name
+      * @param propertyName name of the property
+      * @return true if configuration contains named property
+      */
+   public boolean hasProperty(String propertyName);
+
+   /**
+      * Return a set of property names
+      * @return set of property names
+      */
+   public Set<String> getPropertyNames();
 
    /**
       * Return the value of property
@@ -74,11 +86,5 @@ public interface Configuration {
       * @throws PropertyNotSetException if property has not been set
       */
    public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException;
-
-   /**
-      * Return a set of property names
-      * @return set of property names
-      */
-   public Set<String> getPropertyNames();
 
 }
