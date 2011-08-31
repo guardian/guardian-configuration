@@ -22,15 +22,14 @@ import java.util.Set;
 public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
 
    private Properties properties;
-   private String source;
 
    PropertiesFileBasedConfiguration(Properties properties, String source) {
       this.properties = properties;
-      this.source = source;
+      setIdentifier(source);
    }
 
    public String getSource() {
-      return source;
+      return getIdentifier();
    }
 
    @Override
@@ -51,7 +50,7 @@ public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
    public String toString() {
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.append("# Properties from ");
-      stringBuilder.append(source);
+      stringBuilder.append(getSource());
       stringBuilder.append("\n");
 
       stringBuilder.append(super.toString());

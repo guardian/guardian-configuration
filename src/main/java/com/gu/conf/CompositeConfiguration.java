@@ -25,28 +25,24 @@ public class CompositeConfiguration extends ConfigurationAdaptor {
    private Configuration secondary;
 
    public CompositeConfiguration(Configuration primary, Configuration secondary) {
+      String identifier = String.format("composite[%s//%s]", primary.getIdentifier(), secondary.getIdentifier());
+
+      setIdentifier(identifier);
       this.primary = primary;
       this.secondary = secondary;
    }
 
    /**
-    * Get the source of a named property.
+    * Get the source of a named property. Returns identifier of leaf subconfiguration object
+    * which contains this property.
     *
     * @param propertyName name of the property
-    * @return the source of the property in the format "conf(1|2):[source]",
-    *         or null if the property is unknown
+    * @return the configuration from which the property comes.
     */
    public String getPropertySource(String propertyName) {
       String source = primary.getPropertySource(propertyName);
-      if (source != null) {
-         source = "primary:" + source;
-      }
-
       if (source == null) {
          source = secondary.getPropertySource(propertyName);
-         if (source != null) {
-            source = "secondary:" + source;
-         }
       }
 
       return source;

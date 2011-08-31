@@ -23,6 +23,17 @@ import java.util.List;
 
 abstract class ConfigurationAdaptor implements Configuration {
 
+    private String identifier = "" + hashCode();
+
+    @Override
+    public String getIdentifier() {
+       return identifier;
+    }
+
+    protected void setIdentifier(String identifier) {
+       this.identifier = identifier;
+    }
+
     @Override
     public boolean hasProperty(String propertyName) {
         return getStringProperty(propertyName, null) != null;

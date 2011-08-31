@@ -34,12 +34,12 @@ public class CompositeConfigurationTest {
 
    @Before
    public void setUp() {
-      MapBasedConfiguration conf1 = new MapBasedConfiguration();
+      MapBasedConfiguration conf1 = new MapBasedConfiguration("primary");
       conf1.add("precendence.test.property", "first");
       conf1.add("double.property", "25.0");
 
 
-      MapBasedConfiguration conf2 = new MapBasedConfiguration();
+      MapBasedConfiguration conf2 = new MapBasedConfiguration("secondary");
       conf2.add("precendence.test.property", "second");
       conf2.add("integer.property", "23");
       conf2.add("nonnumeric.property", "qwe");
@@ -51,7 +51,7 @@ public class CompositeConfigurationTest {
    @Test
    public void shouldGetPropertySource() {
       String propertySource = configuration.getPropertySource("nonnumeric.property");
-      assertThat(propertySource, is("secondary:instance"));
+      assertThat(propertySource, is("secondary"));
    }
 
    @Test

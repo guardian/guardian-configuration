@@ -24,10 +24,16 @@ import java.util.Set;
 public interface Configuration {
 
    /**
+      * Get an identifier for this configuration. Used for identifying source of property in composite
+      * based configurations.
+      * @return identifier for this configuration
+      */
+   public String getIdentifier();
+
+   /**
       * Get the source of a property
       * @param propertyName name of the property
-      * @return the source of the property, e.g. classpath:/WEB-INF/conf/blah.properties,
-      *   or null if the property is unknown
+      * @return the source of the property or null if the property is unknown
       */
    public String getPropertySource(String propertyName);
 

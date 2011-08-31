@@ -24,6 +24,10 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
 
     private Map<String,String> properties = new HashMap<String,String>();
 
+    public MapBasedConfiguration(String identifier) {
+        setIdentifier(identifier);
+    }
+
     /**
      * Add a property value to this MapBasedConfiguration. Inconsistent with property file based implementation,
      * this DOES overwrite previous values
@@ -43,7 +47,7 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
      */
     public String getPropertySource(String propertyName) {
         if (properties.containsKey(propertyName)) {
-            return "instance";
+            return getIdentifier();
         }
 
         return null;

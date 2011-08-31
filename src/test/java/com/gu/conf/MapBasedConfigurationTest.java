@@ -36,7 +36,7 @@ public class MapBasedConfigurationTest {
 
     @Before
     public void setUp() {
-        configuration = new MapBasedConfiguration();
+        configuration = new MapBasedConfiguration("test");
 
         configuration.add("precendence.test.property", "first");
         configuration.add("double.property", "25.0");
@@ -50,7 +50,7 @@ public class MapBasedConfigurationTest {
     @Test
     public void shouldGetPropertySource() {
         String propertySource = configuration.getPropertySource("nonnumeric.property");
-        assertThat(propertySource, is("instance"));
+        assertThat(propertySource, is("test"));
     }
 
     @Test
