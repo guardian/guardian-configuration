@@ -86,4 +86,15 @@ abstract class ConfigurationAdaptor implements Configuration {
 
         return Arrays.asList(value.split(","));
     }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String propertyName : getPropertyNames()) {
+            String propertyValue = getStringProperty(propertyName, "");
+            stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
+        }
+
+        return stringBuilder.toString();
+    }
 }

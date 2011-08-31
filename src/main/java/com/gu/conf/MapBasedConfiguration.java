@@ -68,16 +68,4 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
     public Set<String> getPropertyNames() {
         return properties.keySet();
     }
-
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (String propertyName : properties.keySet()) {
-            String propertyValue = properties.get(propertyName);
-            stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
-        }
-
-        return stringBuilder.toString();
-    }
-
 }
