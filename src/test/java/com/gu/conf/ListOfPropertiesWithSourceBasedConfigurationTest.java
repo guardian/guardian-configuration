@@ -26,29 +26,41 @@ import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
 
-public class PropertiesFileBasedConfigurationTest {
+public class ListOfPropertiesWithSourceBasedConfigurationTest {
 
     Configuration configuration;
 
     @Before
     public void setUp() {
-        PropertiesBuilder properties = new PropertiesBuilder();
-        properties.property("precendence.test.property", "first");
-        properties.property("double.property", "25.0");
-        properties.property("integer.property", "23");
-        properties.property("nonnumeric.property", "qwe");
-        properties.property("list.property", "rimbaud,verlaine");
+        PropertiesBuilder sysProperties = new PropertiesBuilder();
+        sysProperties.property("precendence.test.property", "first");
+        sysProperties.property("double.property", "25.0");
+        sysProperties.source("file:///sys.properties");
 
-        configuration = new PropertiesFileBasedConfiguration(properties.toProperties(), "properties");
+        PropertiesBuilder environmentalProperties = new PropertiesBuilder();
+        environmentalProperties.property("precendence.test.property", "second");
+        environmentalProperties.property("integer.property", "23");
+        environmentalProperties.property("nonnumeric.property", "qwe");
+        environmentalProperties.property("list.property", "rimbaud,verlaine");
+        environmentalProperties.source("classpath:///env.dev.properties");
+
+        ImmutableList<PropertiesWithSource> properties = ImmutableList.of(
+                sysProperties.toPropertiesWithSource(),
+                environmentalProperties.toPropertiesWithSource()
+        );
+
+        configuration = new ListOfPropertiesWithSourceBasedConfiguration(properties);
     }
 
     @Test
     public void shouldGetPropertySource() {
         String propertySource = configuration.getPropertySource("nonnumeric.property");
-        assertThat(propertySource, is("properties"));
+        assertThat(propertySource, is("classpath:///env.dev.properties"));
     }
 
     @Test
@@ -80,7 +92,8 @@ public class PropertiesFileBasedConfigurationTest {
             fail("exception expected");
         } catch (PropertyNotSetException ex) {
             assertThat(ex.getProperty(), is("nosuch.property"));
-            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found."));
+            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found in any " +
+                    "of file:///sys.properties classpath:///env.dev.properties "));
         }
     }
 
@@ -103,7 +116,8 @@ public class PropertiesFileBasedConfigurationTest {
             fail("exception expected");
         } catch (PropertyNotSetException ex) {
             assertThat(ex.getProperty(), is("nosuch.property"));
-            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found."));
+            assertThat(ex.getMessage(), is("Mandatory configuration property 'nosuch.property' was not found in any " +
+                    "of file:///sys.properties classpath:///env.dev.properties "));
         }
     }
 
@@ -137,6 +151,18 @@ public class PropertiesFileBasedConfigurationTest {
 
         property = configuration.getIntegerProperty("nonnumeric.property", 65);
         assertThat(property, is(65));
+    }
+
+    @Test
+    public void shouldRespectFirstDeclarationPrecedenceInGetPropertySource() throws IOException {
+        String propertySource = configuration.getPropertySource("precendence.test.property");
+        assertThat(propertySource, is("file:///sys.properties"));
+    }
+
+    @Test
+    public void shouldRespectFirstDeclarationPrecedenceInGetProperty() throws Exception {
+        String property = configuration.getStringProperty("precendence.test.property");
+        assertThat(property, is("first"));
     }
 
     @Test
