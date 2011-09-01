@@ -25,7 +25,7 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
     private Map<String,String> properties = new HashMap<String,String>();
 
     public MapBasedConfiguration(String identifier) {
-        setIdentifier(identifier);
+        super(identifier);
     }
 
     /**

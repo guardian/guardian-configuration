@@ -25,15 +25,15 @@ import java.util.Properties;
 
 abstract class ConfigurationAdaptor implements Configuration {
 
-    private String identifier = "" + hashCode();
+    private String identifier;
+
+    protected ConfigurationAdaptor(String identifier) {
+       this.identifier = identifier;
+    }
 
     @Override
     public String getIdentifier() {
        return identifier;
-    }
-
-    protected void setIdentifier(String identifier) {
-       this.identifier = identifier;
     }
 
     @Override

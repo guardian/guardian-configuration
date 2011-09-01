@@ -28,6 +28,7 @@ public class ListOfPropertiesWithSourceBasedConfiguration extends ConfigurationA
     private String sources;
 
     ListOfPropertiesWithSourceBasedConfiguration(List<PropertiesWithSource> properties) {
+        super("ListOfPropertiesWithSourceBasedConfiguration");
         this.properties = properties;
         this.sources = buildSourcesString(properties);
     }

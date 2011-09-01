@@ -25,9 +25,7 @@ public class CompositeConfiguration extends ConfigurationAdaptor {
    private Configuration secondary;
 
    public CompositeConfiguration(Configuration primary, Configuration secondary) {
-      String identifier = String.format("composite[%s//%s]", primary.getIdentifier(), secondary.getIdentifier());
-
-      setIdentifier(identifier);
+      super(String.format("composite[%s//%s]", primary.getIdentifier(), secondary.getIdentifier()));
       this.primary = primary;
       this.secondary = secondary;
    }

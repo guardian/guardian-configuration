@@ -24,8 +24,8 @@ public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
    private Properties properties;
 
    PropertiesFileBasedConfiguration(Properties properties, String source) {
+      super(source);
       this.properties = properties;
-      setIdentifier(source);
    }
 
    public String getSource() {
