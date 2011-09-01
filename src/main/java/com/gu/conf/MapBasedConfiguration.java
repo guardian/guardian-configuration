@@ -40,10 +40,9 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
 
 
     /**
-     * Not applicable for MapBasedConfiguration. Properties do not have sources.
+     * Return identifier of configuration if named property is contained.
      * @param propertyName name of the property
-     * @return the source of the property, always "instance",
-     *   or null if the property is unknown
+     * @return the source of the property
      */
     public String getPropertySource(String propertyName) {
         if (properties.containsKey(propertyName)) {
