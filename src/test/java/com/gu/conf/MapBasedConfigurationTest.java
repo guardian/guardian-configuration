@@ -50,4 +50,18 @@ public class MapBasedConfigurationTest extends ConfigurationAdaptorTestBase {
       String property = configuration.getStringProperty("precendence.test.property");
       assertThat(property, is("second"));
    }
+
+   @Test
+   public void shouldToStringInStandardFormat() {
+      String expected =
+         "# Properties from " + configuration.getIdentifier() + "\n" +
+         "double.property=25.0\n" +
+         "integer.property=23\n" +
+         "list.property=rimbaud,verlaine\n" +
+         "nonnumeric.property=qwe\n" +
+         "precendence.test.property=second\n" +
+         "\n";
+
+      assertThat(configuration.toString(), is(expected));
+   }
 }

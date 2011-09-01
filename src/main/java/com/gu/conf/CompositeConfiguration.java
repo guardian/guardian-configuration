@@ -74,7 +74,6 @@ public class CompositeConfiguration extends ConfigurationAdaptor {
    public String toString() {
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.append(primary.toString());
-      stringBuilder.append("\n");
       stringBuilder.append(secondary.toString());
 
       return stringBuilder.toString();

@@ -42,4 +42,17 @@ public class PropertiesFileBasedConfigurationTest extends ConfigurationAdaptorTe
       assertThat(propertySource, is("properties"));
    }
 
+   @Test
+   public void shouldToStringInStandardFormat() {
+      String expected =
+         "# Properties from " + configuration.getIdentifier() + "\n" +
+         "double.property=25.0\n" +
+         "integer.property=23\n" +
+         "list.property=rimbaud,verlaine\n" +
+         "nonnumeric.property=qwe\n" +
+         "precendence.test.property=first\n" +
+         "\n";
+
+      assertThat(configuration.toString(), is(expected));
+   }
 }

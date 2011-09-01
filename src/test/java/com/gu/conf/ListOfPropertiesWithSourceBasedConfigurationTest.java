@@ -93,4 +93,19 @@ public class ListOfPropertiesWithSourceBasedConfigurationTest extends Configurat
       assertThat(property, is("first"));
    }
 
+   @Test
+   public void shouldToStringInStandardFormat() {
+      String expected =
+         "# Properties from file:///sys.properties\n" +
+         "precendence.test.property=first\n" +
+         "double.property=25.0\n" +
+         "\n" +
+         "# Properties from classpath:///env.dev.properties\n" +
+         "integer.property=23\n" +
+         "nonnumeric.property=qwe\n" +
+         "list.property=rimbaud,verlaine\n" +
+         "\n";
+
+      assertThat(configuration.toString(), is(expected));
+   }
 }

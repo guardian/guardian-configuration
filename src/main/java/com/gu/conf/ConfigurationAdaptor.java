@@ -20,6 +20,9 @@ import static java.lang.Integer.parseInt;
 import static java.util.Arrays.asList;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -126,7 +129,10 @@ abstract class ConfigurationAdaptor implements Configuration {
         stringBuilder.append(getIdentifier());
         stringBuilder.append("\n");
 
-        for (String propertyName : getPropertyNames()) {
+        List<String> propertyNames = new ArrayList<String>(getPropertyNames());
+        Collections.sort(propertyNames);
+
+        for (String propertyName : propertyNames) {
             String propertyValue = getStringProperty(propertyName, "");
             stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
         }

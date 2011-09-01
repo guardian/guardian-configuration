@@ -51,4 +51,21 @@ public class CompositeConfigurationTest extends ConfigurationAdaptorTestBase {
       String property = configuration.getStringProperty("precendence.test.property");
       assertThat(property, is("first"));
    }
+
+   @Test
+   public void shouldToStringInStandardFormat() {
+      String expected =
+         "# Properties from primary\n" +
+         "double.property=25.0\n" +
+         "precendence.test.property=first\n" +
+         "\n" +
+         "# Properties from secondary\n" +
+         "integer.property=23\n" +
+         "list.property=rimbaud,verlaine\n" +
+         "nonnumeric.property=qwe\n" +
+         "precendence.test.property=second\n" +
+         "\n";
+
+      assertThat(configuration.toString(), is(expected));
+   }
 }
