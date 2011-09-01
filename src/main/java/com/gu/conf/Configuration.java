@@ -120,4 +120,18 @@ public interface Configuration {
       */
    public Configuration project(Configuration properties);
 
+   /**
+      * Return a copy of this configuration with the the given set of properties removed
+      * @param properties the names of the properties to remove
+      * @return this configuration with the named properties removed
+      */
+   public Configuration minus(Set<String> properties);
+
+   /**
+      * Return a copy of this configuration with the the given set of properties removed
+      * @param properties a configuration containing the names of the properties to remove
+      * @return this configuration with the named properties removed
+      */
+   public Configuration minus(Configuration properties);
+
 }

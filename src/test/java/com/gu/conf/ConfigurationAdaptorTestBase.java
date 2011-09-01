@@ -186,4 +186,22 @@ public abstract class ConfigurationAdaptorTestBase {
       }
    }
 
+   @Test
+   public void shouldMinusCorrectly() throws PropertyNotSetException {
+      Set<String> minusNames = new HashSet<String>(asList(
+         "precendence.test.property")
+      );
+      Configuration projection = configuration.minus(minusNames);
+
+      assertThat(projection.size(), is(4));
+      assertThat(projection.hasProperty("double.property"), is(true));
+      assertThat(projection.hasProperty("integer.property"), is(true));
+      assertThat(projection.hasProperty("nonnumeric.property"), is(true));
+      assertThat(projection.hasProperty("list.property"), is(true));
+
+      for (String property : projection.getPropertyNames()) {
+         assertThat(projection.getStringProperty(property), is(configuration.getStringProperty(property)));
+      }
+   }
+
 }

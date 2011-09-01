@@ -138,6 +138,29 @@ abstract class ConfigurationAdaptor implements Configuration {
        return project(properties.getPropertyNames());
     }
 
+   /**
+      * Return a copy of this configuration with the the given set of properties removed
+      * @param properties the names of the properties to remove
+      * @return this configuration with the named properties removed
+      */
+    public Configuration minus(Set<String> properties) {
+       Set<String> retain = new HashSet<String>();
+       retain.addAll(this.getPropertyNames());
+       retain.removeAll(properties);
+
+       return new ProjectedConfiguration(this, retain);
+    }
+
+
+   /**
+      * Return a copy of this configuration with the the given set of properties removed
+      * @param properties a configuration containing the names of the properties to remove
+      * @return this configuration with the named properties removed
+      */
+    public Configuration minus(Configuration properties) {
+       return minus(properties.getPropertyNames());
+    }
+
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("# Properties from ");
