@@ -46,16 +46,4 @@ public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
    public Set<String> getPropertyNames() {
       return properties.stringPropertyNames();
    }
-
-   public String toString() {
-      StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append("# Properties from ");
-      stringBuilder.append(getSource());
-      stringBuilder.append("\n");
-
-      stringBuilder.append(super.toString());
-      stringBuilder.append("\n");
-
-      return stringBuilder.toString();
-   }
 }

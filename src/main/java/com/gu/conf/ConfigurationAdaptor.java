@@ -100,10 +100,16 @@ abstract class ConfigurationAdaptor implements Configuration {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("# Properties from ");
+        stringBuilder.append(getIdentifier());
+        stringBuilder.append("\n");
+
         for (String propertyName : getPropertyNames()) {
             String propertyValue = getStringProperty(propertyName, "");
             stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
         }
+
+        stringBuilder.append("\n");
 
         return stringBuilder.toString();
     }
