@@ -19,8 +19,6 @@ package com.gu.conf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
 /**
  * Provides information on the the nature of the environment that the machine forms a part of
  */
@@ -56,8 +54,8 @@ public class SystemEnvironmentProvider {
 
         LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
 
-        Properties installationProperties = loader.getPropertiesFrom(INSTALLATION_PROPERTIES_LOCATION);
-        property = installationProperties.getProperty(installationPropertyName);
+        Configuration installationProperties = loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION);
+        property = installationProperties.getStringProperty(installationPropertyName, null);
 
         if (property == null) {
             LOG.info("unable to find " + installationPropertyName + " in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");

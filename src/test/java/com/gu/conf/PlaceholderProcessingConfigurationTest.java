@@ -13,43 +13,50 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.gu.conf;
 
+import com.gu.conf.exceptions.PropertyNotSetException;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.when;
 
-public class MapBasedConfigurationTest extends ConfigurationAdaptorTestBase {
+@RunWith(MockitoJUnitRunner.class)
+public class PlaceholderProcessingConfigurationTest extends ConfigurationAdaptorTestBase {
+
+   @Mock private PlaceholderResolver placeholderResolver;
 
    @Before
-   public void setUp() {
+   public void setUp() throws PropertyNotSetException {
       MapBasedConfiguration mapBasedConfiguration = new MapBasedConfiguration("test");
 
-      mapBasedConfiguration.add("precendence.test.property", "first");
       mapBasedConfiguration.add("double.property", "25.0");
-
       mapBasedConfiguration.add("precendence.test.property", "second");
       mapBasedConfiguration.add("integer.property", "23");
       mapBasedConfiguration.add("nonnumeric.property", "qwe");
       mapBasedConfiguration.add("list.property", "rimbaud,verlaine");
-      mapBasedConfiguration.add("utility.property", "utility");
+      mapBasedConfiguration.add("utility.property", "has a ${placeholder}");
 
-      configuration = mapBasedConfiguration;
+      when(placeholderResolver.resolvePlaceholder("placeholder")).thenReturn("resolved placeholder");
+
+      configuration = new PlaceholderProcessingConfiguration(
+         mapBasedConfiguration, placeholderResolver);
    }
 
    @Test
-   public void shouldGetPropertySource() {
-      Configuration propertySource = configuration.getPropertySource("nonnumeric.property");
-      assertThat(propertySource, is(configuration));
-   }
-
-   @Test
-   public void shouldNotRespectFirstDeclarationPrecedenceInGetProperty() throws Exception {
-      String property = configuration.getStringProperty("precendence.test.property");
-      assertThat(property, is("second"));
+   public void shouldReplacePlaceholderWithResolvedValue() throws PropertyNotSetException {
+      assertThat(configuration.hasProperty("utility.property"), is(true));
+      assertThat(configuration.getStringProperty("utility.property"), is("has a resolved placeholder"));
    }
 
    @Test
@@ -61,9 +68,9 @@ public class MapBasedConfigurationTest extends ConfigurationAdaptorTestBase {
          "list.property=rimbaud,verlaine\n" +
          "nonnumeric.property=qwe\n" +
          "precendence.test.property=second\n" +
-         "utility.property=utility\n" +
+         "utility.property=has a resolved placeholder\n" +
          "\n";
 
-      assertThat(configuration.toString(), is(expected));
+      assertThat(configuration.toString(), Matchers.is(expected));
    }
 }

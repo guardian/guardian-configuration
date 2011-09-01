@@ -69,7 +69,7 @@ public class FileAndResourceLoader {
         return new BufferedInputStream(inputStream);
     }
 
-    public Properties getPropertiesFrom(String descriptor) {
+    public Configuration getConfigurationFrom(String descriptor) {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
@@ -86,10 +86,10 @@ public class FileAndResourceLoader {
             }
         } catch (IOException ioe) {
             LOG.warn("unexpected error reading from file " + descriptor, ioe);
-        }finally {
+        } finally {
             IOUtils.closeQuietly(inputStream);
         }
 
-        return properties;
+        return new PropertiesFileBasedConfiguration(descriptor, properties);
     }
 }

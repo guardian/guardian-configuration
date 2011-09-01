@@ -15,6 +15,7 @@
  */
 package com.gu.conf;
 
+import com.gu.conf.exceptions.PropertyNotSetException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,24 +28,27 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlaceholderResolverTest {
-    private PlaceholderResolver placeholderResolver;
+   private PlaceholderResolver placeholderResolver;
 
-    @Mock
-    private SystemWrapper systemWrapper;
+   @Mock
+   private SystemEnvironmentConfiguration environment;
+   @Mock
+   private SystemPropertiesConfiguration system;
 
-    @Before
-    public void setUp() {
-        placeholderResolver = new PlaceholderResolver(systemWrapper);
-        when(systemWrapper.getenv("propname")).thenReturn("environment variable");
-        when(systemWrapper.getProperty("propname")).thenReturn("system property");
-    }
+   @Before
+   public void setUp() throws PropertyNotSetException {
+      placeholderResolver = new PlaceholderResolver(environment, system);
+      when(environment.getStringProperty("propname")).thenReturn("environment variable");
+      when(system.getStringProperty("propname")).thenReturn("system property");
+   }
 
-    @Test
-    public void shouldGetSystemProperty() {
-        assertThat(placeholderResolver.resolvePlaceholder("propname"), is("system property"));
-    }
-    @Test
-    public void shouldGetEnvironmentVariable() {
-        assertThat(placeholderResolver.resolvePlaceholder("env.propname"), is("environment variable"));
-    }
+   @Test
+   public void shouldGetSystemProperty() throws PropertyNotSetException {
+      assertThat(placeholderResolver.resolvePlaceholder("propname"), is("system property"));
+   }
+
+   @Test
+   public void shouldGetEnvironmentVariable() throws PropertyNotSetException {
+      assertThat(placeholderResolver.resolvePlaceholder("env.propname"), is("environment variable"));
+   }
 }

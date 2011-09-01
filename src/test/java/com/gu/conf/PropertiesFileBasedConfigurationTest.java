@@ -32,14 +32,15 @@ public class PropertiesFileBasedConfigurationTest extends ConfigurationAdaptorTe
       properties.property("integer.property", "23");
       properties.property("nonnumeric.property", "qwe");
       properties.property("list.property", "rimbaud,verlaine");
+      properties.property("utility.property", "utility");
 
-      configuration = new PropertiesFileBasedConfiguration(properties.toProperties(), "properties");
+      configuration = new PropertiesFileBasedConfiguration("properties", properties.toProperties());
    }
 
    @Test
    public void shouldGetPropertySource() {
-      String propertySource = configuration.getPropertySource("nonnumeric.property");
-      assertThat(propertySource, is("properties"));
+      Configuration propertySource = configuration.getPropertySource("nonnumeric.property");
+      assertThat(propertySource, is(configuration));
    }
 
    @Test
@@ -51,6 +52,7 @@ public class PropertiesFileBasedConfigurationTest extends ConfigurationAdaptorTe
          "list.property=rimbaud,verlaine\n" +
          "nonnumeric.property=qwe\n" +
          "precendence.test.property=first\n" +
+         "utility.property=utility\n" +
          "\n";
 
       assertThat(configuration.toString(), is(expected));

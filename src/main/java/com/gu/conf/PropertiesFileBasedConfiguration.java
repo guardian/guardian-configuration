@@ -23,18 +23,14 @@ public class PropertiesFileBasedConfiguration extends ConfigurationAdaptor {
 
    private Properties properties;
 
-   PropertiesFileBasedConfiguration(Properties properties, String source) {
-      super(source);
+   PropertiesFileBasedConfiguration(String identifier, Properties properties) {
+      super(identifier);
       this.properties = properties;
    }
 
-   public String getSource() {
-      return getIdentifier();
-   }
-
    @Override
-   public String getPropertySource(String propertyName) {
-      return hasProperty(propertyName) ? getSource() : null;
+   public Configuration getPropertySource(String propertyName) {
+      return hasProperty(propertyName) ? this : null;
    }
 
    @Override

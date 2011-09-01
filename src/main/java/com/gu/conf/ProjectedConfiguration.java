@@ -34,8 +34,8 @@ public class ProjectedConfiguration extends ConfigurationAdaptor {
    }
 
    @Override
-   public String getPropertySource(String propertyName) {
-      String source = null;
+   public Configuration getPropertySource(String propertyName) {
+      Configuration source = null;
       if (propertyNames.contains(propertyName)) {
          source = delegate.getPropertySource(propertyName);
       }

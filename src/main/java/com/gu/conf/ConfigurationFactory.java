@@ -21,42 +21,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
 
 public class ConfigurationFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationFactory.class);
+   private static final Logger LOG = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    public static Configuration getConfiguration(String applicationName) throws IOException {
-        return getConfiguration(applicationName, "conf");
-    }
+   private ConfigurationStrategy strategy;
+   private FileAndResourceLoader fileAndResourceLoader;
+   private SystemEnvironmentProvider systemEnvironmentProvider;
 
-    public static Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
-        LOG.info("Configuring application {} using classpath configuration directory {}",
-            applicationName, webappConfDirectory);
-        PropertiesLoader propertiesLoader = new PropertiesLoader();
-        List<PropertiesWithSource> properties = propertiesLoader.getProperties(applicationName, webappConfDirectory);
-        properties = new PlaceholderProcessor().resolvePlaceholders(properties);
-
-        Configuration configuration = new ListOfPropertiesWithSourceBasedConfiguration(properties);
-        LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, configuration);
-
-        return configuration;
-    }
-
-   public static Configuration composite(Configuration... confs) {
-      return composite(new LinkedList<Configuration>(Arrays.asList(confs)));
+   public ConfigurationFactory() throws IOException {
+      this.fileAndResourceLoader = new FileAndResourceLoader();
+      this.systemEnvironmentProvider = new SystemEnvironmentProvider();
+      this.strategy = new GuardianConfigurationStrategy(fileAndResourceLoader, systemEnvironmentProvider);
    }
 
-   private static Configuration composite(List<Configuration> confs) {
-      if (confs.size() == 1) {
-         return confs.get(0);
-      }
-
-      Configuration head = confs.remove(0);
-      Configuration tail = composite(confs);
-
-      return new CompositeConfiguration(head, tail);
+   public ConfigurationFactory(ConfigurationStrategy strategy) throws IOException {
+      this(strategy, new FileAndResourceLoader(), new SystemEnvironmentProvider());
    }
 
+   ConfigurationFactory(ConfigurationStrategy strategy,
+                        FileAndResourceLoader fileAndResourceLoader,
+                        SystemEnvironmentProvider systemEnvironmentProvider) {
+      this.strategy = strategy;
+      this.fileAndResourceLoader = fileAndResourceLoader;
+      this.systemEnvironmentProvider = systemEnvironmentProvider;
+   }
+
+   public Configuration getConfiguration(String applicationName) throws IOException {
+      return getConfiguration(applicationName, "conf");
+   }
+
+   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
+      LOG.info("Configuring application {} using classpath configuration directory {}",
+         applicationName, webappConfDirectory);
+
+      Configuration configuration = strategy.getConfiguration(applicationName, webappConfDirectory);
+      LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, configuration);
+
+      return configuration;
+   }
 }

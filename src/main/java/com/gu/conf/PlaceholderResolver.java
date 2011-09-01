@@ -15,28 +15,36 @@
  */
 package com.gu.conf;
 
+import com.gu.conf.exceptions.PropertyNotSetException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlaceholderResolver {
-    private SystemWrapper systemWrapper;
-    public PlaceholderResolver() {
-        systemWrapper = new SystemWrapper();
-    }
 
-    PlaceholderResolver(SystemWrapper systemWrapper) {
-        this.systemWrapper = systemWrapper;
-    }
+   private static final Pattern placeholderRegex = Pattern.compile("(env\\.)?(.*)");
 
-    private static final Pattern placeholderRegex = Pattern.compile("(env\\.)?(.*)");
-    public String resolvePlaceholder(String placeholder) {
-        Matcher matcher = placeholderRegex.matcher(placeholder);
-        matcher.matches();
+   private SystemEnvironmentConfiguration environment;
+   private SystemPropertiesConfiguration system;
 
-        if(matcher.group(1) == null) {
-            return systemWrapper.getProperty(matcher.group(2));
-        } else {
-            return systemWrapper.getenv(matcher.group(2));
-        }
-    }
+   public PlaceholderResolver() {
+      this(new SystemEnvironmentConfiguration(), new SystemPropertiesConfiguration());
+   }
+
+   PlaceholderResolver(SystemEnvironmentConfiguration environmentConfiguration,
+                       SystemPropertiesConfiguration systemPropertiesConfiguration) {
+      this.environment = environmentConfiguration;
+      this.system = systemPropertiesConfiguration;
+   }
+
+   public String resolvePlaceholder(String placeholder) throws PropertyNotSetException {
+      Matcher matcher = placeholderRegex.matcher(placeholder);
+      matcher.matches();
+
+      if (matcher.group(1) == null) {
+         return system.getStringProperty(matcher.group(2));
+      } else {
+         return environment.getStringProperty(matcher.group(2));
+      }
+   }
 }

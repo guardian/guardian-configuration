@@ -35,12 +35,13 @@ public abstract class ConfigurationAdaptorTestBase {
 
    @Test
    public void shouldHaveCorrectSize() {
-      assertThat(configuration.size(), is(5));
+      assertThat(configuration.size(), is(6));
    }
 
    @Test
    public void shouldHaveCorrectTestData() throws PropertyNotSetException {
       assertThat(configuration.hasProperty("precendence.test.property"), is(true));
+      assertThat(configuration.hasProperty("utility.property"), is(true));
 
       assertThat(configuration.getStringProperty("double.property"), is("25.0"));
       assertThat(configuration.getStringProperty("integer.property"), is("23"));
@@ -50,7 +51,7 @@ public abstract class ConfigurationAdaptorTestBase {
 
    @Test
    public void shouldGetNullForPropertySourceIfNotSet() {
-      String propertySource = configuration.getPropertySource("nosuch.property");
+      Configuration propertySource = configuration.getPropertySource("nosuch.property");
       assertThat(propertySource, nullValue());
    }
 
@@ -147,12 +148,13 @@ public abstract class ConfigurationAdaptorTestBase {
    @Test
    public void shouldGetPropertyNames() throws Exception {
       Set<String> names = configuration.getPropertyNames();
-      assertThat(names.size(), is(5));
+      assertThat(names.size(), is(6));
       assertThat(names, hasItem("precendence.test.property"));
       assertThat(names, hasItem("double.property"));
       assertThat(names, hasItem("integer.property"));
       assertThat(names, hasItem("nonnumeric.property"));
       assertThat(names, hasItem("list.property"));
+      assertThat(names, hasItem("utility.property"));
    }
 
    @Test
@@ -171,16 +173,18 @@ public abstract class ConfigurationAdaptorTestBase {
          "precendence.test.property",
          "double.property",
          "integer.property",
-         "nonnumeric.property")
+         "nonnumeric.property",
+         "utility.property")
       );
       Configuration projection = configuration.project(projectionNames);
 
-      assertThat(projection.size(), is(4));
+      assertThat(projection.size(), is(5));
       assertThat(projection.hasProperty("precendence.test.property"), is(true));
       assertThat(projection.hasProperty("double.property"), is(true));
       assertThat(projection.hasProperty("integer.property"), is(true));
       assertThat(projection.hasProperty("nonnumeric.property"), is(true));
-      
+      assertThat(projection.hasProperty("utility.property"), is(true));
+
       for (String property : projection.getPropertyNames()) {
          assertThat(projection.getStringProperty(property), is(configuration.getStringProperty(property)));
       }
@@ -193,11 +197,12 @@ public abstract class ConfigurationAdaptorTestBase {
       );
       Configuration projection = configuration.minus(minusNames);
 
-      assertThat(projection.size(), is(4));
+      assertThat(projection.size(), is(5));
       assertThat(projection.hasProperty("double.property"), is(true));
       assertThat(projection.hasProperty("integer.property"), is(true));
       assertThat(projection.hasProperty("nonnumeric.property"), is(true));
       assertThat(projection.hasProperty("list.property"), is(true));
+      assertThat(projection.hasProperty("utility.property"), is(true));
 
       for (String property : projection.getPropertyNames()) {
          assertThat(projection.getStringProperty(property), is(configuration.getStringProperty(property)));

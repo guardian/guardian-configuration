@@ -29,6 +29,8 @@ import static org.hamcrest.Matchers.is;
 
 public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
 
+   private Configuration original;
+
    @Before
    public void setUp() {
       MapBasedConfiguration mapBasedConfiguration = new MapBasedConfiguration("test");
@@ -38,6 +40,7 @@ public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
       mapBasedConfiguration.add("integer.property", "23");
       mapBasedConfiguration.add("nonnumeric.property", "qwe");
       mapBasedConfiguration.add("list.property", "rimbaud,verlaine");
+      mapBasedConfiguration.add("utility.property", "utility");
 
       mapBasedConfiguration.add("projected.out", "lost");
 
@@ -46,20 +49,23 @@ public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
          "double.property",
          "integer.property",
          "nonnumeric.property",
-         "list.property")
+         "list.property",
+         "utility.property")
       );
 
       configuration = new ProjectedConfiguration(mapBasedConfiguration, projectionNames);
+      original = mapBasedConfiguration;
    }
 
    @Test
    public void shouldContainedProjectedProperties() {
-      assertThat(configuration.size(), is(5));
+      assertThat(configuration.size(), is(6));
       assertThat(configuration.hasProperty("precendence.test.property"), is(true));
       assertThat(configuration.hasProperty("double.property"), is(true));
       assertThat(configuration.hasProperty("integer.property"), is(true));
       assertThat(configuration.hasProperty("nonnumeric.property"), is(true));
       assertThat(configuration.hasProperty("list.property"), is(true));
+      assertThat(configuration.hasProperty("utility.property"), is(true));
    }
 
    @Test
@@ -78,8 +84,8 @@ public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
 
    @Test
    public void shouldGetPropertySource() {
-      String propertySource = configuration.getPropertySource("nonnumeric.property");
-      assertThat(propertySource, is("test"));
+      Configuration propertySource = configuration.getPropertySource("nonnumeric.property");
+      assertThat(propertySource, is(original));
    }
 
    @Test
@@ -91,6 +97,7 @@ public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
          "list.property=rimbaud,verlaine\n" +
          "nonnumeric.property=qwe\n" +
          "precendence.test.property=second\n" +
+         "utility.property=utility\n" +
          "\n";
 
       assertThat(configuration.toString(), is(expected));

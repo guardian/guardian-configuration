@@ -22,10 +22,15 @@ import java.util.Set;
 
 public class MapBasedConfiguration extends ConfigurationAdaptor {
 
-    private Map<String,String> properties = new HashMap<String,String>();
+    private Map<String,String> properties;
 
     public MapBasedConfiguration(String identifier) {
-        super(identifier);
+        this(identifier, new HashMap<String, String>());
+    }
+
+    public MapBasedConfiguration(String identifier, Map<String, String> properties) {
+       super(identifier);
+       this.properties = properties;
     }
 
     /**
@@ -44,12 +49,8 @@ public class MapBasedConfiguration extends ConfigurationAdaptor {
      * @param propertyName name of the property
      * @return the source of the property
      */
-    public String getPropertySource(String propertyName) {
-        if (properties.containsKey(propertyName)) {
-            return getIdentifier();
-        }
-
-        return null;
+    public Configuration getPropertySource(String propertyName) {
+        return properties.containsKey(propertyName) ? this : null;
     }
 
     /**

@@ -13,14 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
 package com.gu.conf;
 
-public class SystemWrapper {
-    public String getenv(String propname) {
-        return System.getenv(propname);
-    }
+import java.io.IOException;
 
-    public String getProperty(String propname) {
-        return System.getProperty(propname);
-    }
+public interface ConfigurationStrategy {
+
+   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException;
+
 }

@@ -36,7 +36,7 @@ public interface Configuration {
       * @param propertyName name of the property
       * @return the source of the property or null if the property is unknown
       */
-   public String getPropertySource(String propertyName);
+   public Configuration getPropertySource(String propertyName);
 
    /**
       * Return true if configuration has a property with the given name

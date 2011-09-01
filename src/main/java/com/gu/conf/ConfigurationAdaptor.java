@@ -23,7 +23,7 @@ import com.gu.conf.exceptions.PropertyNotSetException;
 
 import java.util.*;
 
-abstract class ConfigurationAdaptor implements Configuration {
+public abstract class ConfigurationAdaptor implements Configuration {
 
     private String identifier;
 
