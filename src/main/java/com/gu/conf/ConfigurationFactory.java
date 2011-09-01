@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class ConfigurationFactory {
 
@@ -43,4 +43,20 @@ public class ConfigurationFactory {
 
         return configuration;
     }
+
+   public static Configuration composite(Configuration... confs) {
+      return composite(new LinkedList<Configuration>(Arrays.asList(confs)));
+   }
+
+   private static Configuration composite(List<Configuration> confs) {
+      if (confs.size() == 1) {
+         return confs.get(0);
+      }
+
+      Configuration head = confs.remove(0);
+      Configuration tail = composite(confs);
+
+      return new CompositeConfiguration(head, tail);
+   }
+
 }
