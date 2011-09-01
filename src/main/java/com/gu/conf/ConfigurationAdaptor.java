@@ -21,6 +21,7 @@ import static java.util.Arrays.asList;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
 import java.util.List;
+import java.util.Properties;
 
 abstract class ConfigurationAdaptor implements Configuration {
 
@@ -96,6 +97,27 @@ abstract class ConfigurationAdaptor implements Configuration {
      */
     public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException {
        return asList(getStringProperty(propertyName).split(","));
+    }
+
+    /**
+       * Return a count of the properties in this configuration
+       * @return size of this configuration
+       */
+    public int size() {
+       return getPropertyNames().size();
+    }
+
+    /**
+       * Return a properties version of this configuration
+       * @return this configuration as a java.util.Properties object
+       */
+    public Properties toProperties() {
+       Properties properties = new Properties();
+       for (String property: getPropertyNames()) {
+          properties.setProperty(property, getStringProperty(property, null));
+       }
+
+       return properties;
     }
 
     public String toString() {

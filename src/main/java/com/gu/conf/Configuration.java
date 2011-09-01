@@ -19,6 +19,7 @@ package com.gu.conf;
 import com.gu.conf.exceptions.PropertyNotSetException;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 public interface Configuration {
@@ -92,5 +93,17 @@ public interface Configuration {
       * @throws PropertyNotSetException if property has not been set
       */
    public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException;
+
+   /**
+      * Return a count of the properties in this configuration
+      * @return size of this configuration
+      */
+   public int size();
+
+   /**
+      * Return a properties version of this configuration
+      * @return this configuration as a java.util.Properties object
+      */
+   public Properties toProperties();
 
 }
