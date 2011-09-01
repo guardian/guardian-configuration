@@ -143,13 +143,12 @@ public abstract class ConfigurationAdaptorTestBase {
 
    @Test
    public void shouldToPropertiesWithSameProperties() throws PropertyNotSetException {
-       Properties properties = configuration.toProperties();
+      Properties properties = configuration.toProperties();
+      for (String property : configuration.getPropertyNames()) {
+         assertThat(properties.getProperty(property), is(configuration.getStringProperty(property)));
+      }
 
-       for (String property : configuration.getPropertyNames()) {
-          assertThat(properties.getProperty(property), is(configuration.getStringProperty(property)));
-       }
-
-       assertThat(properties.size(), is(configuration.size()));
+      assertThat(properties.size(), is(configuration.size()));
    }
 
 }
