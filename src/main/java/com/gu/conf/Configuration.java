@@ -106,4 +106,18 @@ public interface Configuration {
       */
    public Properties toProperties();
 
+   /**
+      * Return a projection of this configuration to the given set of properties
+      * @param properties the names of the properties to retain in the projection
+      * @return this configuration with only the named properties
+      */
+   public Configuration project(Set<String> properties);
+
+   /**
+      * Return a projection of this configuration to the given set of properties
+      * @param properties a configuration containing the names of the properties to retain in the projection
+      * @return this configuration with only the given properties
+      */
+   public Configuration project(Configuration properties);
+
 }

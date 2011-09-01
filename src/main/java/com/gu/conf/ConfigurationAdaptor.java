@@ -21,10 +21,7 @@ import static java.util.Arrays.asList;
 
 import com.gu.conf.exceptions.PropertyNotSetException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 abstract class ConfigurationAdaptor implements Configuration {
 
@@ -121,6 +118,24 @@ abstract class ConfigurationAdaptor implements Configuration {
        }
 
        return properties;
+    }
+
+    /**
+       * Return a projection of this configuration to the given set of properties
+       * @param properties the names of the properties to retain in the projection
+       * @return this configuration with only the named properties
+       */
+    public Configuration project(Set<String> properties) {
+       return new ProjectedConfiguration(this, properties);
+    }
+
+    /**
+       * Return a projection of this configuration to the given set of properties
+       * @param properties a configuration containing the names of the properties to retain in the projection
+       * @return this configuration with only the given properties
+       */
+    public Configuration project(Configuration properties) {
+       return project(properties.getPropertyNames());
     }
 
     public String toString() {

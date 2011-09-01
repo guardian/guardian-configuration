@@ -20,10 +20,9 @@ import com.gu.conf.exceptions.PropertyNotSetException;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
@@ -33,6 +32,21 @@ import static org.junit.Assert.fail;
 public abstract class ConfigurationAdaptorTestBase {
 
    protected Configuration configuration;
+
+   @Test
+   public void shouldHaveCorrectSize() {
+      assertThat(configuration.size(), is(5));
+   }
+
+   @Test
+   public void shouldHaveCorrectTestData() throws PropertyNotSetException {
+      assertThat(configuration.hasProperty("precendence.test.property"), is(true));
+
+      assertThat(configuration.getStringProperty("double.property"), is("25.0"));
+      assertThat(configuration.getStringProperty("integer.property"), is("23"));
+      assertThat(configuration.getStringProperty("nonnumeric.property"), is("qwe"));
+      assertThat(configuration.getStringProperty("list.property"), is("rimbaud,verlaine"));
+   }
 
    @Test
    public void shouldGetNullForPropertySourceIfNotSet() {
@@ -149,6 +163,27 @@ public abstract class ConfigurationAdaptorTestBase {
       }
 
       assertThat(properties.size(), is(configuration.size()));
+   }
+
+   @Test
+   public void shouldProjectCorrectly() throws PropertyNotSetException {
+      Set<String> projectionNames = new HashSet<String>(asList(
+         "precendence.test.property",
+         "double.property",
+         "integer.property",
+         "nonnumeric.property")
+      );
+      Configuration projection = configuration.project(projectionNames);
+
+      assertThat(projection.size(), is(4));
+      assertThat(projection.hasProperty("precendence.test.property"), is(true));
+      assertThat(projection.hasProperty("double.property"), is(true));
+      assertThat(projection.hasProperty("integer.property"), is(true));
+      assertThat(projection.hasProperty("nonnumeric.property"), is(true));
+      
+      for (String property : projection.getPropertyNames()) {
+         assertThat(projection.getStringProperty(property), is(configuration.getStringProperty(property)));
+      }
    }
 
 }
