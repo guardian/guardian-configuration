@@ -16,9 +16,10 @@
 
 package com.gu.conf;
 
-import com.gu.conf.exceptions.PropertyNotSetException;
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
 
-import java.util.Arrays;
+import com.gu.conf.exceptions.PropertyNotSetException;
 import java.util.List;
 
 abstract class ConfigurationAdaptor implements Configuration {
@@ -47,7 +48,6 @@ abstract class ConfigurationAdaptor implements Configuration {
      */
     public String getStringProperty(String propertyName) throws PropertyNotSetException {
         String value = getStringProperty(propertyName, null);
-
         if (value == null) {
             throw new PropertyNotSetException(propertyName);
         }
@@ -61,9 +61,10 @@ abstract class ConfigurationAdaptor implements Configuration {
      * @return integer value
      * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      * @throws NumberFormatException if the property was found but was not an integer
+     * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      */
     public int getIntegerProperty(String propertyName) throws PropertyNotSetException, NumberFormatException {
-        return Integer.parseInt(getStringProperty(propertyName));
+        return parseInt(getStringProperty(propertyName));
     }
 
 
@@ -72,12 +73,12 @@ abstract class ConfigurationAdaptor implements Configuration {
      * or is not an integer
      * @param propertyName name of the property
      * @param defaultValue value to return if property not set
-     * @return alue of the property or defaultValue if property not set or not an integer
+     * @return value of the property or defaultValue if property not set or not an integer
      */
     public int getIntegerProperty(String propertyName, int defaultValue) {
         int property = defaultValue;
         try {
-            property = Integer.parseInt(getStringProperty(propertyName));
+            property = parseInt(getStringProperty(propertyName));
         } catch (NumberFormatException nfe) {
             // ignore
         } catch (PropertyNotSetException e) {
@@ -94,18 +95,11 @@ abstract class ConfigurationAdaptor implements Configuration {
      * @throws com.gu.conf.exceptions.PropertyNotSetException if property has not been set
      */
     public List<String> getStringPropertiesSplitByComma(String propertyName) throws PropertyNotSetException {
-        String value = getStringProperty(propertyName, null);
-
-        if (value == null) {
-            throw new PropertyNotSetException(propertyName);
-        }
-
-        return Arrays.asList(value.split(","));
+       return asList(getStringProperty(propertyName).split(","));
     }
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-
         for (String propertyName : getPropertyNames()) {
             String propertyValue = getStringProperty(propertyName, "");
             stringBuilder.append(PrinterUtil.propertyString(propertyName, propertyValue));
