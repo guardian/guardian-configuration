@@ -25,7 +25,7 @@ public class ProjectedConfiguration extends ConfigurationAdaptor {
    private Set<String> propertyNames;
 
    public ProjectedConfiguration(Configuration delegate, Set<String> projection) {
-      super(delegate.getIdentifier() + "<projected>");
+      super(delegate.getIdentifier());
       this.delegate = delegate;
 
       this.propertyNames = new HashSet<String>();

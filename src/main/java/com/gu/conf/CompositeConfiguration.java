@@ -27,7 +27,7 @@ public class CompositeConfiguration extends ConfigurationAdaptor {
    public CompositeConfiguration(Configuration primary, Configuration secondary) {
       super(String.format("composite[%s//%s]", primary.getIdentifier(), secondary.getIdentifier()));
       this.primary = primary;
-      this.secondary = secondary;
+      this.secondary = secondary.minus(primary);
    }
 
    /**

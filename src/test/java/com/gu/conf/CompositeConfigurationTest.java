@@ -63,7 +63,6 @@ public class CompositeConfigurationTest extends ConfigurationAdaptorTestBase {
          "integer.property=23\n" +
          "list.property=rimbaud,verlaine\n" +
          "nonnumeric.property=qwe\n" +
-         "precendence.test.property=second\n" +
          "\n";
 
       assertThat(configuration.toString(), is(expected));
