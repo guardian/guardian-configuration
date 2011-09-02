@@ -134,4 +134,14 @@ public interface Configuration {
       */
    public Configuration minus(Configuration properties);
 
+   /**
+    * Return a configuration with the same property names as this configuration but with
+    * property values overriden with values from the given configuration.
+    *
+    * @param overrides a configuration containing the property override values. Properties
+    *                  not in the base configuration are ignore.
+    * @return this configuration with the given overrides.
+    */
+   public Configuration overrideWith(Configuration overrides);
+
 }

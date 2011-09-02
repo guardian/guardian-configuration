@@ -161,6 +161,11 @@ public abstract class ConfigurationAdaptor implements Configuration {
        return minus(properties.getPropertyNames());
     }
 
+    @Override
+    public Configuration overrideWith(Configuration overrides) {
+       return new CompositeConfiguration(overrides.project(this), this);
+    }
+
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("# Properties from ");
@@ -179,4 +184,5 @@ public abstract class ConfigurationAdaptor implements Configuration {
 
         return stringBuilder.toString();
     }
+
 }

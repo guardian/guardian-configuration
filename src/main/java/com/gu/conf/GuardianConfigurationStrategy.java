@@ -54,19 +54,14 @@ public class GuardianConfigurationStrategy implements ConfigurationStrategy {
          getGlobalProperties(webappConfDirectory)
       );
 
-      Configuration systemOverrides = CompositeConfiguration.from(
-         getSystemOverrideProperties(propertyFiles),
-         propertyFiles
-      );
+      Configuration systemOverrides = propertyFiles.overrideWith(getSystemProperties());
 
       return new PlaceholderProcessingConfiguration(systemOverrides);
    }
 
-   private Configuration getSystemOverrideProperties(Configuration existing) {
-      Set<String> keys = existing.getPropertyNames();
-
+   private Configuration getSystemProperties() {
       LOG.info("Loading override System properties");
-      return new SystemPropertiesConfiguration().project(keys);
+      return new SystemPropertiesConfiguration();
    }
 
    private Configuration getUserOverrideProperties(String applicationName) throws IOException {

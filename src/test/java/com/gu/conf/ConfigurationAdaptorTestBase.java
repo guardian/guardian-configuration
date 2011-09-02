@@ -209,4 +209,29 @@ public abstract class ConfigurationAdaptorTestBase {
       }
    }
 
+   @Test
+   public void shouldOverride() throws PropertyNotSetException {
+      MapBasedConfiguration overrides = new MapBasedConfiguration("overrides");
+      overrides.add("utility.property", "overriden");
+
+      Configuration withOverrides = configuration.overrideWith(overrides);
+
+      assertThat(withOverrides.size(), is(6));
+      assertThat(withOverrides.hasProperty("double.property"), is(true));
+      assertThat(withOverrides.hasProperty("precendence.test.property"), is(true));
+      assertThat(withOverrides.hasProperty("integer.property"), is(true));
+      assertThat(withOverrides.hasProperty("nonnumeric.property"), is(true));
+      assertThat(withOverrides.hasProperty("list.property"), is(true));
+      assertThat(withOverrides.hasProperty("utility.property"), is(true));
+
+      assertThat(withOverrides.getStringProperty("utility.property"), is("overriden"));
+
+      Set<String> unchanged = new HashSet<String>();
+      unchanged.addAll(withOverrides.getPropertyNames());
+      unchanged.remove("utility.property");
+      for (String property : unchanged) {
+         assertThat(withOverrides.getStringProperty(property), is(configuration.getStringProperty(property)));
+      }
+   }
+
 }
