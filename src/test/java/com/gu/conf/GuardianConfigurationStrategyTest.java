@@ -214,7 +214,7 @@ public class GuardianConfigurationStrategyTest {
       assertThat(configuration.toString(), is(
          "# Properties from System\n" +
          "\n" +
-         "# Properties from file:///home/docrual/.gu/webapp.properties\n" +
+         "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
          "dev.override.sys.properties=available\n" +
          "source=dev.override.sys.properties\n" +
          "\n" +
