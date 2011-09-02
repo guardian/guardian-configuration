@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -200,5 +201,41 @@ public class GuardianConfigurationStrategyTest {
    public void shouldProvideWebappStagePropertiesInPreferenceToServiceDomainProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
       assertThat(configuration.getStringProperty("webapp.stage.properties.precendence"), is("stage.properties"));
+   }
+
+   @Test
+   public void shouldHavePrettyToString() throws IOException {
+      Properties system = System.getProperties();
+      System.setProperties(new PropertiesBuilder().
+         property("user.home", system.getProperty("user.home")).
+         toProperties());
+
+      Configuration configuration = strategy.getConfiguration("webapp", "/conf");
+      assertThat(configuration.toString(), is(
+         "# Properties from System\n" +
+         "\n" +
+         "# Properties from file:///home/docrual/.gu/webapp.properties\n" +
+         "dev.override.sys.properties=available\n" +
+         "source=dev.override.sys.properties\n" +
+         "\n" +
+         "# Properties from file:///etc/gu/webapp.properties\n" +
+         "sys.properties=available\n" +
+         "\n" +
+         "# Properties from classpath:/conf/gudev.gnl.webapp.properties\n" +
+         "env.application.properties=available\n" +
+         "\n" +
+         "# Properties from classpath:/conf/DEV.properties\n" +
+         "stage.properties=available\n" +
+         "webapp.stage.properties.precendence=stage.properties\n" +
+         "\n" +
+         "# Properties from classpath:/conf/gudev.gnl.properties\n" +
+         "env.dev.properties=available\n" +
+         "\n" +
+         "# Properties from classpath:/conf/global.properties\n" +
+         "global.dev.properties=available\n" +
+         "\n"
+      ));
+
+      System.setProperties(system);
    }
 }

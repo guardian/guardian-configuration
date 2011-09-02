@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 
 public class PlaceholderResolver {
 
-   private static final Pattern placeholderRegex = Pattern.compile("(env\\.)?(.*)");
+   private Pattern PLACEHOLDER = Pattern.compile("\\$\\{(.*?)\\}");
+   private static final Pattern PLACEHOLDER_NAME = Pattern.compile("(env\\.)?(.*)");
 
    private SystemEnvironmentConfiguration environment;
    private SystemPropertiesConfiguration system;
@@ -37,14 +38,33 @@ public class PlaceholderResolver {
       this.system = systemPropertiesConfiguration;
    }
 
-   public String resolvePlaceholder(String placeholder) throws PropertyNotSetException {
-      Matcher matcher = placeholderRegex.matcher(placeholder);
+   public String substitutePlaceholders(String text) {
+      StringBuffer substituted = new StringBuffer();
+
+      Matcher matcher = PLACEHOLDER.matcher(text);
+      while (matcher.find()) {
+         matcher.appendReplacement(substituted, resolvePlaceholder(matcher.group(1)));
+      }
+      matcher.appendTail(substituted);
+
+      return substituted.toString();
+   }
+
+   private String resolvePlaceholder(String placeholder) {
+      Matcher matcher = PLACEHOLDER_NAME.matcher(placeholder);
       matcher.matches();
 
-      if (matcher.group(1) == null) {
-         return system.getStringProperty(matcher.group(2));
-      } else {
-         return environment.getStringProperty(matcher.group(2));
+      String property = matcher.group(2);
+      Configuration substitutionType = matcher.group(1) == null ? system : environment;
+
+      String substition;
+      try {
+         substition = substitutionType.getStringProperty(property);
+      } catch (PropertyNotSetException e) {
+         // Suppress the substitution
+         substition = String.format("${%s}", placeholder);
       }
+
+      return substition;
    }
 }

@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ProxiedConfigurationTest extends ConfigurationAdaptorTestBase {
+public class ConfigurationProxyTest extends ConfigurationAdaptorTestBase {
 
    private Configuration original;
 
@@ -39,7 +39,7 @@ public class ProxiedConfigurationTest extends ConfigurationAdaptorTestBase {
       proxiedConfiguration.add("utility.property", "utility");
 
 
-      configuration = new ProxiedConfiguration(proxiedConfiguration);
+      configuration = new ConfigurationProxy(proxiedConfiguration);
       original = proxiedConfiguration;
    }
 

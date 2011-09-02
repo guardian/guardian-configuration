@@ -15,11 +15,7 @@
  */
 package com.gu.conf;
 
-import com.gu.conf.exceptions.PropertyNotSetException;
-
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PlaceholderProcessingConfiguration extends ConfigurationAdaptor {
 
@@ -50,13 +46,8 @@ public class PlaceholderProcessingConfiguration extends ConfigurationAdaptor {
     */
    public String getStringProperty(String propertyName, String defaultValue) {
       String value = delegate.getStringProperty(propertyName, defaultValue);
-
-      try {
-         if (value != null) {
-            value = substitutePlaceholders(value);
-         }
-      } catch(PropertyNotSetException pnse) {
-         // Ignore... returns unresolved setting
+      if (value != null) {
+         value = placeholderResolver.substitutePlaceholders(value);
       }
 
       return value;
@@ -67,17 +58,8 @@ public class PlaceholderProcessingConfiguration extends ConfigurationAdaptor {
       return delegate.getPropertyNames();
    }
 
-   private Pattern placeHolderRegexp = Pattern.compile("\\$\\{(.*?)\\}");
-
-   private String substitutePlaceholders(String property) throws PropertyNotSetException {
-      StringBuffer resolvedProperty = new StringBuffer();
-
-      Matcher matcher = placeHolderRegexp.matcher(property);
-      while (matcher.find()) {
-         matcher.appendReplacement(resolvedProperty, placeholderResolver.resolvePlaceholder(matcher.group(1)));
-      }
-      matcher.appendTail(resolvedProperty);
-
-      return resolvedProperty.toString();
+   @Override
+   public String toString() {
+      return placeholderResolver.substitutePlaceholders(delegate.toString());
    }
 }

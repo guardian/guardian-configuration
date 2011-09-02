@@ -63,4 +63,19 @@ public class ProjectedConfiguration extends ConfigurationAdaptor {
    public Set<String> getPropertyNames() {
       return propertyNames;
    }
+
+   @Override
+   public String toString() {
+      String result = delegate.toString();
+
+      Set<String> removed = new HashSet<String>();
+      removed.addAll(delegate.getPropertyNames());
+      removed.removeAll(this.getPropertyNames());
+
+      for (String remove : removed) {
+         result = result.replaceAll(remove + "=(.*)\n", "");
+      }
+
+      return result;
+   }
 }

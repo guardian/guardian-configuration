@@ -21,20 +21,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlaceholderProcessingConfigurationTest extends ConfigurationAdaptorTestBase {
 
-   @Mock private PlaceholderResolver placeholderResolver;
+   @Mock
+   private PlaceholderResolver placeholderResolver;
 
    @Before
    public void setUp() throws PropertyNotSetException {
@@ -47,10 +47,14 @@ public class PlaceholderProcessingConfigurationTest extends ConfigurationAdaptor
       mapBasedConfiguration.add("list.property", "rimbaud,verlaine");
       mapBasedConfiguration.add("utility.property", "has a ${placeholder}");
 
-      when(placeholderResolver.resolvePlaceholder("placeholder")).thenReturn("resolved placeholder");
+      when(placeholderResolver.substitutePlaceholders(anyString())).thenAnswer(new Answer() {
+         public Object answer(InvocationOnMock invocation) {
+            String arg = invocation.getArguments()[0].toString();
+            return arg.replaceAll("\\$\\{placeholder\\}", "resolved placeholder");
+         }
+      });
 
-      configuration = new PlaceholderProcessingConfiguration(
-         mapBasedConfiguration, placeholderResolver);
+      configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, placeholderResolver);
    }
 
    @Test

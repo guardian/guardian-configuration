@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Provides information on the the nature of the environment that the machine forms a part of
  */
-public class InstallationConfiguration extends ProxiedConfiguration {
+public class InstallationConfiguration extends ConfigurationProxy {
    private static final Logger LOG = LoggerFactory.getLogger(InstallationConfiguration.class);
    public static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
 
@@ -31,7 +31,6 @@ public class InstallationConfiguration extends ProxiedConfiguration {
    }
 
    InstallationConfiguration(FileAndResourceLoader loader) {
-      super("Installation");
       LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
       Configuration installationProperties = loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION);
 
@@ -41,6 +40,10 @@ public class InstallationConfiguration extends ProxiedConfiguration {
       );
 
       setDelegate(installation);
+   }
+
+   public String getIdentifier() {
+      return "Installation";
    }
 
    public String getServiceDomain() {

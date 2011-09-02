@@ -30,10 +30,8 @@ import static org.mockito.Mockito.when;
 public class PlaceholderResolverTest {
    private PlaceholderResolver placeholderResolver;
 
-   @Mock
-   private SystemEnvironmentConfiguration environment;
-   @Mock
-   private SystemPropertiesConfiguration system;
+   @Mock private SystemEnvironmentConfiguration environment;
+   @Mock private SystemPropertiesConfiguration system;
 
    @Before
    public void setUp() throws PropertyNotSetException {
@@ -44,11 +42,11 @@ public class PlaceholderResolverTest {
 
    @Test
    public void shouldGetSystemProperty() throws PropertyNotSetException {
-      assertThat(placeholderResolver.resolvePlaceholder("propname"), is("system property"));
+      assertThat(placeholderResolver.substitutePlaceholders("${propname}"), is("system property"));
    }
 
    @Test
    public void shouldGetEnvironmentVariable() throws PropertyNotSetException {
-      assertThat(placeholderResolver.resolvePlaceholder("env.propname"), is("environment variable"));
+      assertThat(placeholderResolver.substitutePlaceholders("${env.propname}"), is("environment variable"));
    }
 }
