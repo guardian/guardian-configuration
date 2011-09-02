@@ -20,28 +20,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Set;
 
 public class GuardianConfigurationStrategy implements ConfigurationStrategy {
 
    private static final Logger LOG = LoggerFactory.getLogger(GuardianConfigurationStrategy.class);
 
    private final FileAndResourceLoader loader;
-   private final String serviceDomain;
-   private final String stage;
+   private final InstallationConfiguration installation;
 
    public GuardianConfigurationStrategy() throws IOException {
-      this(new FileAndResourceLoader(), new SystemEnvironmentProvider());
+      this(new FileAndResourceLoader());
    }
 
-   GuardianConfigurationStrategy(FileAndResourceLoader loader, SystemEnvironmentProvider systemEnvironmentProvider) throws IOException {
+   GuardianConfigurationStrategy(FileAndResourceLoader loader) throws IOException {
+      this(loader, new InstallationConfiguration());
+   }
+
+   GuardianConfigurationStrategy(FileAndResourceLoader loader, InstallationConfiguration installation) throws IOException {
       this.loader = loader;
-      this.serviceDomain = systemEnvironmentProvider.getServiceDomain();
-      this.stage = systemEnvironmentProvider.getStage();
+      this.installation = installation;
 
-      LOG.info("INT_SERVICE_DOMAIN: " + serviceDomain);
+      LOG.info("INT_SERVICE_DOMAIN: " + installation.getServiceDomain());
    }
-
 
    public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
       Configuration propertyFiles = CompositeConfiguration.from(
@@ -84,6 +85,7 @@ public class GuardianConfigurationStrategy implements ConfigurationStrategy {
    }
 
    private Configuration getServiceDomainApplicationProperties(String confPrefix, String applicationName) throws IOException {
+      String serviceDomain = installation.getServiceDomain();
       String propertiesLocation = String.format("classpath:%s/%s.%s.properties", confPrefix, serviceDomain, applicationName);
 
       LOG.info("Loading webapp service domain application properties from " + propertiesLocation);
@@ -91,6 +93,7 @@ public class GuardianConfigurationStrategy implements ConfigurationStrategy {
    }
 
    private Configuration getStageProperties(String confPrefix) throws IOException {
+      String stage = installation.getStage();
       String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, stage);
 
       LOG.info("Loading webapp service domain properties from " + propertiesLocation);
@@ -98,6 +101,7 @@ public class GuardianConfigurationStrategy implements ConfigurationStrategy {
    }
 
    private Configuration getServiceDomainProperties(String confPrefix) throws IOException {
+      String serviceDomain = installation.getServiceDomain();
       String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
 
       LOG.info("Loading webapp service domain properties from " + propertiesLocation);

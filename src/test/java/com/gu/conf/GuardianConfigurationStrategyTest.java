@@ -24,11 +24,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,13 +44,13 @@ public class GuardianConfigurationStrategyTest {
    private static String INSTALLATION_PROPERTIES = "file:/etc/gu/installation.properties";
 
    @Mock FileAndResourceLoader fileLoader;
-   @Mock SystemEnvironmentProvider systemEnvironmentProvider;
+   @Mock InstallationConfiguration installation;
    GuardianConfigurationStrategy strategy;
 
    @Before
    public void setUp() throws IOException {
-      when(systemEnvironmentProvider.getServiceDomain()).thenReturn("gudev.gnl");
-      when(systemEnvironmentProvider.getStage()).thenReturn("DEV");
+      when(installation.getServiceDomain()).thenReturn("gudev.gnl");
+      when(installation.getStage()).thenReturn("DEV");
 
       // DEV_OVERRIDE_SYS_PROPERTIES
       Configuration configuration = new ConfigurationBuilder()
@@ -115,7 +113,7 @@ public class GuardianConfigurationStrategyTest {
       when(fileLoader.getConfigurationFrom(INSTALLATION_PROPERTIES)).thenReturn(configuration);
 
 
-      strategy = new GuardianConfigurationStrategy(fileLoader, systemEnvironmentProvider);
+      strategy = new GuardianConfigurationStrategy(fileLoader, installation);
    }
 
    @Test

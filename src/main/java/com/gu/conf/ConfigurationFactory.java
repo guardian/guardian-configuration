@@ -27,25 +27,13 @@ public class ConfigurationFactory {
    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationFactory.class);
 
    private ConfigurationStrategy strategy;
-   private FileAndResourceLoader fileAndResourceLoader;
-   private SystemEnvironmentProvider systemEnvironmentProvider;
 
    public ConfigurationFactory() throws IOException {
-      this.fileAndResourceLoader = new FileAndResourceLoader();
-      this.systemEnvironmentProvider = new SystemEnvironmentProvider();
-      this.strategy = new GuardianConfigurationStrategy(fileAndResourceLoader, systemEnvironmentProvider);
+      this(new GuardianConfigurationStrategy());
    }
 
    public ConfigurationFactory(ConfigurationStrategy strategy) throws IOException {
-      this(strategy, new FileAndResourceLoader(), new SystemEnvironmentProvider());
-   }
-
-   ConfigurationFactory(ConfigurationStrategy strategy,
-                        FileAndResourceLoader fileAndResourceLoader,
-                        SystemEnvironmentProvider systemEnvironmentProvider) {
       this.strategy = strategy;
-      this.fileAndResourceLoader = fileAndResourceLoader;
-      this.systemEnvironmentProvider = systemEnvironmentProvider;
    }
 
    public Configuration getConfiguration(String applicationName) throws IOException {
