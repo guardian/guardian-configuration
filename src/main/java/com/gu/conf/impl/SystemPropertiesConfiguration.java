@@ -14,20 +14,16 @@
  *    limitations under the License.
  */
 
-package com.gu.conf;
+package com.gu.conf.impl;
 
+class SystemPropertiesConfiguration extends PropertiesFileBasedConfiguration {
 
-import com.gu.conf.impl.GuardianConfigurationStrategy;
-import java.io.IOException;
-
-public class ConfigurationFactory {
-
-   public Configuration getConfiguration(String applicationName) throws IOException {
-      return getConfiguration(applicationName, "conf");
+   SystemPropertiesConfiguration() {
+      this("System");
    }
 
-   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
-      GuardianConfigurationStrategy strategy = new GuardianConfigurationStrategy();
-      return strategy.getConfiguration(applicationName, webappConfDirectory);
+   SystemPropertiesConfiguration(String identifier) {
+      super(identifier, System.getProperties());
    }
+
 }

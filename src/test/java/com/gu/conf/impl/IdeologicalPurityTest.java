@@ -14,20 +14,23 @@
  *    limitations under the License.
  */
 
-package com.gu.conf;
+package com.gu.conf.impl;
 
+import com.gu.conf.Configuration;
+import com.gu.conf.PropertyNotSetException;
+import org.junit.Test;
 
-import com.gu.conf.impl.GuardianConfigurationStrategy;
-import java.io.IOException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-public class ConfigurationFactory {
+public class IdeologicalPurityTest {
 
-   public Configuration getConfiguration(String applicationName) throws IOException {
-      return getConfiguration(applicationName, "conf");
-   }
+   @Test
+   public void shouldBeIdeologicallyPure() throws PropertyNotSetException {
+      Configuration configuration = new ConfigurationBuilder()
+         .property("property", "theft")
+         .toConfiguration();
 
-   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
-      GuardianConfigurationStrategy strategy = new GuardianConfigurationStrategy();
-      return strategy.getConfiguration(applicationName, webappConfDirectory);
+      assertThat(configuration.getStringProperty("property"), is("theft"));
    }
 }

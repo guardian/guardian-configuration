@@ -14,20 +14,19 @@
  *    limitations under the License.
  */
 
-package com.gu.conf;
+package com.gu.conf.fixtures;
 
+import java.util.Properties;
 
-import com.gu.conf.impl.GuardianConfigurationStrategy;
-import java.io.IOException;
+public class PropertiesBuilder {
+    private Properties properties = new Properties();
 
-public class ConfigurationFactory {
+    public Properties toProperties() {
+        return properties;
+    }
 
-   public Configuration getConfiguration(String applicationName) throws IOException {
-      return getConfiguration(applicationName, "conf");
-   }
-
-   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
-      GuardianConfigurationStrategy strategy = new GuardianConfigurationStrategy();
-      return strategy.getConfiguration(applicationName, webappConfDirectory);
-   }
+    public PropertiesBuilder property(String key, String value) {
+        this.properties.setProperty(key, value);
+        return this;
+    }
 }

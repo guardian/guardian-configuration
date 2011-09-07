@@ -16,18 +16,20 @@
 
 package com.gu.conf;
 
+public class PropertyNotSetException extends Exception {
+    private final String property;
 
-import com.gu.conf.impl.GuardianConfigurationStrategy;
-import java.io.IOException;
+    public PropertyNotSetException(String property) {
+        super("Mandatory configuration property '"+ property +"' was not found.");
+        this.property = property;
+    }
 
-public class ConfigurationFactory {
+    public PropertyNotSetException(String property, String sources) {
+        super("Mandatory configuration property '"+ property +"' was not found in any of "+ sources);
+        this.property = property;
+    }
 
-   public Configuration getConfiguration(String applicationName) throws IOException {
-      return getConfiguration(applicationName, "conf");
-   }
-
-   public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
-      GuardianConfigurationStrategy strategy = new GuardianConfigurationStrategy();
-      return strategy.getConfiguration(applicationName, webappConfDirectory);
-   }
+    public String getProperty() {
+        return property;
+    }
 }
