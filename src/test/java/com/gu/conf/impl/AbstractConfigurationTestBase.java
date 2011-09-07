@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
 
-public abstract class ConfigurationAdaptorTestBase {
+public abstract class AbstractConfigurationTestBase {
 
    protected AbstractConfiguration configuration;
 

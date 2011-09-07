@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class CompositeConfigurationTest extends ConfigurationAdaptorTestBase {
+public class CompositeConfigurationTest extends AbstractConfigurationTestBase {
 
    private Configuration secondary;
 

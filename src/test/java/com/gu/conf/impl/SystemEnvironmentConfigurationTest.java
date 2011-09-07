@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SystemEnvironmentConfigurationTest extends ConfigurationAdaptorTestBase {
+public class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase {
 
    private Map<String, String> oldEnvironment;
 

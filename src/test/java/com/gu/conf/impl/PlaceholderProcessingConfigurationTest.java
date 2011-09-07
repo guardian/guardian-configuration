@@ -31,7 +31,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PlaceholderProcessingConfigurationTest extends ConfigurationAdaptorTestBase {
+public class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBase {
 
    @Mock
    private PlaceholderResolver placeholderResolver;

@@ -22,7 +22,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class MapBasedConfigurationTest extends ConfigurationAdaptorTestBase {
+public class MapBasedConfigurationTest extends AbstractConfigurationTestBase {
 
    @Before
    public void setUp() {

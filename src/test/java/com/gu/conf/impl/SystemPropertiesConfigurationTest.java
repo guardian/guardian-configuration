@@ -24,7 +24,7 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 
-public class SystemPropertiesConfigurationTest extends ConfigurationAdaptorTestBase {
+public class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase {
 
    @Before
    public void setUp() {

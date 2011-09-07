@@ -28,7 +28,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ProjectedConfigurationTest extends ConfigurationAdaptorTestBase {
+public class ProjectedConfigurationTest extends AbstractConfigurationTestBase {
 
    private Configuration original;
 
