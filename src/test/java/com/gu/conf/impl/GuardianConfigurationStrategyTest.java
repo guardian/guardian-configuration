@@ -35,11 +35,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GuardianConfigurationStrategyTest {
 
-   private static String SYSTEM_OVERRIDE_PROPERTIES = "System";
-
    private static String DEV_OVERRIDE_SYS_PROPERTIES = String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
    private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
-   private static String ENVIRONMENTAL_APPLICATION_PROPERTIES = "classpath:/conf/gudev.gnl.webapp.properties";
    private static String STAGE_PROPERTIES = "classpath:/conf/DEV.properties";
    private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
    private static String GLOBAL_PROPERTIES = "classpath:/conf/global.properties";
@@ -72,14 +69,6 @@ public class GuardianConfigurationStrategyTest {
          .property("source", "sys.properties")
          .toConfiguration();
       when(fileLoader.getConfigurationFrom(SYS_PROPERTIES)).thenReturn(configuration);
-
-      // ENVIRONMENTAL_APPLICATION_PROPERTIES
-      configuration = new ConfigurationBuilder()
-         .identifier(ENVIRONMENTAL_APPLICATION_PROPERTIES)
-         .property("env.application.properties", "available")
-         .property("source", "env.application.properties")
-         .toConfiguration();
-      when(fileLoader.getConfigurationFrom(ENVIRONMENTAL_APPLICATION_PROPERTIES)).thenReturn(configuration);
 
       // STAGE_PROPERTIES
       configuration = new ConfigurationBuilder()
@@ -166,15 +155,6 @@ public class GuardianConfigurationStrategyTest {
    }
 
    @Test
-   public void shouldLoadWebappServiceDomainApplicationProperties() throws IOException, PropertyNotSetException {
-      Configuration configuration = strategy.getConfiguration("webapp", "/conf");
-
-      assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("env.application.properties"), is("available"));
-      assertThat(configuration.hasProperty("no-property"), is(false));
-   }
-
-   @Test
    public void shouldLoadWebappStageProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
@@ -224,9 +204,6 @@ public class GuardianConfigurationStrategyTest {
          "\n" +
          "# Properties from file:///etc/gu/webapp.properties\n" +
          "sys.properties=available\n" +
-         "\n" +
-         "# Properties from classpath:/conf/gudev.gnl.webapp.properties\n" +
-         "env.application.properties=available\n" +
          "\n" +
          "# Properties from classpath:/conf/DEV.properties\n" +
          "stage.properties=available\n" +

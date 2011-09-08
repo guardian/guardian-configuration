@@ -50,7 +50,6 @@ public class GuardianConfigurationStrategy {
       AbstractConfiguration propertyFiles = CompositeConfiguration.from(
          getUserOverrideProperties(applicationName),
          getSysProperties(applicationName),
-         getServiceDomainApplicationProperties(webappConfDirectory, applicationName),
          getStageProperties(webappConfDirectory),
          getServiceDomainProperties(webappConfDirectory),
          getGlobalProperties(webappConfDirectory)
@@ -81,14 +80,6 @@ public class GuardianConfigurationStrategy {
       String propertiesLocation = String.format("file:///etc/gu/%s.properties", applicationName);
 
       LOG.info("Loading machine properties from " + propertiesLocation);
-      return loader.getConfigurationFrom(propertiesLocation);
-   }
-
-   private AbstractConfiguration getServiceDomainApplicationProperties(String confPrefix, String applicationName) throws IOException {
-      String serviceDomain = installation.getServiceDomain();
-      String propertiesLocation = String.format("classpath:%s/%s.%s.properties", confPrefix, serviceDomain, applicationName);
-
-      LOG.info("Loading webapp service domain application properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
