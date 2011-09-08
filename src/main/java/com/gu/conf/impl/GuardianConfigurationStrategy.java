@@ -47,7 +47,7 @@ public class GuardianConfigurationStrategy {
    public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
       LOG.info("Configuring application {} using classpath configuration directory {}", applicationName, webappConfDirectory);
 
-      AbstractConfiguration propertyFiles = CompositeConfiguration.from(
+      AbstractConfiguration properties = CompositeConfiguration.from(
          getUserOverrideProperties(applicationName),
          getSysProperties(applicationName),
          getStageProperties(webappConfDirectory),
@@ -55,8 +55,7 @@ public class GuardianConfigurationStrategy {
          getGlobalProperties(webappConfDirectory)
       );
 
-      AbstractConfiguration systemOverrides = propertyFiles.overrideWith(getSystemProperties());
-      AbstractConfiguration placeholderProcessed = new PlaceholderProcessingConfiguration(systemOverrides);
+      AbstractConfiguration placeholderProcessed = new PlaceholderProcessingConfiguration(properties);
 
       LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, placeholderProcessed);
 

@@ -122,13 +122,13 @@ public class GuardianConfigurationStrategyTest {
    }
 
    @Test
-   public void shouldOverridePropertiesWithSystemPropertiesIfDefined() throws IOException, PropertyNotSetException {
+   public void shouldNotOverridePropertiesWithSystemPropertiesIfDefined() throws IOException, PropertyNotSetException {
       try {
          System.setProperty("source", "system.override.property");
          System.setProperty("random.system.property", "meh");
          Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
-         assertThat(configuration.getStringProperty("source"), is("system.override.property"));
+         assertThat(configuration.getStringProperty("source"), is("dev.override.sys.properties"));
          assertThat(configuration.hasProperty("random.system.property"), is(false));
       } finally {
          System.clearProperty("source");
@@ -196,8 +196,6 @@ public class GuardianConfigurationStrategyTest {
 
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
       assertThat(configuration.toString(), is(
-         "# Properties from System\n" +
-         "\n" +
          "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
          "dev.override.sys.properties=available\n" +
          "source=dev.override.sys.properties\n" +
