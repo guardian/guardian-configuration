@@ -21,40 +21,40 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static com.gu.conf.impl.InstallationConfiguration.INSTALLATION_PROPERTIES_LOCATION;
+import static com.gu.conf.impl.SetupConfiguration.SETUP_PROPERTIES_LOCATION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InstallationConfigurationTest {
+public class SetupConfigurationTest {
 
    @Mock private FileAndResourceLoader loader;
 
-   private InstallationConfiguration installationConfiguration() {
+   private SetupConfiguration installationConfiguration() {
       return installationConfiguration(new ConfigurationBuilder().toConfiguration());
    }
 
-   private InstallationConfiguration installationConfiguration(String key, String value) {
+   private SetupConfiguration installationConfiguration(String key, String value) {
       return installationConfiguration(new ConfigurationBuilder().
          property(key, value).
          toConfiguration());
    }
 
-   private InstallationConfiguration installationConfiguration(
+   private SetupConfiguration installationConfiguration(
       AbstractConfiguration installationProperties) {
-      when(loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION)).
+      when(loader.getConfigurationFrom(SETUP_PROPERTIES_LOCATION)).
          thenReturn(installationProperties);
 
-      return new InstallationConfiguration(loader);
+      return new SetupConfiguration(loader);
    }
 
    @Test
    public void shouldNotReturnTheValueOfTheIntServiceDomainSystemPropertyIfSet() throws Exception {
       try {
          System.setProperty("int.service.domain", "myintservicedomain");
-         InstallationConfiguration configuration = installationConfiguration();
+         SetupConfiguration configuration = installationConfiguration();
 
          assertThat(configuration.getServiceDomain(), is("default"));
       } finally {
@@ -65,7 +65,7 @@ public class InstallationConfigurationTest {
    @Test
    public void shouldReadValueFromInstallationPropertiesFile() throws Exception {
       assertThat(System.getProperty("int.service.domain"), is(nullValue()));
-      InstallationConfiguration configuration = installationConfiguration("INT_SERVICE_DOMAIN", "myservicedomain");
+      SetupConfiguration configuration = installationConfiguration("INT_SERVICE_DOMAIN", "myservicedomain");
 
       assertThat(configuration.getServiceDomain(), is("myservicedomain"));
    }
@@ -75,7 +75,7 @@ public class InstallationConfigurationTest {
    public void shouldNotReturnTheStageFromSystemPropertyIfSet() throws Exception {
       try {
          System.setProperty("stage", "SYSTEMPROPERTYSTAGE");
-         InstallationConfiguration configuration = installationConfiguration();
+         SetupConfiguration configuration = installationConfiguration();
 
          assertThat(configuration.getStage(), is("default"));
       } finally {
@@ -87,14 +87,14 @@ public class InstallationConfigurationTest {
    public void shouldReadStageFromInstallationPropertiesFileIfNoSystemPropertySet() throws Exception {
       assertThat(System.getProperty("stage"), is(nullValue()));
 
-      InstallationConfiguration configuration = installationConfiguration("STAGE", "STAGEFROMPROPERTIES");
+      SetupConfiguration configuration = installationConfiguration("STAGE", "STAGEFROMPROPERTIES");
 
       assertThat(configuration.getStage(), is("STAGEFROMPROPERTIES"));
    }
 
    @Test
    public void shouldDefaultWhenInstallationPropertiesFileExistsButDoesNotContainValue() throws Exception {
-      InstallationConfiguration configuration = installationConfiguration();
+      SetupConfiguration configuration = installationConfiguration();
       assertThat(configuration.getServiceDomain(), is("default"));
    }
 

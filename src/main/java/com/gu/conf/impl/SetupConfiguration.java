@@ -21,24 +21,21 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Provides information on the the nature of the environment that the machine forms a part of
- */
-class InstallationConfiguration extends AbstractConfiguration {
-   private static final Logger LOG = LoggerFactory.getLogger(InstallationConfiguration.class);
-   public static final String INSTALLATION_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
+class SetupConfiguration extends AbstractConfiguration {
+   private static final Logger LOG = LoggerFactory.getLogger(SetupConfiguration.class);
+   public static final String SETUP_PROPERTIES_LOCATION = "file:///etc/gu/install_vars";
 
    private AbstractConfiguration installation;
 
-   InstallationConfiguration() {
+   SetupConfiguration() {
       this(new FileAndResourceLoader());
    }
 
-   InstallationConfiguration(FileAndResourceLoader loader) {
+   SetupConfiguration(FileAndResourceLoader loader) {
       super("Installation");
 
-      LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
-      installation = loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION);
+      LOG.info("Loading setup properties from " + SETUP_PROPERTIES_LOCATION);
+      installation = loader.getConfigurationFrom(SETUP_PROPERTIES_LOCATION);
    }
 
    String getServiceDomain() {
@@ -48,7 +45,8 @@ class InstallationConfiguration extends AbstractConfiguration {
       }
 
       if (property == null) {
-         LOG.info("unable to find INT_SERVICE_DOMAIN in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
+         LOG.info("unable to find INT_SERVICE_DOMAIN in " +
+            SETUP_PROPERTIES_LOCATION + " defaulting to \"default\"");
          property = "default";
       }
 
@@ -62,7 +60,8 @@ class InstallationConfiguration extends AbstractConfiguration {
       }
 
       if (property == null) {
-         LOG.info("unable to find STAGE in " + INSTALLATION_PROPERTIES_LOCATION + " defaulting to \"default\"");
+         LOG.info("unable to find STAGE in " + SETUP_PROPERTIES_LOCATION +
+            " defaulting to \"default\"");
          property = "default";
       }
 

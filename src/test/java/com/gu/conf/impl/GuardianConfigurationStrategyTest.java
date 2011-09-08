@@ -35,88 +35,86 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GuardianConfigurationStrategyTest {
 
-   private static String DEV_OVERRIDE_SYS_PROPERTIES = String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
-   private static String SYS_PROPERTIES = "file:///etc/gu/webapp.properties";
-   private static String STAGE_PROPERTIES = "classpath:/conf/DEV.properties";
-   private static String ENVIRONMENTAL_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
-   private static String GLOBAL_PROPERTIES = "classpath:/conf/global.properties";
+   private static String SETUP_PROPERTIES = "file:/etc/gu/setup.properties";
+   
+   private static String DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES = String.format("file://%s/.gu/webapp.properties", System.getProperty("user.home"));
+   private static String OPERATIONS_PROPERTIES = "file:///etc/gu/webapp.properties";
+   private static String DEVELOPER_STAGE_BASED_PROPERTIES = "classpath:/conf/DEV.properties";
+   private static String DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES = "classpath:/conf/gudev.gnl.properties";
+   private static String DEVELOPER_COMMON_PROPERTIES = "classpath:/conf/global.properties";
 
-   private static String INSTALLATION_PROPERTIES = "file:/etc/gu/installation.properties";
-
-   @Mock
-   FileAndResourceLoader fileLoader;
-   @Mock
-   InstallationConfiguration installation;
+   @Mock FileAndResourceLoader fileLoader;
+   @Mock SetupConfiguration setup;
    GuardianConfigurationStrategy strategy;
 
    @Before
    public void setUp() throws IOException {
-      when(installation.getServiceDomain()).thenReturn("gudev.gnl");
-      when(installation.getStage()).thenReturn("DEV");
+      when(setup.getServiceDomain()).thenReturn("gudev.gnl");
+      when(setup.getStage()).thenReturn("DEV");
 
-      // DEV_OVERRIDE_SYS_PROPERTIES
+      // DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES
       AbstractConfiguration configuration = new ConfigurationBuilder()
-         .identifier(DEV_OVERRIDE_SYS_PROPERTIES)
-         .property("dev.override.sys.properties", "available")
-         .property("source", "dev.override.sys.properties")
+         .identifier(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)
+         .property("developer.account.override.properties", "available")
+         .property("source", "developer.account.override.properties")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(DEV_OVERRIDE_SYS_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).thenReturn(configuration);
 
-      // SYS_PROPERTIES
+      // OPERATIONS_PROPERTIES
       configuration = new ConfigurationBuilder()
-         .identifier(SYS_PROPERTIES)
-         .property("sys.properties", "available")
-         .property("source", "sys.properties")
+         .identifier(OPERATIONS_PROPERTIES)
+         .property("operations.properties", "available")
+         .property("source", "operations.properties")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(SYS_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(OPERATIONS_PROPERTIES)).thenReturn(configuration);
 
-      // STAGE_PROPERTIES
+      // DEVELOPER_STAGE_BASED_PROPERTIES
       configuration = new ConfigurationBuilder()
-         .identifier(STAGE_PROPERTIES)
-         .property("stage.properties", "available")
-         .property("source", "stage.properties")
-         .property("webapp.stage.properties.precendence", "stage.properties")
+         .identifier(DEVELOPER_STAGE_BASED_PROPERTIES)
+         .property("developer.stage.based.properties", "available")
+         .property("source", "developer.stage.based.properties")
+         .property("developer.stage.based.properties.precendence", "developer.stage.based.properties")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(STAGE_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(DEVELOPER_STAGE_BASED_PROPERTIES)).thenReturn(configuration);
 
-      // ENVIRONMENTAL_PROPERTIES
+      // DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES
       configuration = new ConfigurationBuilder()
-         .identifier(ENVIRONMENTAL_PROPERTIES)
-         .property("env.dev.properties", "available")
-         .property("source", "env.dev.properties")
-         .property("webapp.stage.properties.precendence", "env.dev.properties")
+         .identifier(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)
+         .property("developer.service.domain.properties", "available")
+         .property("source", "developer.service.domain.properties")
+         .property("developer.stage.based.properties.precendence", "developer.service.domain.properties")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(ENVIRONMENTAL_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)).thenReturn(configuration);
 
-      // GLOBAL_DEV_PROPERTIES
+      // DEVELOPER_COMMON_PROPERTIES
       configuration = new ConfigurationBuilder()
-         .identifier(GLOBAL_PROPERTIES)
-         .property("global.dev.properties", "available")
-         .property("source", "global.dev.properties")
+         .identifier(DEVELOPER_COMMON_PROPERTIES)
+         .property("developer.common.properties", "available")
+         .property("source", "developer.common.properties")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(GLOBAL_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(DEVELOPER_COMMON_PROPERTIES)).thenReturn(configuration);
 
-      // INSTALLATION_PROPERTIES
+      // SETUP_PROPERTIES
       configuration = new ConfigurationBuilder()
-         .identifier(INSTALLATION_PROPERTIES)
-         .property("installation.properties", "available")
-         .property("source", "installation.properties")
+         .identifier(SETUP_PROPERTIES)
+         .property("setup.properties", "available")
+         .property("source", "setup.properties")
          .property("int.service.domain", "gudev.gnl")
          .property("stage", "DEV")
          .toConfiguration();
-      when(fileLoader.getConfigurationFrom(INSTALLATION_PROPERTIES)).thenReturn(configuration);
+      when(fileLoader.getConfigurationFrom(SETUP_PROPERTIES)).thenReturn(configuration);
 
 
-      strategy = new GuardianConfigurationStrategy(fileLoader, installation);
+      strategy = new GuardianConfigurationStrategy(fileLoader, setup);
    }
 
    @Test
-   public void shouldCheckInstallationPropertiesAreNotAvailableToApplications() throws IOException, PropertyNotSetException {
+   public void shouldCheckSetupPropertiesAreNotAvailableToApplications() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.hasProperty("installation.properties"), is(false));
-      assertThat(configuration.getStringProperty("source"), not("installation.properties"));
+      assertThat(configuration.hasProperty("setup.properties"), is(false));
+      assertThat(configuration.getStringProperty("source"), not("setup.properties"));
       assertThat(configuration.hasProperty("int.service.domain"), is(false));
       assertThat(configuration.hasProperty("stage"), is(false));
    }
@@ -128,7 +126,7 @@ public class GuardianConfigurationStrategyTest {
          System.setProperty("random.system.property", "meh");
          Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
-         assertThat(configuration.getStringProperty("source"), is("dev.override.sys.properties"));
+         assertThat(configuration.getStringProperty("source"), is("developer.account.override.properties"));
          assertThat(configuration.hasProperty("random.system.property"), is(false));
       } finally {
          System.clearProperty("source");
@@ -137,54 +135,54 @@ public class GuardianConfigurationStrategyTest {
    }
 
    @Test
-   public void shouldLoadDevOverrideSysProperties() throws IOException, PropertyNotSetException {
+   public void shouldLoadDeveloperAccountOverrideProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("dev.override.sys.properties"), is("available"));
+      assertThat(configuration.getStringProperty("developer.account.override.properties"), is("available"));
       assertThat(configuration.hasProperty("no-property"), is(false));
    }
 
    @Test
-   public void shouldLoadSystemWebappProperties() throws IOException, PropertyNotSetException {
+   public void shouldLoadOperationsProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("sys.properties"), is("available"));
+      assertThat(configuration.getStringProperty("operations.properties"), is("available"));
       assertThat(configuration.hasProperty("no-property"), is(false));
    }
 
    @Test
-   public void shouldLoadWebappStageProperties() throws IOException, PropertyNotSetException {
+   public void shouldLoadDeveloperStageBasedProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("stage.properties"), is("available"));
+      assertThat(configuration.getStringProperty("developer.stage.based.properties"), is("available"));
       assertThat(configuration.hasProperty("no-property"), is(false));
    }
 
    @Test
-   public void shouldLoadWebappServiceDomainProperties() throws IOException, PropertyNotSetException {
+   public void shouldLoadDeveloperServiceDomainBasedProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("env.dev.properties"), is("available"));
+      assertThat(configuration.getStringProperty("developer.service.domain.properties"), is("available"));
       assertThat(configuration.hasProperty("no-property"), is(false));
    }
 
    @Test
-   public void shouldLoadWebappGlobalProperties() throws IOException, PropertyNotSetException {
+   public void shouldLoadDeveloperCommonProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
 
       assertThat(configuration, notNullValue());
-      assertThat(configuration.getStringProperty("global.dev.properties"), is("available"));
+      assertThat(configuration.getStringProperty("developer.common.properties"), is("available"));
       assertThat(configuration.hasProperty("no-property"), is(false));
    }
 
    @Test
-   public void shouldProvideWebappStagePropertiesInPreferenceToServiceDomainProperties() throws IOException, PropertyNotSetException {
+   public void shouldProvideDeveloperStageBasedPropertiesInPreferenceToServiceDomainBasedProperties() throws IOException, PropertyNotSetException {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
-      assertThat(configuration.getStringProperty("webapp.stage.properties.precendence"), is("stage.properties"));
+      assertThat(configuration.getStringProperty("developer.stage.based.properties.precendence"), is("developer.stage.based.properties"));
    }
 
    @Test
@@ -197,21 +195,21 @@ public class GuardianConfigurationStrategyTest {
       Configuration configuration = strategy.getConfiguration("webapp", "/conf");
       assertThat(configuration.toString(), is(
          "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
-         "dev.override.sys.properties=available\n" +
-         "source=dev.override.sys.properties\n" +
+         "developer.account.override.properties=available\n" +
+         "source=developer.account.override.properties\n" +
          "\n" +
          "# Properties from file:///etc/gu/webapp.properties\n" +
-         "sys.properties=available\n" +
+         "operations.properties=available\n" +
          "\n" +
          "# Properties from classpath:/conf/DEV.properties\n" +
-         "stage.properties=available\n" +
-         "webapp.stage.properties.precendence=stage.properties\n" +
+         "developer.stage.based.properties=available\n" +
+         "developer.stage.based.properties.precendence=developer.stage.based.properties\n" +
          "\n" +
          "# Properties from classpath:/conf/gudev.gnl.properties\n" +
-         "env.dev.properties=available\n" +
+         "developer.service.domain.properties=available\n" +
          "\n" +
          "# Properties from classpath:/conf/global.properties\n" +
-         "global.dev.properties=available\n" +
+         "developer.common.properties=available\n" +
          "\n"
       ));
 

@@ -27,32 +27,32 @@ public class GuardianConfigurationStrategy {
    private static final Logger LOG = LoggerFactory.getLogger(GuardianConfigurationStrategy.class);
 
    private final FileAndResourceLoader loader;
-   private final InstallationConfiguration installation;
+   private final SetupConfiguration setup;
 
    public GuardianConfigurationStrategy() throws IOException {
       this(new FileAndResourceLoader());
    }
 
    GuardianConfigurationStrategy(FileAndResourceLoader loader) throws IOException {
-      this(loader, new InstallationConfiguration());
+      this(loader, new SetupConfiguration());
    }
 
-   GuardianConfigurationStrategy(FileAndResourceLoader loader, InstallationConfiguration installation) throws IOException {
+   GuardianConfigurationStrategy(FileAndResourceLoader loader, SetupConfiguration setup) throws IOException {
       this.loader = loader;
-      this.installation = installation;
+      this.setup = setup;
 
-      LOG.info("INT_SERVICE_DOMAIN: " + installation.getServiceDomain());
+      LOG.info("INT_SERVICE_DOMAIN: " + setup.getServiceDomain());
    }
 
    public Configuration getConfiguration(String applicationName, String webappConfDirectory) throws IOException {
       LOG.info("Configuring application {} using classpath configuration directory {}", applicationName, webappConfDirectory);
 
       AbstractConfiguration properties = CompositeConfiguration.from(
-         getUserOverrideProperties(applicationName),
-         getSysProperties(applicationName),
-         getStageProperties(webappConfDirectory),
-         getServiceDomainProperties(webappConfDirectory),
-         getGlobalProperties(webappConfDirectory)
+         getDeveloperAccountOverrideProperties(applicationName),
+         getOperationsProperties(applicationName),
+         getDeveloperStageBasedProperties(webappConfDirectory),
+         getDeveloperServiceDomainBasedProperties(webappConfDirectory),
+         getDeveloperCommonProperties(webappConfDirectory)
       );
 
       AbstractConfiguration placeholderProcessed = new PlaceholderProcessingConfiguration(properties);
@@ -62,46 +62,41 @@ public class GuardianConfigurationStrategy {
       return placeholderProcessed;
    }
 
-   private AbstractConfiguration getSystemProperties() {
-      LOG.info("Loading override System properties");
-      return new SystemPropertiesConfiguration();
-   }
-
-   private AbstractConfiguration getUserOverrideProperties(String applicationName) throws IOException {
+   private AbstractConfiguration getDeveloperAccountOverrideProperties(String applicationName) throws IOException {
       String home = System.getProperty("user.home");
       String propertiesLocation = String.format("file://%s/.gu/%s.properties", home, applicationName);
 
-      LOG.info("Loading user override properties from " + propertiesLocation);
+      LOG.info("Loading developer account override properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
-   private AbstractConfiguration getSysProperties(String applicationName) throws IOException {
+   private AbstractConfiguration getOperationsProperties(String applicationName) throws IOException {
       String propertiesLocation = String.format("file:///etc/gu/%s.properties", applicationName);
 
-      LOG.info("Loading machine properties from " + propertiesLocation);
+      LOG.info("Loading operations properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
-   private AbstractConfiguration getStageProperties(String confPrefix) throws IOException {
-      String stage = installation.getStage();
+   private AbstractConfiguration getDeveloperStageBasedProperties(String confPrefix) throws IOException {
+      String stage = setup.getStage();
       String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, stage);
 
-      LOG.info("Loading webapp service domain properties from " + propertiesLocation);
+      LOG.info("Loading developer stage based properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
-   private AbstractConfiguration getServiceDomainProperties(String confPrefix) throws IOException {
-      String serviceDomain = installation.getServiceDomain();
+   private AbstractConfiguration getDeveloperServiceDomainBasedProperties(String confPrefix) throws IOException {
+      String serviceDomain = setup.getServiceDomain();
       String propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain);
 
-      LOG.info("Loading webapp service domain properties from " + propertiesLocation);
+      LOG.info("Loading developer service domain based properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
-   private AbstractConfiguration getGlobalProperties(String webappConfDirectory) throws IOException {
+   private AbstractConfiguration getDeveloperCommonProperties(String webappConfDirectory) throws IOException {
       String propertiesLocation = String.format("classpath:%s/global.properties", webappConfDirectory);
 
-      LOG.info("Loading webapp global properties from " + propertiesLocation);
+      LOG.info("Loading developer common properties from " + propertiesLocation);
       return loader.getConfigurationFrom(propertiesLocation);
    }
 
