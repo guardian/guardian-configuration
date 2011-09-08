@@ -51,12 +51,12 @@ public class InstallationConfigurationTest {
    }
 
    @Test
-   public void shouldReturnTheValueOfTheIntServiceDomainSystemPropertyIfSet() throws Exception {
+   public void shouldNotReturnTheValueOfTheIntServiceDomainSystemPropertyIfSet() throws Exception {
       try {
          System.setProperty("int.service.domain", "myintservicedomain");
          InstallationConfiguration configuration = installationConfiguration();
 
-         assertThat(configuration.getServiceDomain(), is("myintservicedomain"));
+         assertThat(configuration.getServiceDomain(), is("default"));
       } finally {
          System.clearProperty("int.service.domain");
       }
@@ -72,12 +72,12 @@ public class InstallationConfigurationTest {
 
 
    @Test
-   public void shouldReturnTheStageFromSystemPropertyIfSet() throws Exception {
+   public void shouldNotReturnTheStageFromSystemPropertyIfSet() throws Exception {
       try {
          System.setProperty("stage", "SYSTEMPROPERTYSTAGE");
          InstallationConfiguration configuration = installationConfiguration();
 
-         assertThat(configuration.getStage(), is("SYSTEMPROPERTYSTAGE"));
+         assertThat(configuration.getStage(), is("default"));
       } finally {
          System.clearProperty("stage");
       }

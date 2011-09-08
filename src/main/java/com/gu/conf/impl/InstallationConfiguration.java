@@ -38,10 +38,7 @@ class InstallationConfiguration extends AbstractConfiguration {
       super("Installation");
 
       LOG.info("Loading installation properties from " + INSTALLATION_PROPERTIES_LOCATION);
-      installation = CompositeConfiguration.from(
-         new SystemPropertiesConfiguration(),
-         loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION)
-      );
+      installation = loader.getConfigurationFrom(INSTALLATION_PROPERTIES_LOCATION);
    }
 
    String getServiceDomain() {
