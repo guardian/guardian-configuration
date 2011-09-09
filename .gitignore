@@ -1,6 +1,8 @@
-/target
+target
 *.iml
 *.ipr
 *.iws
 *~
-
+.idea
+project/boot
+project/plugins/boot
