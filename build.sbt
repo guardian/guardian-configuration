@@ -8,6 +8,8 @@ scalaVersion := "2.8.1"
 
 crossScalaVersions ++= Seq("2.9.0-1", "2.9.1")
 
+seq(ScalariformPlugin.settings: _*)
+
 resolvers ++= Seq(
   "Scala Tools Repository" at "http://scala-tools.org/repo-releases",
   "Guardian GitHub" at "http://guardian.github.com/maven/repo-releases"
