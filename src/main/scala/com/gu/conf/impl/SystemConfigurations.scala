@@ -19,21 +19,12 @@ import java.util.Properties
 import scala.collection.JavaConversions._
 
 private[conf] object SystemEnvironmentConfiguration {
-  val environment: Map[String, String] = {
-    var env = Map[String, String]()
-    System.getenv().keySet() foreach { key =>
-      env = env + (key -> (System getenv key))
-    }
-
-    env
-  }
+  val environment = System.getenv().toMap
 }
 
 private[conf] class SystemEnvironmentConfiguration(
   override val identifier: String = "Environment",
   val environment: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(identifier) {
-
-  override def getIdentifier(): String = identifier
 
   environment foreach {
     case (key, value) => add(key, value)
