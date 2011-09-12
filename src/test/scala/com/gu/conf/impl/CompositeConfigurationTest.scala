@@ -16,17 +16,13 @@
 package com.gu.conf.impl
 
 import com.gu.conf.Configuration
-import org.junit.Before
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
+import org.scalatest.BeforeAndAfter
 
-class CompositeConfigurationTest extends AbstractConfigurationTestBase {
+class CompositeConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
   var secondary: Configuration = _
 
-  @Before
-  def setUp() {
+  before {
     val conf1 = new MapBasedConfiguration("primary")
     conf1.add("precendence.test.property", "first")
     conf1.add("double.property", "25.0")
@@ -42,19 +38,16 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase {
     secondary = conf2
   }
 
-  @Test
-  def shouldGetPropertySource() {
-    assertThat(configuration.getPropertySource("nonnumeric.property").get, is(secondary))
+  test("should get property source") {
+    configuration.getPropertySource("nonnumeric.property").get should be(secondary)
   }
 
-  @Test
-  def shouldGivePrecedenceToFirstConfiguration() {
-    assertThat(configuration.getStringProperty("precendence.test.property").get, is("first"))
+  test("should give precedence to first configuration") {
+    configuration("precendence.test.property") should be("first")
   }
 
-  @Test
-  def shouldToStringInStandardFormat() {
-    val expected: String =
+  test("should toString() in standard format") {
+    configuration.toString() should be(
       "# Properties from primary\n" +
         "double.property=25.0\n" +
         "precendence.test.property=first\n" +
@@ -64,13 +57,10 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase {
         "list.property=rimbaud,verlaine\n" +
         "nonnumeric.property=qwe\n" +
         "utility.property=utility\n" +
-        "\n"
-
-    assertThat(configuration.toString(), is(expected))
+        "\n")
   }
 
-  @Test
-  def shouldFactoryCompositeConfigurations() {
+  test("should factory composite configurations") {
     val conf1 = new MapBasedConfiguration("conf1")
     conf1.add("conf1.property", "conf1")
 
@@ -91,14 +81,14 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase {
 
     val configuration = CompositeConfiguration.from(conf1, conf2, conf3, conf4)
 
-    assertThat(configuration.size(), is(4))
-    assertThat(configuration.getStringProperty("conf1.property").get, is("conf1"))
-    assertThat(configuration.getPropertySource("conf1.property").get, is(conf1.asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("conf2.property").get, is("conf2"))
-    assertThat(configuration.getPropertySource("conf2.property").get, is(conf2.asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("conf3.property").get, is("conf3"))
-    assertThat(configuration.getPropertySource("conf3.property").get, is(conf3.asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("conf4.property").get, is("conf4"))
-    assertThat(configuration.getPropertySource("conf4.property").get, is(conf4.asInstanceOf[Object]))
+    configuration.size should be(4)
+    configuration("conf1.property") should be("conf1")
+    configuration.getPropertySource("conf1.property").get should be(conf1)
+    configuration("conf2.property") should be("conf2")
+    configuration.getPropertySource("conf2.property").get should be(conf2)
+    configuration("conf3.property") should be("conf3")
+    configuration.getPropertySource("conf3.property").get should be(conf3)
+    configuration("conf4.property") should be("conf4")
+    configuration.getPropertySource("conf4.property").get should be(conf4)
   }
 }

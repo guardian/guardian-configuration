@@ -15,17 +15,16 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
+import org.scalatest.FunSuite
+import org.scalatest.matchers.ShouldMatchers
 
-class IdeologicalPurityTest {
-  @Test
-  def shouldBeIdeologicallyPure() {
+class IdeologicalPurityTest extends FunSuite with ShouldMatchers {
+
+  test("should be ideologically pure") {
     val configuration = new ConfigurationBuilder().
       property("property", "theft").
       toConfiguration
 
-    assertThat(configuration.getStringProperty("property").get, is("theft"))
+    configuration.getStringProperty("property").get should be("theft")
   }
 }

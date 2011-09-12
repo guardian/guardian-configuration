@@ -15,20 +15,14 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.runners.MockitoJUnitRunner
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
-import org.hamcrest.Matchers.nullValue
 import org.mockito.Mockito.when
+import org.scalatest.{ FunSuite, BeforeAndAfter }
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.mock.MockitoSugar
 
-@RunWith(classOf[MockitoJUnitRunner])
-class SetupConfigurationTest {
+class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSugar with BeforeAndAfter {
 
-  @Mock
-  var loader: FileAndResourceLoader = _
+  var loader = mock[FileAndResourceLoader]
 
   private def installationConfiguration(): SetupConfiguration = {
     installationConfiguration(new ConfigurationBuilder().toConfiguration)
@@ -43,43 +37,38 @@ class SetupConfigurationTest {
     new SetupConfiguration(loader)
   }
 
-  @Test
-  def shouldNotReturnTheValueOfTheIntServiceDomainSystemPropertyIfSet() {
+  test("should not return the value of the int service domain system property if set") {
     try {
       System.setProperty("int.service.domain", "myintservicedomain")
-      assertThat(installationConfiguration().getServiceDomain, is("default"))
+      installationConfiguration().getServiceDomain should be("default")
     } finally {
       System.clearProperty("int.service.domain")
     }
   }
 
-  @Test
-  def shouldReadValueFromInstallationPropertiesFile() {
-    assertThat(System.getProperty("int.service.domain"), nullValue())
+  test("should read value from installation properties file") {
+    System.getProperty("int.service.domain") should be(null)
 
     val configuration = installationConfiguration("INT_SERVICE_DOMAIN", "myservicedomain")
-    assertThat(configuration.getServiceDomain, is("myservicedomain"))
+    configuration.getServiceDomain should be("myservicedomain")
   }
 
-  @Test
-  def shouldNotReturnTheStageFromSystemPropertyIfSet() {
+  test("should not return the stage from system property if set") {
     try {
       System.setProperty("stage", "SYSTEMPROPERTYSTAGE")
-      assertThat(installationConfiguration().getStage, is("default"))
+      installationConfiguration().getStage should be("default")
     } finally {
       System.clearProperty("stage")
     }
   }
 
-  @Test
-  def shouldReadStageFromInstallationPropertiesFileIfNoSystemPropertySet() {
-    assertThat(System.getProperty("stage"), nullValue())
+  test("should read stage from installation properties file if no system property set") {
+    System.getProperty("stage") should be(null)
     val configuration = installationConfiguration("STAGE", "STAGEFROMPROPERTIES")
-    assertThat(configuration.getStage, is("STAGEFROMPROPERTIES"))
+    configuration.getStage should be("STAGEFROMPROPERTIES")
   }
 
-  @Test
-  def shouldDefaultWhenInstallationPropertiesFileExistsButDoesNotContainValue() {
-    assertThat(installationConfiguration().getServiceDomain, is("default"))
+  test("should default when installation properties file exists but does not contain value") {
+    installationConfiguration().getServiceDomain should be("default")
   }
 }

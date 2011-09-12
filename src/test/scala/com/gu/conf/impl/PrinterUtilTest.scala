@@ -15,27 +15,23 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Test
-import org.hamcrest.Matchers.endsWith
-import org.hamcrest.Matchers.is
-import org.junit.Assert.assertThat
+import org.scalatest.FunSuite
+import org.scalatest.matchers.ShouldMatchers
+import com.gu.conf.impl.PrinterUtil.propertyString
 
-class PrinterUtilTest {
-  @Test
-  def shouldReplacePasswordWithPlaceholder() {
-    assertThat(PrinterUtil.propertyString("password", "abc123"), endsWith("*** PASSWORD ****\n"))
-    assertThat(PrinterUtil.propertyString("foo.password.blah", "abc123"), endsWith("*** PASSWORD ****\n"))
-    assertThat(PrinterUtil.propertyString("blah.pass.foo", "abc123"), endsWith("*** PASSWORD ****\n"))
+class PrinterUtilTest extends FunSuite with ShouldMatchers {
+  test("should replace password with placeholder") {
+    propertyString("password", "abc123") should endWith("*** PASSWORD ****\n")
+    propertyString("foo.password.blah", "abc123") should endWith("*** PASSWORD ****\n")
+    propertyString("blah.pass.foo", "abc123") should endWith("*** PASSWORD ****\n")
   }
 
-  @Test
-  def shouldReplaceKeyWithPlaceholder() {
-    assertThat(PrinterUtil.propertyString("key", "abc123"), endsWith("*** KEY ****\n"))
-    assertThat(PrinterUtil.propertyString("foo.key.blah", "abc123"), endsWith("*** KEY ****\n"))
+  test("should replace key with placeholder") {
+    propertyString("key", "abc123") should endWith("*** KEY ****\n")
+    propertyString("foo.key.blah", "abc123") should endWith("*** KEY ****\n")
   }
 
-  @Test
-  def shouldFormatKeyValue() {
-    assertThat(PrinterUtil.propertyString("akey", "value"), is("akey=value\n"))
+  test("should format key value") {
+    propertyString("akey", "value") should be("akey=value\n")
   }
 }

@@ -15,15 +15,14 @@
  */
 package com.gu.conf.impl
 
-import java.util.Collections
-import org.junit.After
-import org.junit.Before
 import scala.collection.JavaConversions._
+import org.scalatest.BeforeAndAfter
 
-class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase {
+class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
-  @Before
-  def setUp() {
+  private var oldEnvironment: Map[String, String] = _
+
+  before {
     oldEnvironment = Map()
     System.getenv().keySet() foreach { key =>
       oldEnvironment = oldEnvironment + (key -> System.getenv(key))
@@ -45,7 +44,7 @@ class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase {
   private def setEnvironment(environment: Map[String, String])() {
     val actualEnv = System.getenv
 
-    classOf[Collections].getDeclaredClasses filter {
+    classOf[java.util.Collections].getDeclaredClasses filter {
       _.getName == "java.util.Collections$UnmodifiableMap"
     } foreach { clazz =>
       val backingCollectionfield = clazz.getDeclaredField("m")
@@ -57,10 +56,7 @@ class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase {
     }
   }
 
-  @After
-  def tearDown() {
+  after {
     setEnvironment(oldEnvironment)
   }
-
-  private var oldEnvironment: Map[String, String] = null
 }

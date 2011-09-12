@@ -16,15 +16,11 @@
 package com.gu.conf.impl
 
 import com.gu.conf.fixtures.PropertiesBuilder
-import org.junit.Before
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
+import org.scalatest.BeforeAndAfter
 
-class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase {
+class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
-  @Before
-  def setUp() {
+  before {
     val builder = new PropertiesBuilder
     builder.property("precendence.test.property", "first")
     builder.property("double.property", "25.0")
@@ -36,14 +32,12 @@ class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase
     configuration = new PropertiesFileBasedConfiguration("properties", builder.toProperties)
   }
 
-  @Test
-  def shouldGetPropertySource() {
-    assertThat(configuration.getPropertySource("nonnumeric.property").get, is(configuration.asInstanceOf[Object]))
+  test("should get property source") {
+    configuration.getPropertySource("nonnumeric.property").get should be(configuration)
   }
 
-  @Test
-  def shouldToStringInStandardFormat() {
-    val expected =
+  test("should toString() in standard format") {
+    configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
         "double.property=25.0\n" +
         "integer.property=23\n" +
@@ -51,8 +45,6 @@ class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase
         "nonnumeric.property=qwe\n" +
         "precendence.test.property=first\n" +
         "utility.property=utility\n" +
-        "\n"
-
-    assertThat(configuration.toString(), is(expected))
+        "\n")
   }
 }

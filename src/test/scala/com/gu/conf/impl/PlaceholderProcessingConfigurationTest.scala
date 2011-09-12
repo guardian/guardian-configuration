@@ -15,26 +15,18 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.runners.MockitoJUnitRunner
-import org.mockito.stubbing.Answer
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
-import org.mockito.Matchers.anyString
+import org.scalatest.BeforeAndAfter
+import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito.when
+import org.mockito.stubbing.Answer
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.Matchers.anyString
 
-@RunWith(classOf[MockitoJUnitRunner])
-class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBase {
+class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBase with MockitoSugar with BeforeAndAfter {
 
-  @Mock
-  var placeholderResolver: PlaceholderResolver = _
+  var placeholderResolver = mock[PlaceholderResolver]
 
-  @Before
-  def setUp() {
+  before {
     val mapBasedConfiguration = new MapBasedConfiguration("test")
     mapBasedConfiguration.add("double.property", "25.0")
     mapBasedConfiguration.add("precendence.test.property", "second")
@@ -53,15 +45,13 @@ class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBa
     configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, placeholderResolver)
   }
 
-  @Test
-  def shouldReplacePlaceholderWithResolvedValue() {
-    assertThat(configuration.hasProperty("utility.property"), is(true))
-    assertThat(configuration.getStringProperty("utility.property").get, is("has a resolved placeholder"))
+  test("should replace placeholder with resolved value") {
+    configuration.hasProperty("utility.property") should be(true)
+    configuration("utility.property") should be("has a resolved placeholder")
   }
 
-  @Test
-  def shouldToStringInStandardFormat() {
-    val expected =
+  test("should toString() in standard format") {
+    configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
         "double.property=25.0\n" +
         "integer.property=23\n" +
@@ -69,8 +59,6 @@ class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBa
         "nonnumeric.property=qwe\n" +
         "precendence.test.property=second\n" +
         "utility.property=has a resolved placeholder\n" +
-        "\n"
-
-    assertThat(configuration.toString(), is(expected))
+        "\n")
   }
 }

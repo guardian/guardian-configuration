@@ -15,14 +15,11 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Before
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
+import org.scalatest.BeforeAndAfter
 
-class MapBasedConfigurationTest extends AbstractConfigurationTestBase {
-  @Before
-  def setUp() {
+class MapBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
+
+  before {
     val mapBasedConfiguration = new MapBasedConfiguration("test")
     mapBasedConfiguration.add("precendence.test.property", "first")
     mapBasedConfiguration.add("double.property", "25.0")
@@ -35,19 +32,16 @@ class MapBasedConfigurationTest extends AbstractConfigurationTestBase {
     configuration = mapBasedConfiguration
   }
 
-  @Test
-  def shouldGetPropertySource() {
-    assertThat(configuration.getPropertySource("nonnumeric.property").get, is(configuration))
+  test("should get property source") {
+    configuration.getPropertySource("nonnumeric.property").get should be(configuration)
   }
 
-  @Test
-  def shouldNotRespectFirstDeclarationPrecedenceInGetProperty() {
-    assertThat(configuration.getStringProperty("precendence.test.property").get, is("second"))
+  test("should not respect first declaration precedence in get property") {
+    configuration("precendence.test.property") should be("second")
   }
 
-  @Test
-  def shouldToStringInStandardFormat() {
-    val expected =
+  test("should toString() in standard format") {
+    configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
         "double.property=25.0\n" +
         "integer.property=23\n" +
@@ -55,8 +49,6 @@ class MapBasedConfigurationTest extends AbstractConfigurationTestBase {
         "nonnumeric.property=qwe\n" +
         "precendence.test.property=second\n" +
         "utility.property=utility\n" +
-        "\n"
-
-    assertThat(configuration.toString(), is(expected))
+        "\n")
   }
 }

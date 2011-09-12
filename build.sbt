@@ -22,12 +22,9 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.hamcrest" % "hamcrest-all" % "1.1" % "test",
+  "org.scalatest" %% "scalatest" % "1.5.1" % "test",
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
-  "junit" % "junit" % "4.8.2" % "test",
-  "com.google.collections" % "google-collections" % "1.0" % "test",
-  "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
-  "com.novocode" % "junit-interface" % "0.6" %  "test->default"
+  "org.slf4j" % "slf4j-simple" % "1.6.1" % "test"
 )
 
 publishTo <<= (version) { version: String =>

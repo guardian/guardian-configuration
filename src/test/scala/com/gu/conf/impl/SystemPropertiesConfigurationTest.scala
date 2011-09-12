@@ -15,12 +15,10 @@
  */
 package com.gu.conf.impl
 
-import org.junit.After
-import org.junit.Before
+import org.scalatest.BeforeAndAfter
 
-class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase {
-  @Before
-  def setUp() {
+class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
+  before {
     System.setProperty("double.property", "25.0")
     System.setProperty("precendence.test.property", "second")
     System.setProperty("integer.property", "23")
@@ -38,8 +36,7 @@ class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase {
     configuration = new ProjectedConfiguration(new SystemPropertiesConfiguration, projectionNames)
   }
 
-  @After
-  def tearDown() {
+  after {
     configuration.getPropertyNames foreach { property =>
       System.clearProperty(property)
     }

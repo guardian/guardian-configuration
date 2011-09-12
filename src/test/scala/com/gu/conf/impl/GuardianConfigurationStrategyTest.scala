@@ -16,17 +16,12 @@
 package com.gu.conf.impl
 
 import com.gu.conf.fixtures.PropertiesBuilder
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.runners.MockitoJUnitRunner
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers._
 import org.mockito.Mockito.when
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.mock.MockitoSugar
+import org.scalatest.{ BeforeAndAfter, FunSuite }
 
-@RunWith(classOf[MockitoJUnitRunner])
-class GuardianConfigurationStrategyTest {
+class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers with MockitoSugar with BeforeAndAfter {
 
   val SETUP_PROPERTIES = "file:/etc/gu/setup.properties"
 
@@ -36,15 +31,12 @@ class GuardianConfigurationStrategyTest {
   val DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES = "classpath:/conf/gudev.gnl.properties"
   val DEVELOPER_COMMON_PROPERTIES = "classpath:/conf/global.properties"
 
-  @Mock
-  var fileLoader: FileAndResourceLoader = _
-  @Mock
-  var setup: SetupConfiguration = _
+  var fileLoader = mock[FileAndResourceLoader]
+  var setup = mock[SetupConfiguration]
 
   var strategy: GuardianConfigurationStrategy = _
 
-  @Before
-  def setUp() {
+  before {
     when(setup.getServiceDomain).thenReturn("gudev.gnl")
     when(setup.getStage).thenReturn("DEV")
 
@@ -97,88 +89,95 @@ class GuardianConfigurationStrategyTest {
     strategy = new GuardianConfigurationStrategy(fileLoader, setup)
   }
 
-  @Test
-  def shouldCheckSetupPropertiesAreNotAvailableToApplications() {
+  test("should check setup properties are not available to applications") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.hasProperty("setup.properties"), is(false))
-    assertThat(configuration.getStringProperty("source").get, not("setup.properties"))
-    assertThat(configuration.hasProperty("int.service.domain"), is(false))
-    assertThat(configuration.hasProperty("stage"), is(false))
+    configuration should not be (null)
+    configuration.hasProperty("setup.properties") should be(false)
+    configuration("source") should not be ("setup.properties")
+    configuration.hasProperty("int.service.domain") should be(false)
+    configuration.hasProperty("stage") should be(false)
   }
 
-  @Test
-  def shouldNotOverridePropertiesWithSystemPropertiesIfDefined() {
+  test("should not override properties with system properties if defined") {
     try {
       System.setProperty("source", "system.override.property")
       System.setProperty("random.system.property", "meh")
 
       val configuration = strategy.getConfiguration("webapp", "/conf")
 
-      assertThat(configuration.getStringProperty("source").get, is("developer.account.override.properties"))
-      assertThat(configuration.hasProperty("random.system.property"), is(false))
+      configuration("source") should be("developer.account.override.properties")
+      configuration.hasProperty("random.system.property") should be(false)
     } finally {
       System.clearProperty("source")
       System.clearProperty("random.system.property")
     }
   }
 
-  @Test
-  def shouldLoadDeveloperAccountOverrideProperties() {
+  test("should load developer account override properties") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.getStringProperty("developer.account.override.properties").get, is("available"))
-    assertThat(configuration.hasProperty("no-property"), is(false))
+    configuration should not be (null)
+    configuration("developer.account.override.properties") should be("available")
+    configuration.hasProperty("no-property") should be(false)
   }
 
-  @Test
-  def shouldLoadOperationsProperties() {
+  test("should load operations properties") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.getStringProperty("operations.properties").get, is("available"))
-    assertThat(configuration.hasProperty("no-property"), is(false))
+    configuration should not be (null)
+    configuration("operations.properties") should be("available")
+    configuration.hasProperty("no-property") should be(false)
   }
 
-  @Test
-  def shouldLoadDeveloperStageBasedProperties() {
+  test("should load developer properties(stage based)") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.getStringProperty("developer.stage.based.properties").get, is("available"))
-    assertThat(configuration.hasProperty("no-property"), is(false))
+    configuration should not be (null)
+    configuration("developer.stage.based.properties") should be("available")
+    configuration.hasProperty("no-property") should be(false)
   }
 
-  @Test
-  def shouldLoadDeveloperServiceDomainBasedProperties() {
+  test("should load developer properties(service domain based)") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.getStringProperty("developer.service.domain.properties").get, is("available"))
-    assertThat(configuration.hasProperty("no-property"), is(false))
+    configuration should not be (null)
+    configuration("developer.service.domain.properties") should be("available")
+    configuration.hasProperty("no-property") should be(false)
   }
 
-  @Test
-  def shouldLoadDeveloperCommonProperties() {
+  test("should load developer common properties") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration, notNullValue())
-    assertThat(configuration.getStringProperty("developer.common.properties").get, is("available"))
-    assertThat(configuration.hasProperty("no-property"), is(false))
+    configuration should not be (null)
+    configuration("developer.common.properties") should be("available")
+    configuration.hasProperty("no-property") should be(false)
   }
 
-  @Test
-  def shouldProvideDeveloperStageBasedPropertiesInPreferenceToServiceDomainBasedProperties() {
+  test("should provide developer stage based properties in preference to service domain based properties") {
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration.getStringProperty("developer.stage.based.properties.precendence").get,
-      is("developer.stage.based.properties"))
+    configuration("developer.stage.based.properties.precendence") should be("developer.stage.based.properties")
   }
 
-  @Test
-  def shouldHavePrettyToString() {
+  test("should have pretty toString()") {
     val system = System.getProperties
     System.setProperties(new PropertiesBuilder().
       property("user.home", system.getProperty("user.home")).
       toProperties)
 
     val configuration = strategy.getConfiguration("webapp", "/conf")
-    assertThat(configuration.toString, is("# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" + "developer.account.override.properties=available\n" + "source=developer.account.override.properties\n" + "\n" + "# Properties from file:///etc/gu/webapp.properties\n" + "operations.properties=available\n" + "\n" + "# Properties from classpath:/conf/DEV.properties\n" + "developer.stage.based.properties=available\n" + "developer.stage.based.properties.precendence=developer.stage.based.properties\n" + "\n" + "# Properties from classpath:/conf/gudev.gnl.properties\n" + "developer.service.domain.properties=available\n" + "\n" + "# Properties from classpath:/conf/global.properties\n" + "developer.common.properties=available\n" + "\n"))
+    configuration.toString should be(
+      "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
+        "developer.account.override.properties=available\n" +
+        "source=developer.account.override.properties\n" +
+        "\n" +
+        "# Properties from file:///etc/gu/webapp.properties\n" +
+        "operations.properties=available\n" +
+        "\n" +
+        "# Properties from classpath:/conf/DEV.properties\n" +
+        "developer.stage.based.properties=available\n" +
+        "developer.stage.based.properties.precendence=developer.stage.based.properties\n" +
+        "\n" +
+        "# Properties from classpath:/conf/gudev.gnl.properties\n" +
+        "developer.service.domain.properties=available\n" +
+        "\n" +
+        "# Properties from classpath:/conf/global.properties\n" +
+        "developer.common.properties=available\n" +
+        "\n")
 
     System.setProperties(system)
   }

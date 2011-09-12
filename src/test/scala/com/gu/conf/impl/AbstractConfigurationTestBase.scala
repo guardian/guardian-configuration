@@ -15,133 +15,108 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
-import org.junit.Assert.fail
+import org.scalatest.FunSuite
+import org.scalatest.matchers.ShouldMatchers
 
-trait AbstractConfigurationTestBase {
+trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
 
   var configuration: AbstractConfiguration = _
 
-  @Test
-  def shouldHaveCorrectSize() {
-    assertThat(configuration.size(), is(6))
+  test("should have correct size") {
+    configuration.size() should be(6)
   }
 
-  @Test
-  def shouldHaveCorrectTestData() {
-    assertThat(configuration.hasProperty("precendence.test.property"), is(true))
-    assertThat(configuration.hasProperty("utility.property"), is(true))
-    assertThat(configuration.getStringProperty("double.property").get, is("25.0"))
-    assertThat(configuration.getStringProperty("integer.property").get, is("23"))
-    assertThat(configuration.getStringProperty("nonnumeric.property").get, is("qwe"))
-    assertThat(configuration.getStringProperty("list.property").get, is("rimbaud,verlaine"))
+  test("should have correct test data") {
+    configuration.hasProperty("precendence.test.property") should be(true)
+    configuration.hasProperty("utility.property") should be(true)
+    configuration("double.property") should be("25.0")
+    configuration("integer.property") should be("23")
+    configuration("nonnumeric.property") should be("qwe")
+    configuration("list.property") should be("rimbaud,verlaine")
   }
 
-  @Test
-  def shouldGetNullForPropertySourceIfNotSet() {
-    assertThat(configuration.getPropertySource("nosuch.property"), is(None.asInstanceOf[Object]))
+  test("should get none for getPropertySource if not set") {
+    configuration.getPropertySource("nosuch.property") should be(None)
   }
 
-  @Test
-  def shouldGetFalseForHasPropertyIfNotSet() {
-    assertThat(configuration.hasProperty("nosuch.property"), is(false))
+  test("should get false for hasProperty if not set") {
+    configuration.hasProperty("nosuch.property") should be(false)
   }
 
-  @Test
-  def shouldGetTrueForHasPropertyIfSet() {
-    assertThat(configuration.hasProperty("nonnumeric.property"), is(true))
+  test("should get true for hasProperty if set") {
+    configuration.hasProperty("nonnumeric.property") should be(true)
   }
 
-  @Test
-  def shouldGetProperty() {
-    assertThat(configuration.getStringProperty("nonnumeric.property").get, is("qwe"))
+  test("should get property value") {
+    configuration("nonnumeric.property") should be("qwe")
   }
 
-  @Test
-  def shouldReturnNoneForPropertyIfNotSet() {
-    assertThat(configuration.getStringProperty("nosuch.property"), is(None.asInstanceOf[Object]))
+  test("should return none for property if not set") {
+    configuration.getStringProperty("nosuch.property") should be(None)
   }
 
-  @Test
-  def shouldGetDefaultForPropertyIfNotSet() {
-    assertThat(configuration.getStringProperty("nosuch.property", "default"), is("default"))
+  test("should get default for property if not set") {
+    configuration.getStringProperty("nosuch.property", "default") should be("default")
   }
 
-  @Test
-  def shouldGetIntegerProperty() {
-    assertThat(configuration.getIntegerProperty("integer.property").get, is(23))
+  test("should get integer property") {
+    configuration.getIntegerProperty("integer.property").get should be(23)
   }
 
-  @Test
-  def shouldReturnNoneForIntegerPropertyIfNotSet() {
-    assertThat(configuration.getIntegerProperty("nosuch.property"), is(None.asInstanceOf[Object]))
+  test("should return none for integer property if not set") {
+    configuration.getIntegerProperty("nosuch.property") should be(None)
   }
 
-  @Test
-  def shouldThrowForIntegerPropertyIfNotInteger() {
-    try {
+  test("should throw for integer property if not integer") {
+    evaluating {
       configuration.getIntegerProperty("double.property")
-      fail("exception expected")
-    } catch {
-      case _: NumberFormatException =>
-    }
+    } should produce[NumberFormatException]
 
-    try {
+    evaluating {
       configuration.getIntegerProperty("nonnumeric.property")
-      fail("exception expected")
-    } catch {
-      case _: NumberFormatException =>
-    }
+    } should produce[NumberFormatException]
   }
 
-  @Test
-  def shouldGetDefaultForIntegerPropertyIfNotSet() {
-    assertThat(configuration.getIntegerProperty("nosuch.property", 34), is(34))
+  test("should get default for integer property if not set") {
+    configuration.getIntegerProperty("nosuch.property", 34) should be(34)
   }
 
-  @Test
-  def shouldGetDefaultForIntegerPropertyIfNotInteger() {
-    assertThat(configuration.getIntegerProperty("double.property", 45), is(45))
-    assertThat(configuration.getIntegerProperty("nonnumeric.property", 65), is(65))
+  test("should get default for integer property if not integer") {
+    configuration.getIntegerProperty("double.property", 45) should be(45)
+    configuration.getIntegerProperty("nonnumeric.property", 65) should be(65)
   }
 
-  @Test
-  def shouldGetPropertyList() {
+  test("should get property list") {
     val properties = configuration.getStringPropertiesSplitByComma("list.property")
 
-    assertThat(properties.size, is(2))
-    assertThat(properties(0), is("rimbaud"))
-    assertThat(properties(1), is("verlaine"))
+    properties.size should be(2)
+    properties should contain("rimbaud")
+    properties should contain("verlaine")
   }
 
-  @Test
-  def shouldGetPropertyNames() {
+  test("should get property names") {
     val names = configuration.getPropertyNames
 
-    assertThat(names.size, is(6))
-    assertThat(names.contains("precendence.test.property"), is(true))
-    assertThat(names.contains("double.property"), is(true))
-    assertThat(names.contains("integer.property"), is(true))
-    assertThat(names.contains("nonnumeric.property"), is(true))
-    assertThat(names.contains("list.property"), is(true))
-    assertThat(names.contains("utility.property"), is(true))
+    names.size should be(6)
+    names should contain("precendence.test.property")
+    names should contain("double.property")
+    names should contain("integer.property")
+    names should contain("nonnumeric.property")
+    names should contain("list.property")
+    names should contain("utility.property")
   }
 
-  @Test
-  def shouldToPropertiesWithSameProperties() {
+  test("should toProperties() with same properties") {
     val properties = configuration.toProperties
 
-    assertThat(properties.size, is(configuration.size()))
+    properties.size should be(configuration.size())
     configuration.getPropertyNames foreach { property =>
-      assertThat(properties.getProperty(property), is(configuration.getStringProperty(property).get))
+      properties.getProperty(property) should be(configuration(property))
     }
 
   }
 
-  @Test
-  def shouldProjectCorrectly() {
+  test("should project correctly") {
     val projectionNames = Set(
       "precendence.test.property",
       "double.property",
@@ -150,51 +125,52 @@ trait AbstractConfigurationTestBase {
       "utility.property")
     val projection = configuration.project(projectionNames)
 
-    assertThat(projection.size(), is(5))
-    assertThat(projection.hasProperty("precendence.test.property"), is(true))
-    assertThat(projection.hasProperty("double.property"), is(true))
-    assertThat(projection.hasProperty("integer.property"), is(true))
-    assertThat(projection.hasProperty("nonnumeric.property"), is(true))
-    assertThat(projection.hasProperty("utility.property"), is(true))
+    projection.size should be(5)
+    projection.hasProperty("precendence.test.property") should be(true)
+    projection.hasProperty("double.property") should be(true)
+    projection.hasProperty("integer.property") should be(true)
+    projection.hasProperty("nonnumeric.property") should be(true)
+    projection.hasProperty("utility.property") should be(true)
+
     projection.getPropertyNames foreach { property =>
-      assertThat(projection.getStringProperty(property).get, is(configuration.getStringProperty(property).get))
+      projection(property) should be(configuration(property))
     }
   }
 
-  @Test
-  def shouldMinusCorrectly() {
+  test("should minus correctly") {
     val minusNames = Set("precendence.test.property")
     val projection = configuration.minus(minusNames)
 
-    assertThat(projection.size(), is(5))
-    assertThat(projection.hasProperty("double.property"), is(true))
-    assertThat(projection.hasProperty("integer.property"), is(true))
-    assertThat(projection.hasProperty("nonnumeric.property"), is(true))
-    assertThat(projection.hasProperty("list.property"), is(true))
-    assertThat(projection.hasProperty("utility.property"), is(true))
+    projection.size should be(5)
+    projection.hasProperty("double.property") should be(true)
+    projection.hasProperty("integer.property") should be(true)
+    projection.hasProperty("nonnumeric.property") should be(true)
+    projection.hasProperty("list.property") should be(true)
+    projection.hasProperty("utility.property") should be(true)
+
     projection.getPropertyNames foreach { property =>
-      assertThat(projection.getStringProperty(property).get, is(configuration.getStringProperty(property).get))
+      projection(property) should be(configuration(property))
     }
   }
 
-  @Test
-  def shouldOverride() {
+  test("should override") {
     val overrides = new MapBasedConfiguration("overrides")
     overrides.add("utility.property", "overriden")
 
     val withOverrides = configuration.overrideWith(overrides)
 
-    assertThat(withOverrides.size(), is(6))
-    assertThat(withOverrides.hasProperty("double.property"), is(true))
-    assertThat(withOverrides.hasProperty("precendence.test.property"), is(true))
-    assertThat(withOverrides.hasProperty("integer.property"), is(true))
-    assertThat(withOverrides.hasProperty("nonnumeric.property"), is(true))
-    assertThat(withOverrides.hasProperty("list.property"), is(true))
-    assertThat(withOverrides.hasProperty("utility.property"), is(true))
-    assertThat(withOverrides.getStringProperty("utility.property").get, is("overriden"))
+    withOverrides.size should be(6)
+    withOverrides.hasProperty("double.property") should be(true)
+    withOverrides.hasProperty("precendence.test.property") should be(true)
+    withOverrides.hasProperty("integer.property") should be(true)
+    withOverrides.hasProperty("nonnumeric.property") should be(true)
+    withOverrides.hasProperty("list.property") should be(true)
+    withOverrides.hasProperty("utility.property") should be(true)
+
+    withOverrides("utility.property") should be("overriden")
     val unchanged = withOverrides.getPropertyNames -- Set("utility.property")
     unchanged foreach { property =>
-      assertThat(withOverrides.getStringProperty(property), is(configuration.getStringProperty(property)))
+      withOverrides(property) should be(configuration(property))
     }
   }
 

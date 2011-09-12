@@ -17,16 +17,12 @@
 package com.gu.conf.impl
 
 import com.gu.conf.Configuration
-import org.junit.Before
-import org.junit.Test
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.is
+import org.scalatest.BeforeAndAfter
 
-class ProjectedConfigurationTest extends AbstractConfigurationTestBase {
-  var original: Configuration = null
+class ProjectedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
+  var original: Configuration = _
 
-  @Before
-  def setUp() {
+  before {
     val mapBasedConfiguration = new MapBasedConfiguration("test")
     mapBasedConfiguration.add("double.property", "25.0")
     mapBasedConfiguration.add("precendence.test.property", "second")
@@ -48,39 +44,34 @@ class ProjectedConfigurationTest extends AbstractConfigurationTestBase {
     original = mapBasedConfiguration
   }
 
-  @Test
-  def shouldContainedProjectedProperties() {
-    assertThat(configuration.size(), is(6))
-    assertThat(configuration.hasProperty("precendence.test.property"), is(true))
-    assertThat(configuration.hasProperty("double.property"), is(true))
-    assertThat(configuration.hasProperty("integer.property"), is(true))
-    assertThat(configuration.hasProperty("nonnumeric.property"), is(true))
-    assertThat(configuration.hasProperty("list.property"), is(true))
-    assertThat(configuration.hasProperty("utility.property"), is(true))
+  test("should contain projected properties") {
+    configuration.size() should be(6)
+    configuration.hasProperty("precendence.test.property") should be(true)
+    configuration.hasProperty("double.property") should be(true)
+    configuration.hasProperty("integer.property") should be(true)
+    configuration.hasProperty("nonnumeric.property") should be(true)
+    configuration.hasProperty("list.property") should be(true)
+    configuration.hasProperty("utility.property") should be(true)
   }
 
-  @Test
-  def shouldNotContainedProjectedOutProperties() {
-    assertThat(configuration.hasProperty("projected.out"), is(false))
+  test("should not contain projected out properties") {
+    configuration.hasProperty("projected.out") should be(false)
   }
 
-  @Test
-  def shouldHaveSamePropertyValuesAsOriginal() {
-    assertThat(configuration.getStringProperty("precendence.test.property").get, is("second".asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("double.property").get, is("25.0".asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("integer.property").get, is("23".asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("nonnumeric.property").get, is("qwe".asInstanceOf[Object]))
-    assertThat(configuration.getStringProperty("list.property").get, is("rimbaud,verlaine".asInstanceOf[Object]))
+  test("should have same property values as original") {
+    configuration("precendence.test.property") should be("second")
+    configuration("double.property") should be("25.0")
+    configuration("integer.property") should be("23")
+    configuration("nonnumeric.property") should be("qwe")
+    configuration("list.property") should be("rimbaud,verlaine")
   }
 
-  @Test
-  def shouldGetPropertySource() {
-    assertThat(configuration.getPropertySource("nonnumeric.property").get, is(original.asInstanceOf[Object]))
+  test("should get property source") {
+    configuration.getPropertySource("nonnumeric.property").get should be(original)
   }
 
-  @Test
-  def shouldToStringInStandardFormat() {
-    val expected =
+  test("should toString() in standard format") {
+    configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
         "double.property=25.0\n" +
         "integer.property=23\n" +
@@ -88,8 +79,6 @@ class ProjectedConfigurationTest extends AbstractConfigurationTestBase {
         "nonnumeric.property=qwe\n" +
         "precendence.test.property=second\n" +
         "utility.property=utility\n" +
-        "\n"
-
-    assertThat(configuration.toString(), is(expected))
+        "\n")
   }
 }

@@ -15,41 +15,31 @@
  */
 package com.gu.conf.impl
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.runners.MockitoJUnitRunner
-import org.hamcrest.core.Is.is
-import org.junit.Assert.assertThat
 import org.mockito.Mockito.when
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{ BeforeAndAfter, FunSuite }
+import org.scalatest.mock.MockitoSugar
 
-@RunWith(classOf[MockitoJUnitRunner])
-class PlaceholderResolverTest {
+class PlaceholderResolverTest extends FunSuite with ShouldMatchers with MockitoSugar with BeforeAndAfter {
 
-  @Mock
-  var environment: SystemEnvironmentConfiguration = _
-  @Mock
-  var system: SystemPropertiesConfiguration = _
+  var environment = mock[SystemEnvironmentConfiguration]
+  var system = mock[SystemPropertiesConfiguration]
 
   var placeholderResolver: PlaceholderResolver = _
 
-  @Before
-  def setUp() {
+  before {
     placeholderResolver = new PlaceholderResolver(environment, system)
 
     when(environment.getStringProperty("propname")).thenReturn(Some("environment variable"))
     when(system.getStringProperty("propname")).thenReturn(Some("system property"))
   }
 
-  @Test
-  def shouldGetSystemProperty() {
-    assertThat(placeholderResolver.substitutePlaceholders("${propname}"), is("system property"))
+  test("should get system property") {
+    placeholderResolver.substitutePlaceholders("${propname}") should be("system property")
   }
 
-  @Test
-  def shouldGetEnvironmentVariable() {
-    assertThat(placeholderResolver.substitutePlaceholders("${env.propname}"), is("environment variable"))
+  test("should get environment variable") {
+    placeholderResolver.substitutePlaceholders("${env.propname}") should be("environment variable")
   }
 
 }

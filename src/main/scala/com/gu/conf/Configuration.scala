@@ -48,7 +48,17 @@ trait Configuration {
    *
    * @param propertyName name of the property
    * @return value of the property
-   * @throws PropertyNotSetException if property has not been set
+   * @throws java.util.NoSuchElementException if property has not been set
+   */
+  def apply(propertyName: String): String = {
+    getStringProperty(propertyName).get
+  }
+
+  /**
+   * Return the value of property
+   *
+   * @param propertyName name of the property
+   * @return value of the property
    */
   def getStringProperty(propertyName: String): Option[String]
 
@@ -66,7 +76,6 @@ trait Configuration {
    *
    * @param propertyName name of the property
    * @return integer value
-   * @throws PropertyNotSetException if property has not been set
    * @throws NumberFormatException   if the property was found but was not an integer
    */
   def getIntegerProperty(propertyName: String): Option[Int]
@@ -86,7 +95,6 @@ trait Configuration {
    *
    * @param propertyName name of the property
    * @return value of the property
-   * @throws PropertyNotSetException if property has not been set
    */
   def getStringPropertiesSplitByComma(propertyName: String): List[String]
 
