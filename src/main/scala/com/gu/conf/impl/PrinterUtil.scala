@@ -21,14 +21,12 @@ private[conf] object PrinterUtil {
   private val Password = """.*\bpass(?:word)?\b.*""".r
 
   def propertyString(propertyName: String, propertyValue: String): String = {
-    var protectedValue = propertyValue
-    Password.findFirstIn(propertyName) foreach { _ =>
-      protectedValue = "*** PASSWORD ****"
-    }
-    Key.findFirstIn(propertyName) foreach { _ =>
-      protectedValue = "*** KEY ****"
+    val protectedValue = propertyName match {
+      case Password() => "*** PASSWORD ****"
+      case Key() => "*** KEY ****"
+      case _ => propertyValue
     }
 
-    "%s=%s\n".format(propertyName, protectedValue)
+    "%s=%s\n" format (propertyName, protectedValue)
   }
 }
