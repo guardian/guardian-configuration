@@ -23,7 +23,7 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   var configuration: AbstractConfiguration = _
 
   test("should have correct size") {
-    configuration.size() should be(6)
+    configuration.size should be(6)
   }
 
   test("should have correct test data") {
@@ -109,7 +109,7 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   test("should toProperties() with same properties") {
     val properties = configuration.toProperties
 
-    properties.size should be(configuration.size())
+    properties.size should be(configuration.size)
     configuration.getPropertyNames foreach { property =>
       properties.getProperty(property) should be(configuration(property))
     }

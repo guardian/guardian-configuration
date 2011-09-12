@@ -45,7 +45,7 @@ class ProjectedConfigurationTest extends AbstractConfigurationTestBase with Befo
   }
 
   test("should contain projected properties") {
-    configuration.size() should be(6)
+    configuration.size should be(6)
     configuration.hasProperty("precendence.test.property") should be(true)
     configuration.hasProperty("double.property") should be(true)
     configuration.hasProperty("integer.property") should be(true)

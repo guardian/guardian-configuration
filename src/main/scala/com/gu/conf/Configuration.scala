@@ -16,6 +16,7 @@
 package com.gu.conf
 
 import com.gu.conf.impl.GuardianConfigurationStrategy
+import com.gu.conf.fixtures.PropertiesBuilder
 import java.util.Properties
 
 trait Configuration {
@@ -34,7 +35,9 @@ trait Configuration {
    * @param propertyName name of the property
    * @return true if configuration contains named property
    */
-  def hasProperty(propertyName: String): Boolean
+  def hasProperty(propertyName: String): Boolean = {
+    getPropertyNames contains propertyName
+  }
 
   /**
    * Return a set of property names
@@ -42,6 +45,13 @@ trait Configuration {
    * @return set of property names
    */
   def getPropertyNames: Set[String]
+
+  /**
+   * Return a count of the properties in this configuration
+   *
+   * @return size of this configuration
+   */
+  def size: Int = getPropertyNames.size
 
   /**
    * Return the value of property
@@ -69,16 +79,20 @@ trait Configuration {
    * @param defaultValue value to return if property not set
    * @return value of the property or defaultValue if property not set
    */
-  def getStringProperty(propertyName: String, defaultValue: String): String
+  def getStringProperty(propertyName: String, default: String): String = {
+    getStringProperty(propertyName) getOrElse default
+  }
 
   /**
    * Returns the value of a property converted to an int
    *
    * @param propertyName name of the property
    * @return integer value
-   * @throws NumberFormatException   if the property was found but was not an integer
+   * @throws NumberFormatException if the property was found but was not an integer
    */
-  def getIntegerProperty(propertyName: String): Option[Int]
+  def getIntegerProperty(propertyName: String): Option[Int] = {
+    getStringProperty(propertyName) map { _.toInt }
+  }
 
   /**
    * Returns the value of a property converted to an int, or a default value if property is not found
@@ -88,7 +102,15 @@ trait Configuration {
    * @param defaultValue value to return if property not set
    * @return alue of the property or defaultValue if property not set or not an integer
    */
-  def getIntegerProperty(propertyName: String, defaultValue: Int): Int
+  def getIntegerProperty(propertyName: String, defaultValue: Int): Int = {
+    val option = try {
+      getStringProperty(propertyName) map { _.toInt }
+    } catch {
+      case _ => None
+    }
+
+    option getOrElse defaultValue
+  }
 
   /**
    * Return the value of property
@@ -96,14 +118,26 @@ trait Configuration {
    * @param propertyName name of the property
    * @return value of the property
    */
-  def getStringPropertiesSplitByComma(propertyName: String): List[String]
+  def getStringPropertiesSplitByComma(propertyName: String): List[String] = {
+    getStringProperty(propertyName) match {
+      case Some(property) => (property split ",").toList
+      case None => Nil
+    }
+  }
 
   /**
    * Return a properties version of this configuration
    *
    * @return this configuration as a java.util.Properties object
    */
-  def toProperties: Properties
+  def toProperties: Properties = {
+    val builder = new PropertiesBuilder
+    getPropertyNames foreach { name =>
+      builder.property(name, getStringProperty(name).get)
+    }
+
+    builder.toProperties
+  }
 }
 
 object ConfigurationFactory {

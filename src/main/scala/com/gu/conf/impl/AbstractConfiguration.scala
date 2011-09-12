@@ -16,49 +16,9 @@
 package com.gu.conf.impl
 
 import com.gu.conf._
-import com.gu.conf.fixtures.PropertiesBuilder
-import java.util.Properties
 import scala.collection.mutable.StringBuilder
 
 private[conf] trait AbstractConfiguration extends Configuration {
-
-  def hasProperty(propertyName: String): Boolean = {
-    getPropertyNames.contains(propertyName)
-  }
-
-  def getStringProperty(propertyName: String, default: String): String = {
-    getStringProperty(propertyName) getOrElse default
-  }
-
-  def getIntegerProperty(propertyName: String): Option[Int] = {
-    getStringProperty(propertyName) map { _.toInt }
-  }
-
-  def getIntegerProperty(propertyName: String, defaultValue: Int): Int = {
-    val option = try {
-      getStringProperty(propertyName) map { _.toInt }
-    } catch {
-      case _ => None
-    }
-
-    option getOrElse defaultValue
-  }
-
-  def getStringPropertiesSplitByComma(propertyName: String): List[String] = {
-    getStringProperty(propertyName) match {
-      case Some(property) => (property split ",").toList
-      case None => Nil
-    }
-  }
-
-  def toProperties: Properties = {
-    val builder = new PropertiesBuilder
-    getPropertyNames foreach { name =>
-      builder.property(name, getStringProperty(name).get)
-    }
-
-    builder.toProperties
-  }
 
   /**
    * Get the source of a property
@@ -67,13 +27,6 @@ private[conf] trait AbstractConfiguration extends Configuration {
    * @return the source of the property or none if the property is unknown
    */
   def getPropertySource(propertyName: String): Option[AbstractConfiguration]
-
-  /**
-   * Return a count of the properties in this configuration
-   *
-   * @return size of this configuration
-   */
-  def size(): Int = getPropertyNames.size
 
   /**
    * Return a projection of this configuration to the given set of properties
@@ -127,18 +80,18 @@ private[conf] trait AbstractConfiguration extends Configuration {
     new CompositeConfiguration(overrides.project(this), this)
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val builder = new StringBuilder
 
     builder append "# Properties from "
     builder append getIdentifier
-    builder appendNewline
+    builder.appendNewline()
 
     getPropertyNames.toList.sorted foreach { name =>
       builder append PrinterUtil.propertyString(name, getStringProperty(name).get)
     }
 
-    builder appendNewline
+    builder.appendNewline()
 
     builder.toString()
   }
