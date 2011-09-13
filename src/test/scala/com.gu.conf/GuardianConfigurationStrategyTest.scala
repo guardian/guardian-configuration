@@ -32,7 +32,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
   val DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES = "classpath:/conf/gudev.gnl.properties"
   val DEVELOPER_COMMON_PROPERTIES = "classpath:/conf/global.properties"
 
-  var fileLoader = mock[FileAndResourceLoader]
+  var fileLoader = mock[PropertiesLoader]
   var setup = mock[SetupConfiguration]
 
   var strategy: GuardianConfigurationStrategy = _

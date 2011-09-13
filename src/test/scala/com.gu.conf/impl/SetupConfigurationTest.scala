@@ -24,7 +24,7 @@ import org.scalatest.mock.MockitoSugar
 
 class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSugar with BeforeAndAfter {
 
-  var loader = mock[FileAndResourceLoader]
+  var loader = mock[PropertiesLoader]
 
   private def installationConfiguration(): SetupConfiguration = {
     installationConfiguration(new PropertiesBuilder().toProperties)

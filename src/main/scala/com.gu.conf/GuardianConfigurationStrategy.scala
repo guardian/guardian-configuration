@@ -21,7 +21,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 private[conf] class GuardianConfigurationStrategy(
-  val loader: FileAndResourceLoader = new FileAndResourceLoader,
+  val loader: PropertiesLoader = new PropertiesLoader,
   val setup: SetupConfiguration = new SetupConfiguration) {
 
   private final val LOG: Logger = LoggerFactory.getLogger(classOf[GuardianConfigurationStrategy])
