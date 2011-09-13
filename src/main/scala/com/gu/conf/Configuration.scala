@@ -15,7 +15,6 @@
  */
 package com.gu.conf
 
-import com.gu.conf.impl.GuardianConfigurationStrategy
 import com.gu.conf.fixtures.PropertiesBuilder
 import java.util.Properties
 
@@ -137,15 +136,5 @@ trait Configuration {
     }
 
     builder.toProperties
-  }
-}
-
-object ConfigurationFactory {
-  def getConfiguration(applicationName: String): Configuration = {
-    getConfiguration(applicationName, "conf")
-  }
-
-  def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
-    (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
   }
 }
