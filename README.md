@@ -183,16 +183,16 @@ To process configuration property files:
        import com.gu.conf.ConfigurationFactory
 
        // Using typed public accessors facilitates better IDE inspection.
-       lazy val dbpassword: String = configuration getStringProperty "db.password"
+       lazy val dbpassword = configuration("db.password")
 
-       private lazy val configuration = (new ConfigurationFactory) getConfiguration "application-name"
+       private lazy val configuration = ConfigurationFactory("application-name")
     }
 
 This defaults to reading resource configuration property files from `/conf` on the classpath. In
 the case where there is contention for the default location, the configuration source location may be
 specified in the `getConfiguration` call:  
 
-       private lazy val configuration = (new ConfigurationFactory).getConfiguration("application-name", "conf/application-name")
+       private lazy val configuration = ConfigurationFactory("application-name", "conf/application-name")
 
 
 ## Example ##
