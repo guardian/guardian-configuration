@@ -30,12 +30,7 @@ class ConfigurationBuilder {
   }
 
   def toConfiguration: AbstractConfiguration = {
-    val configuration = new MapBasedConfiguration(identifier)
-    properties.keySet foreach { key =>
-      configuration.add(key, properties(key))
-    }
-
-    configuration
+    new MapBasedConfiguration(identifier, properties)
   }
 
 }

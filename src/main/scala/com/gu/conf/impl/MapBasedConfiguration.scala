@@ -15,22 +15,11 @@
  */
 package com.gu.conf.impl
 
-private[conf] class MapBasedConfiguration(val identifier: String) extends AbstractConfiguration {
+private[conf] class MapBasedConfiguration(
+  val identifier: String,
+  val properties: Map[String, String] = Map()) extends AbstractConfiguration {
 
-  private var properties: Map[String, String] = Map()
-
-  /**
-   * Add a property value to this MapBasedConfiguration. Inconsistent with property file based implementation,
-   * this DOES overwrite previous values
-   *
-   * @param propertyName  name of the property to add
-   * @param propertyValue value of the property to add
-   */
-  def add(propertyName: String, propertyValue: String) {
-    properties = properties + (propertyName -> propertyValue)
-  }
-
-  def getIdentifier() = identifier
+  def getIdentifier = identifier
 
   def getPropertySource(propertyName: String): Option[AbstractConfiguration] = {
     (properties contains propertyName) match {

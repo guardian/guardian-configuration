@@ -154,10 +154,10 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   }
 
   test("should override") {
-    val overrides = new MapBasedConfiguration("overrides")
-    overrides.add("utility.property", "overriden")
+    val overrides = new MapBasedConfiguration("overrides", Map(
+      "utility.property" -> "overriden"))
 
-    val withOverrides = configuration.overrideWith(overrides)
+    val withOverrides = configuration overrideWith overrides
 
     withOverrides.size should be(6)
     withOverrides.hasProperty("double.property") should be(true)

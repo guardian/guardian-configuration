@@ -24,12 +24,7 @@ private[conf] object SystemEnvironmentConfiguration {
 
 private[conf] class SystemEnvironmentConfiguration(
   override val identifier: String = "Environment",
-  val environment: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(identifier) {
-
-  environment foreach {
-    case (key, value) => add(key, value)
-  }
-}
+  override val properties: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(identifier, properties)
 
 private[conf] class SystemPropertiesConfiguration(
   override val identifier: String = "System",

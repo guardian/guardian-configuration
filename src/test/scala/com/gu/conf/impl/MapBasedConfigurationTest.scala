@@ -20,14 +20,14 @@ import org.scalatest.BeforeAndAfter
 class MapBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
   before {
-    val mapBasedConfiguration = new MapBasedConfiguration("test")
-    mapBasedConfiguration.add("precendence.test.property", "first")
-    mapBasedConfiguration.add("double.property", "25.0")
-    mapBasedConfiguration.add("precendence.test.property", "second")
-    mapBasedConfiguration.add("integer.property", "23")
-    mapBasedConfiguration.add("nonnumeric.property", "qwe")
-    mapBasedConfiguration.add("list.property", "rimbaud,verlaine")
-    mapBasedConfiguration.add("utility.property", "utility")
+    val mapBasedConfiguration = new MapBasedConfiguration("test", Map(
+      "precendence.test.property" -> "first",
+      "double.property" -> "25.0",
+      "precendence.test.property" -> "second",
+      "integer.property" -> "23",
+      "nonnumeric.property" -> "qwe",
+      "list.property" -> "rimbaud,verlaine",
+      "utility.property" -> "utility"))
 
     configuration = mapBasedConfiguration
   }

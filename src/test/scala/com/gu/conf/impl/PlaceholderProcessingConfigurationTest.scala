@@ -16,31 +16,24 @@
 package com.gu.conf.impl
 
 import org.scalatest.BeforeAndAfter
-import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito.when
-import org.mockito.stubbing.Answer
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.Matchers.anyString
+import com.gu.conf.fixtures.PropertiesBuilder
 
-class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBase with MockitoSugar with BeforeAndAfter {
-
-  var placeholderResolver = mock[PlaceholderResolver]
+class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
   before {
-    val mapBasedConfiguration = new MapBasedConfiguration("test")
-    mapBasedConfiguration.add("double.property", "25.0")
-    mapBasedConfiguration.add("precendence.test.property", "second")
-    mapBasedConfiguration.add("integer.property", "23")
-    mapBasedConfiguration.add("nonnumeric.property", "qwe")
-    mapBasedConfiguration.add("list.property", "rimbaud,verlaine")
-    mapBasedConfiguration.add("utility.property", "has a ${placeholder}")
+    val mapBasedConfiguration = new MapBasedConfiguration("test", Map(
+      "double.property" -> "25.0",
+      "precendence.test.property" -> "second",
+      "integer.property" -> "23",
+      "nonnumeric.property" -> "qwe",
+      "list.property" -> "rimbaud,verlaine",
+      "utility.property" -> "has a ${placeholder}"))
 
-    when(placeholderResolver.substitutePlaceholders(anyString())).thenAnswer(new Answer[String] {
-      def answer(invocation: InvocationOnMock): String = {
-        val arg = invocation.getArguments()(0).toString
-        arg.replaceAll("\\$\\{placeholder\\}", "resolved placeholder")
-      }
-    })
+    val placeholderResolver = new PlaceholderResolver(
+      new SystemEnvironmentConfiguration(properties = Map()),
+      new SystemPropertiesConfiguration(properties = new PropertiesBuilder().
+        property("placeholder", "resolved placeholder").
+        toProperties))
 
     configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, placeholderResolver)
   }

@@ -23,16 +23,16 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase with Befo
   var secondary: Configuration = _
 
   before {
-    val conf1 = new MapBasedConfiguration("primary")
-    conf1.add("precendence.test.property", "first")
-    conf1.add("double.property", "25.0")
+    val conf1 = new MapBasedConfiguration("primary", Map(
+      "precendence.test.property" -> "first",
+      "double.property" -> "25.0"))
 
-    val conf2 = new MapBasedConfiguration("secondary")
-    conf2.add("precendence.test.property", "second")
-    conf2.add("integer.property", "23")
-    conf2.add("nonnumeric.property", "qwe")
-    conf2.add("list.property", "rimbaud,verlaine")
-    conf2.add("utility.property", "utility")
+    val conf2 = new MapBasedConfiguration("secondary", Map(
+      "precendence.test.property" -> "second",
+      "integer.property" -> "23",
+      "nonnumeric.property" -> "qwe",
+      "list.property" -> "rimbaud,verlaine",
+      "utility.property" -> "utility"))
 
     configuration = new CompositeConfiguration(conf1, conf2)
     secondary = conf2
@@ -61,23 +61,23 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase with Befo
   }
 
   test("should factory composite configurations") {
-    val conf1 = new MapBasedConfiguration("conf1")
-    conf1.add("conf1.property", "conf1")
+    val conf1 = new MapBasedConfiguration("conf1", Map(
+      "conf1.property" -> "conf1"))
 
-    val conf2 = new MapBasedConfiguration("conf2")
-    conf2.add("conf1.property", "conf2")
-    conf2.add("conf2.property", "conf2")
+    val conf2 = new MapBasedConfiguration("conf2", Map(
+      "conf1.property" -> "conf2",
+      "conf2.property" -> "conf2"))
 
-    val conf3 = new MapBasedConfiguration("conf3")
-    conf3.add("conf1.property", "conf3")
-    conf3.add("conf2.property", "conf3")
-    conf3.add("conf3.property", "conf3")
+    val conf3 = new MapBasedConfiguration("conf3", Map(
+      "conf1.property" -> "conf3",
+      "conf2.property" -> "conf3",
+      "conf3.property" -> "conf3"))
 
-    val conf4 = new MapBasedConfiguration("conf4")
-    conf4.add("conf1.property", "conf4")
-    conf4.add("conf2.property", "conf4")
-    conf4.add("conf3.property", "conf4")
-    conf4.add("conf4.property", "conf4")
+    val conf4 = new MapBasedConfiguration("conf4", Map(
+      "conf1.property" -> "conf4",
+      "conf2.property" -> "conf4",
+      "conf3.property" -> "conf4",
+      "conf4.property" -> "conf4"))
 
     val configuration = CompositeConfiguration.from(conf1, conf2, conf3, conf4)
 
