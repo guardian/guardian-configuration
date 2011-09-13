@@ -1,8 +1,8 @@
-name := "guardian-configuration"
+name := "configuration"
 
 version := "3.1-SNAPSHOT"
 
-organization := "com.gu.conf"
+organization := "com.gu"
 
 scalaVersion := "2.9.1"
 
