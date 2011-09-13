@@ -15,48 +15,19 @@
  */
 package com.gu.conf.impl
 
-import scala.collection.JavaConversions._
 import org.scalatest.BeforeAndAfter
 
 class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
-  private var oldEnvironment: Map[String, String] = _
-
   before {
-    oldEnvironment = Map()
-    System.getenv().keySet() foreach { key =>
-      oldEnvironment = oldEnvironment + (key -> System.getenv(key))
-    }
+    val environment = Map(
+      "double.property" -> "25.0",
+      "precendence.test.property" -> "second",
+      "integer.property" -> "23",
+      "nonnumeric.property" -> "qwe",
+      "list.property" -> "rimbaud,verlaine",
+      "utility.property" -> "utility")
 
-    var environment: Map[String, String] = Map()
-    environment = environment + ("double.property" -> "25.0")
-    environment = environment + ("precendence.test.property" -> "second")
-    environment = environment + ("integer.property" -> "23")
-    environment = environment + ("nonnumeric.property" -> "qwe")
-    environment = environment + ("list.property" -> "rimbaud,verlaine")
-    environment = environment + ("utility.property" -> "utility")
-
-    setEnvironment(environment)
-
-    configuration = new SystemEnvironmentConfiguration
-  }
-
-  private def setEnvironment(environment: Map[String, String])() {
-    val actualEnv = System.getenv
-
-    classOf[java.util.Collections].getDeclaredClasses filter {
-      _.getName == "java.util.Collections$UnmodifiableMap"
-    } foreach { clazz =>
-      val backingCollectionfield = clazz.getDeclaredField("m")
-      backingCollectionfield.setAccessible(true)
-
-      val modifiableEnv = backingCollectionfield.get(actualEnv).asInstanceOf[java.util.Map[String, String]]
-      modifiableEnv.clear()
-      modifiableEnv.putAll(environment)
-    }
-  }
-
-  after {
-    setEnvironment(oldEnvironment)
+    configuration = new SystemEnvironmentConfiguration(environment = environment)
   }
 }
