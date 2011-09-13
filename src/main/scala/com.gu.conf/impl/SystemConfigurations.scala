@@ -28,4 +28,4 @@ private[conf] class SystemEnvironmentConfiguration(
 
 private[conf] class SystemPropertiesConfiguration(
   override val identifier: String = "System",
-  override val properties: Properties = System.getProperties) extends PropertiesFileBasedConfiguration(identifier, properties)
+  override val properties: Properties = System.getProperties) extends PropertiesBasedConfiguration(identifier, properties)

@@ -47,49 +47,49 @@ private[conf] class GuardianConfigurationStrategy(
 
   def getDeveloperAccountOverrideProperties(applicationName: String) = {
     val home = System getProperty "user.home"
-    val propertiesLocation = "file://%s/.gu/%s.properties".format(home, applicationName)
+    val location = "file://%s/.gu/%s.properties".format(home, applicationName)
 
-    LOG.info("Loading developer account override properties from " + propertiesLocation)
-    val properties = loader getPropertiesFrom propertiesLocation
+    LOG.info("Loading developer account override properties from " + location)
+    val properties = loader getPropertiesFrom location
 
-    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
+    new PropertiesBasedConfiguration(location, properties)
   }
 
   def getOperationsProperties(applicationName: String) = {
-    val propertiesLocation = "file:///etc/gu/%s.properties" format applicationName
+    val location = "file:///etc/gu/%s.properties" format applicationName
 
-    LOG.info("Loading operations properties from " + propertiesLocation)
-    val properties = loader getPropertiesFrom propertiesLocation
+    LOG.info("Loading operations properties from " + location)
+    val properties = loader getPropertiesFrom location
 
-    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
+    new PropertiesBasedConfiguration(location, properties)
   }
 
   def getDeveloperStageBasedProperties(confPrefix: String) = {
     val stage = setup.getStage
-    val propertiesLocation = "classpath:%s/%s.properties".format(confPrefix, stage)
+    val location = "classpath:%s/%s.properties".format(confPrefix, stage)
 
-    LOG.info("Loading developer stage based properties from " + propertiesLocation)
-    val properties = loader getPropertiesFrom propertiesLocation
+    LOG.info("Loading developer stage based properties from " + location)
+    val properties = loader getPropertiesFrom location
 
-    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
+    new PropertiesBasedConfiguration(location, properties)
   }
 
   def getDeveloperServiceDomainBasedProperties(confPrefix: String) = {
     val serviceDomain = setup.getServiceDomain
-    val propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain)
+    val location = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain)
 
-    LOG.info("Loading developer service domain based properties from " + propertiesLocation)
-    val properties = loader getPropertiesFrom propertiesLocation
+    LOG.info("Loading developer service domain based properties from " + location)
+    val properties = loader getPropertiesFrom location
 
-    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
+    new PropertiesBasedConfiguration(location, properties)
   }
 
   def getDeveloperCommonProperties(webappConfDirectory: String) = {
-    val propertiesLocation = "classpath:%s/global.properties" format webappConfDirectory
+    val location = "classpath:%s/global.properties" format webappConfDirectory
 
-    LOG.info("Loading developer common properties from " + propertiesLocation)
-    val properties = loader getPropertiesFrom propertiesLocation
+    LOG.info("Loading developer common properties from " + location)
+    val properties = loader getPropertiesFrom location
 
-    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
+    new PropertiesBasedConfiguration(location, properties)
   }
 }

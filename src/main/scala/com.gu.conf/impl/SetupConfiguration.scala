@@ -27,7 +27,7 @@ private[conf] class SetupConfiguration(
   LOG.info("Loading setup properties from " + SETUP_PROPERTIES_LOCATION)
   val properties = loader getPropertiesFrom SETUP_PROPERTIES_LOCATION
 
-  val setup = new PropertiesFileBasedConfiguration(SETUP_PROPERTIES_LOCATION, properties)
+  val setup = new PropertiesBasedConfiguration(SETUP_PROPERTIES_LOCATION, properties)
 
   def getIdentifier: String = "Setup"
 

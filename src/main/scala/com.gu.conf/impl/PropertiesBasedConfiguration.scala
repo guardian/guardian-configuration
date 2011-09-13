@@ -18,7 +18,7 @@ package com.gu.conf.impl
 import java.util.Properties
 import scala.collection.JavaConversions._
 
-private[conf] class PropertiesFileBasedConfiguration(
+private[conf] class PropertiesBasedConfiguration(
   val identifier: String,
   val properties: Properties) extends AbstractConfiguration {
 

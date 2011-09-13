@@ -18,7 +18,7 @@ package com.gu.conf.impl
 import com.gu.conf.fixtures.PropertiesBuilder
 import org.scalatest.BeforeAndAfter
 
-class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
+class PropertiesBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
   before {
     val builder = new PropertiesBuilder
@@ -29,7 +29,7 @@ class PropertiesFileBasedConfigurationTest extends AbstractConfigurationTestBase
     builder.property("list.property", "rimbaud,verlaine")
     builder.property("utility.property", "utility")
 
-    configuration = new PropertiesFileBasedConfiguration("properties", builder.toProperties)
+    configuration = new PropertiesBasedConfiguration("properties", builder.toProperties)
   }
 
   test("should get property source") {
