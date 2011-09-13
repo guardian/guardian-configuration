@@ -4,9 +4,9 @@ version := "3.0-SNAPSHOT"
 
 organization := "com.gu.conf"
 
-scalaVersion := "2.8.1"
+scalaVersion := "2.9.1"
 
-crossScalaVersions ++= Seq("2.9.0-1", "2.9.1")
+crossScalaVersions ++= Seq("2.9.0-1", "2.8.1")
 
 seq(ScalariformPlugin.settings: _*)
 
@@ -22,10 +22,20 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "1.5.1" % "test",
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
   "org.slf4j" % "slf4j-simple" % "1.6.1" % "test"
 )
+
+libraryDependencies <<= (scalaVersion, libraryDependencies) { (sv, deps) =>
+    val scalaTestVersion = sv match {
+       case "2.8.1" => "1.5.1"
+       case "2.9.0-1" => "1.6.1"
+       case "2.9.1" => "1.6.1"
+       case _ => error("Unsupported Scala version " + sv)
+    }
+    deps :+ ("org.scalatest" %% "scalatest" % scalaTestVersion % "test")
+}
+
 
 publishTo <<= (version) { version: String =>
     val publishType = if (version.endsWith("SNAPSHOT")) "snapshots" else "releases"
