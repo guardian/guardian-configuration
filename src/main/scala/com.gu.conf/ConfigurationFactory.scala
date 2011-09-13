@@ -1,5 +1,3 @@
-package com.gu.conf
-
 /*
  * Copyright 2010 Guardian News and Media
  *
@@ -15,12 +13,30 @@ package com.gu.conf
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+package com.gu.conf
+
+import com.gu.conf.impl.PropertiesBasedConfiguration
+import java.util.Properties
+
 object ConfigurationFactory {
+
+  def apply(applicationName: String): Configuration = {
+    getConfiguration(applicationName)
+  }
+
+  def apply(applicationName: String, webappConfDirectory: String): Configuration = {
+    getConfiguration(applicationName, webappConfDirectory)
+  }
+
   def getConfiguration(applicationName: String): Configuration = {
     getConfiguration(applicationName, "conf")
   }
 
   def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
     (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
+  }
+
+  def fromProperties(identifier: String, properties: Properties): Configuration = {
+    new PropertiesBasedConfiguration(identifier, properties)
   }
 }
