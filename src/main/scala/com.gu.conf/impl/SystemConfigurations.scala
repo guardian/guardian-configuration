@@ -23,9 +23,9 @@ private[conf] object SystemEnvironmentConfiguration {
 }
 
 private[conf] class SystemEnvironmentConfiguration(
-  override val identifier: String = "Environment",
-  override val properties: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(identifier, properties)
+  private val _identifier: String = "Environment",
+  private val _properties: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(_identifier, _properties)
 
 private[conf] class SystemPropertiesConfiguration(
-  override val identifier: String = "System",
-  override val properties: Properties = System.getProperties) extends PropertiesBasedConfiguration(identifier, properties)
+  private val _identifier: String = "System",
+  private val _properties: Properties = System.getProperties) extends PropertiesBasedConfiguration(_identifier, _properties)

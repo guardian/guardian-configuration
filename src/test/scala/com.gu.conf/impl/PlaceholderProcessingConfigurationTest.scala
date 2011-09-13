@@ -30,8 +30,8 @@ class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBa
       "utility.property" -> "has a ${placeholder}"))
 
     val placeholderResolver = new PlaceholderResolver(
-      new SystemEnvironmentConfiguration(properties = Map()),
-      new SystemPropertiesConfiguration(properties = new PropertiesBuilder().
+      new SystemEnvironmentConfiguration("TestEnvironment", Map()),
+      new SystemPropertiesConfiguration("TestSystem", new PropertiesBuilder().
         property("placeholder", "resolved placeholder").
         toProperties))
 

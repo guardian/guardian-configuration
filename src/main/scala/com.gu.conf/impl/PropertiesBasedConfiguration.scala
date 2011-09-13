@@ -19,24 +19,5 @@ import java.util.Properties
 import scala.collection.JavaConversions._
 
 private[conf] class PropertiesBasedConfiguration(
-  val identifier: String,
-  val properties: Properties) extends AbstractConfiguration {
-
-  def getIdentifier: String = identifier
-
-  def getPropertySource(propertyName: String): Option[AbstractConfiguration] = {
-    properties.containsKey(propertyName) match {
-      case true => Some(this)
-      case _ => None
-    }
-  }
-
-  def getStringProperty(propertyName: String): Option[String] = {
-    properties.containsKey(propertyName) match {
-      case true => Some(properties.getProperty(propertyName))
-      case _ => None
-    }
-  }
-
-  def getPropertyNames: Set[String] = properties.stringPropertyNames.toSet
-}
+  private val _identifier: String,
+  private val _properties: Properties) extends MapBasedConfiguration(_identifier, _properties.toMap)

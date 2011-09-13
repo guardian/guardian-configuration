@@ -28,6 +28,6 @@ class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase w
       "list.property" -> "rimbaud,verlaine",
       "utility.property" -> "utility")
 
-    configuration = new SystemEnvironmentConfiguration(properties = environment)
+    configuration = new SystemEnvironmentConfiguration("TestEnvironment", environment)
   }
 }
