@@ -25,7 +25,9 @@ private[conf] class SetupConfiguration(
   val SETUP_PROPERTIES_LOCATION: String = "file:///etc/gu/install_vars"
 
   LOG.info("Loading setup properties from " + SETUP_PROPERTIES_LOCATION)
-  val setup = loader.getConfigurationFrom(SETUP_PROPERTIES_LOCATION)
+  val properties = loader getPropertiesFrom SETUP_PROPERTIES_LOCATION
+
+  val setup = new PropertiesFileBasedConfiguration(SETUP_PROPERTIES_LOCATION, properties)
 
   def getIdentifier: String = "Setup"
 

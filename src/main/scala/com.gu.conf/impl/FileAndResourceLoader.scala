@@ -66,7 +66,7 @@ private[conf] class FileAndResourceLoader {
     new BufferedInputStream(inputStream)
   }
 
-  def getConfigurationFrom(descriptor: String): AbstractConfiguration = {
+  def getPropertiesFrom(descriptor: String): Properties = {
     val properties = new Properties
     var inputStream: InputStream = null
     try {
@@ -88,6 +88,6 @@ private[conf] class FileAndResourceLoader {
       IOUtils.closeQuietly(inputStream)
     }
 
-    new PropertiesFileBasedConfiguration(descriptor, properties)
+    properties
   }
 }

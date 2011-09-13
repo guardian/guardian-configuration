@@ -41,51 +41,45 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
     when(setup.getServiceDomain).thenReturn("gudev.gnl")
     when(setup.getStage).thenReturn("DEV")
 
-    var configuration = new ConfigurationBuilder().
-      identifier(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES).
-      property("developer.account.override.properties", "available").
-      property("source", "developer.account.override.properties").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("developer.account.override.properties", "available").
+        property("source", "developer.account.override.properties").
+        toProperties)
 
-    configuration = new ConfigurationBuilder().
-      identifier(OPERATIONS_PROPERTIES).
-      property("operations.properties", "available").
-      property("source", "operations.properties").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(OPERATIONS_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(OPERATIONS_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("operations.properties", "available").
+        property("source", "operations.properties").
+        toProperties)
 
-    configuration = new ConfigurationBuilder().
-      identifier(DEVELOPER_STAGE_BASED_PROPERTIES).
-      property("developer.stage.based.properties", "available").
-      property("source", "developer.stage.based.properties").
-      property("developer.stage.based.properties.precendence", "developer.stage.based.properties").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(DEVELOPER_STAGE_BASED_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(DEVELOPER_STAGE_BASED_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("developer.stage.based.properties", "available").
+        property("source", "developer.stage.based.properties").
+        property("developer.stage.based.properties.precendence", "developer.stage.based.properties").
+        toProperties)
 
-    configuration = new ConfigurationBuilder().
-      identifier(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES).
-      property("developer.service.domain.properties", "available").
-      property("source", "developer.service.domain.properties").
-      property("developer.stage.based.properties.precendence", "developer.service.domain.properties").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("developer.service.domain.properties", "available").
+        property("source", "developer.service.domain.properties").
+        property("developer.stage.based.properties.precendence", "developer.service.domain.properties").
+        toProperties)
 
-    configuration = new ConfigurationBuilder().
-      identifier(DEVELOPER_COMMON_PROPERTIES).
-      property("developer.common.properties", "available").
-      property("source", "developer.common.properties").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(DEVELOPER_COMMON_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(DEVELOPER_COMMON_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("developer.common.properties", "available").
+        property("source", "developer.common.properties").
+        toProperties)
 
-    configuration = new ConfigurationBuilder().
-      identifier(SETUP_PROPERTIES).
-      property("setup.properties", "available").
-      property("source", "setup.properties").
-      property("int.service.domain", "gudev.gnl").
-      property("stage", "DEV").
-      toConfiguration
-    when(fileLoader.getConfigurationFrom(SETUP_PROPERTIES)).thenReturn(configuration)
+    when(fileLoader.getPropertiesFrom(SETUP_PROPERTIES)).
+      thenReturn(new PropertiesBuilder().
+        property("setup.properties", "available").
+        property("source", "setup.properties").
+        property("int.service.domain", "gudev.gnl").
+        property("stage", "DEV").
+        toProperties)
 
     strategy = new GuardianConfigurationStrategy(fileLoader, setup)
   }

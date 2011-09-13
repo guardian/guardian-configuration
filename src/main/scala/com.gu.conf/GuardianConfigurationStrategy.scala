@@ -50,16 +50,18 @@ private[conf] class GuardianConfigurationStrategy(
     val propertiesLocation = "file://%s/.gu/%s.properties".format(home, applicationName)
 
     LOG.info("Loading developer account override properties from " + propertiesLocation)
+    val properties = loader getPropertiesFrom propertiesLocation
 
-    loader getConfigurationFrom propertiesLocation
+    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
   }
 
   def getOperationsProperties(applicationName: String) = {
     val propertiesLocation = "file:///etc/gu/%s.properties" format applicationName
 
     LOG.info("Loading operations properties from " + propertiesLocation)
+    val properties = loader getPropertiesFrom propertiesLocation
 
-    loader getConfigurationFrom propertiesLocation
+    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
   }
 
   def getDeveloperStageBasedProperties(confPrefix: String) = {
@@ -67,8 +69,9 @@ private[conf] class GuardianConfigurationStrategy(
     val propertiesLocation = "classpath:%s/%s.properties".format(confPrefix, stage)
 
     LOG.info("Loading developer stage based properties from " + propertiesLocation)
+    val properties = loader getPropertiesFrom propertiesLocation
 
-    loader getConfigurationFrom propertiesLocation
+    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
   }
 
   def getDeveloperServiceDomainBasedProperties(confPrefix: String) = {
@@ -76,15 +79,17 @@ private[conf] class GuardianConfigurationStrategy(
     val propertiesLocation = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain)
 
     LOG.info("Loading developer service domain based properties from " + propertiesLocation)
+    val properties = loader getPropertiesFrom propertiesLocation
 
-    loader getConfigurationFrom propertiesLocation
+    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
   }
 
   def getDeveloperCommonProperties(webappConfDirectory: String) = {
     val propertiesLocation = "classpath:%s/global.properties" format webappConfDirectory
 
     LOG.info("Loading developer common properties from " + propertiesLocation)
+    val properties = loader getPropertiesFrom propertiesLocation
 
-    loader getConfigurationFrom propertiesLocation
+    new PropertiesFileBasedConfiguration(propertiesLocation, properties)
   }
 }

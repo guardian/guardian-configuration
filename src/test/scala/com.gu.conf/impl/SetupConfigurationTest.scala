@@ -15,6 +15,8 @@
  */
 package com.gu.conf.impl
 
+import com.gu.conf.fixtures.PropertiesBuilder
+import java.util.Properties
 import org.mockito.Mockito.when
 import org.scalatest.{ FunSuite, BeforeAndAfter }
 import org.scalatest.matchers.ShouldMatchers
@@ -25,15 +27,15 @@ class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSu
   var loader = mock[FileAndResourceLoader]
 
   private def installationConfiguration(): SetupConfiguration = {
-    installationConfiguration(new ConfigurationBuilder().toConfiguration)
+    installationConfiguration(new PropertiesBuilder().toProperties)
   }
 
   private def installationConfiguration(key: String, value: String): SetupConfiguration = {
-    installationConfiguration(new ConfigurationBuilder().property(key, value).toConfiguration)
+    installationConfiguration(new PropertiesBuilder().property(key, value).toProperties)
   }
 
-  private def installationConfiguration(installationProperties: AbstractConfiguration): SetupConfiguration = {
-    when(loader.getConfigurationFrom("file:///etc/gu/install_vars")).thenReturn(installationProperties)
+  private def installationConfiguration(installationProperties: Properties): SetupConfiguration = {
+    when(loader.getPropertiesFrom("file:///etc/gu/install_vars")).thenReturn(installationProperties)
     new SetupConfiguration(loader)
   }
 
