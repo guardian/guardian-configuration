@@ -21,9 +21,9 @@ import java.util.Properties
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager
 import org.apache.commons.vfs2.provider.local.DefaultLocalFileProvider
+import org.apache.commons.vfs2.provider.jar.JarFileProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 
 private[conf] class PropertiesLoader {
   private val LOG: Logger = LoggerFactory.getLogger(classOf[PropertiesLoader])
@@ -33,6 +33,10 @@ private[conf] class PropertiesLoader {
 
     manager.addProvider("classpath", new ClasspathFileProvider)
     manager.addProvider("file", new DefaultLocalFileProvider)
+
+    val jarProvider = new JarFileProvider
+    manager.addProvider("jar", jarProvider)
+    manager.addProvider("war", jarProvider)
 
     manager.init()
 
