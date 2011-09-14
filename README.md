@@ -188,7 +188,7 @@ To process configuration property files:
        private lazy val configuration = ConfigurationFactory("application-name")
     }
 
-This defaults to reading resource configuration property files from `/conf` on the classpath. In
+This defaults to reading resource configuration property files from `conf` on the classpath. In
 the case where there is contention for the default location, the configuration source location may be
 specified in the `getConfiguration` call:  
 

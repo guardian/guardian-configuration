@@ -28,11 +28,11 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
 
   val DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES = "file://%s/.gu/webapp.properties" format System.getProperty("user.home")
   val OPERATIONS_PROPERTIES = "file:///etc/gu/webapp.properties"
-  val DEVELOPER_STAGE_BASED_PROPERTIES = "classpath:/conf/DEV.properties"
-  val DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES = "classpath:/conf/gudev.gnl.properties"
-  val DEVELOPER_COMMON_PROPERTIES = "classpath:/conf/global.properties"
+  val DEVELOPER_STAGE_BASED_PROPERTIES = "classpath:conf/DEV.properties"
+  val DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES = "classpath:conf/gudev.gnl.properties"
+  val DEVELOPER_COMMON_PROPERTIES = "classpath:conf/global.properties"
 
-  var fileLoader = mock[PropertiesLoader]
+  var loader = mock[PropertiesLoader]
   var setup = mock[SetupConfiguration]
 
   var strategy: GuardianConfigurationStrategy = _
@@ -41,39 +41,39 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
     when(setup.getServiceDomain).thenReturn("gudev.gnl")
     when(setup.getStage).thenReturn("DEV")
 
-    when(fileLoader.getPropertiesFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).
+    when(loader.getPropertiesFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("developer.account.override.properties", "available").
         property("source", "developer.account.override.properties").
         toProperties)
 
-    when(fileLoader.getPropertiesFrom(OPERATIONS_PROPERTIES)).
+    when(loader.getPropertiesFrom(OPERATIONS_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("operations.properties", "available").
         property("source", "operations.properties").
         toProperties)
 
-    when(fileLoader.getPropertiesFrom(DEVELOPER_STAGE_BASED_PROPERTIES)).
+    when(loader.getPropertiesFrom(DEVELOPER_STAGE_BASED_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("developer.stage.based.properties", "available").
         property("source", "developer.stage.based.properties").
         property("developer.stage.based.properties.precendence", "developer.stage.based.properties").
         toProperties)
 
-    when(fileLoader.getPropertiesFrom(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)).
+    when(loader.getPropertiesFrom(DEVELOPER_SERVICE_DOMAIN_BASED_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("developer.service.domain.properties", "available").
         property("source", "developer.service.domain.properties").
         property("developer.stage.based.properties.precendence", "developer.service.domain.properties").
         toProperties)
 
-    when(fileLoader.getPropertiesFrom(DEVELOPER_COMMON_PROPERTIES)).
+    when(loader.getPropertiesFrom(DEVELOPER_COMMON_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("developer.common.properties", "available").
         property("source", "developer.common.properties").
         toProperties)
 
-    when(fileLoader.getPropertiesFrom(SETUP_PROPERTIES)).
+    when(loader.getPropertiesFrom(SETUP_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
         property("setup.properties", "available").
         property("source", "setup.properties").
@@ -81,11 +81,11 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
         property("stage", "DEV").
         toProperties)
 
-    strategy = new GuardianConfigurationStrategy(fileLoader, setup)
+    strategy = new GuardianConfigurationStrategy(loader, setup)
   }
 
   test("should check setup properties are not available to applications") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration.hasProperty("setup.properties") should be(false)
     configuration("source") should not be ("setup.properties")
@@ -98,7 +98,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
       System.setProperty("source", "system.override.property")
       System.setProperty("random.system.property", "meh")
 
-      val configuration = strategy.getConfiguration("webapp", "/conf")
+      val configuration = strategy.getConfiguration("webapp", "conf")
 
       configuration("source") should be("developer.account.override.properties")
       configuration.hasProperty("random.system.property") should be(false)
@@ -109,42 +109,42 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
   }
 
   test("should load developer account override properties") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration("developer.account.override.properties") should be("available")
     configuration.hasProperty("no-property") should be(false)
   }
 
   test("should load operations properties") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration("operations.properties") should be("available")
     configuration.hasProperty("no-property") should be(false)
   }
 
   test("should load developer properties(stage based)") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration("developer.stage.based.properties") should be("available")
     configuration.hasProperty("no-property") should be(false)
   }
 
   test("should load developer properties(service domain based)") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration("developer.service.domain.properties") should be("available")
     configuration.hasProperty("no-property") should be(false)
   }
 
   test("should load developer common properties") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration should not be (null)
     configuration("developer.common.properties") should be("available")
     configuration.hasProperty("no-property") should be(false)
   }
 
   test("should provide developer stage based properties in preference to service domain based properties") {
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration("developer.stage.based.properties.precendence") should be("developer.stage.based.properties")
   }
 
@@ -154,7 +154,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
       property("user.home", system.getProperty("user.home")).
       toProperties)
 
-    val configuration = strategy.getConfiguration("webapp", "/conf")
+    val configuration = strategy.getConfiguration("webapp", "conf")
     configuration.toString should be(
       "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
         "developer.account.override.properties=available\n" +
@@ -163,14 +163,14 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
         "# Properties from file:///etc/gu/webapp.properties\n" +
         "operations.properties=available\n" +
         "\n" +
-        "# Properties from classpath:/conf/DEV.properties\n" +
+        "# Properties from classpath:conf/DEV.properties\n" +
         "developer.stage.based.properties=available\n" +
         "developer.stage.based.properties.precendence=developer.stage.based.properties\n" +
         "\n" +
-        "# Properties from classpath:/conf/gudev.gnl.properties\n" +
+        "# Properties from classpath:conf/gudev.gnl.properties\n" +
         "developer.service.domain.properties=available\n" +
         "\n" +
-        "# Properties from classpath:/conf/global.properties\n" +
+        "# Properties from classpath:conf/global.properties\n" +
         "developer.common.properties=available\n" +
         "\n")
 
