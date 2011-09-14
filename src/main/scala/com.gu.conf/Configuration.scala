@@ -82,6 +82,26 @@ trait Configuration {
     getStringProperty(propertyName) getOrElse default
   }
 
+  private val Key = """.*\bkey\b.*""".r
+  private val Password = """.*\bpass(?:word)?\b.*""".r
+
+  /**
+   * Return a protected value of property. Properties with "key" or "pass"  in the name
+   * will be returned with obscured values
+   *
+   * @param propertyName name of the property
+   * @return value of the property
+   */
+  def getPrintableProperty(propertyName: String): Option[String] = {
+    getStringProperty(propertyName) map { value =>
+      propertyName match {
+        case Password() => "*** PASSWORD ***"
+        case Key() => "*** KEY ***"
+        case _ => value
+      }
+    }
+  }
+
   /**
    * Returns the value of a property converted to an int
    *

@@ -32,7 +32,13 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase with Befo
       "integer.property" -> "23",
       "nonnumeric.property" -> "qwe",
       "list.property" -> "rimbaud,verlaine",
-      "utility.property" -> "utility"))
+      "utility.property" -> "utility",
+      "password" -> "abc123",
+      "foo.password.blah" -> "abc123",
+      "blah.pass.foo" -> "abc123",
+      "key" -> "abc123",
+      "foo.key.blah" -> "abc123",
+      "akey" -> "abc123"))
 
     configuration = new CompositeConfiguration(conf1, conf2)
     secondary = conf2
@@ -53,9 +59,15 @@ class CompositeConfigurationTest extends AbstractConfigurationTestBase with Befo
         "precendence.test.property=first\n" +
         "\n" +
         "# Properties from secondary\n" +
+        "akey=abc123\n" +
+        "blah.pass.foo=*** PASSWORD ***\n" +
+        "foo.key.blah=*** KEY ***\n" +
+        "foo.password.blah=*** PASSWORD ***\n" +
         "integer.property=23\n" +
+        "key=*** KEY ***\n" +
         "list.property=rimbaud,verlaine\n" +
         "nonnumeric.property=qwe\n" +
+        "password=*** PASSWORD ***\n" +
         "utility.property=utility\n" +
         "\n")
   }

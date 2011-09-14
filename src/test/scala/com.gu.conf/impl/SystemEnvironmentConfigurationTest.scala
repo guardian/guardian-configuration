@@ -21,12 +21,19 @@ class SystemEnvironmentConfigurationTest extends AbstractConfigurationTestBase w
 
   before {
     val environment = Map(
+      "precendence.test.property" -> "first",
       "double.property" -> "25.0",
       "precendence.test.property" -> "second",
       "integer.property" -> "23",
       "nonnumeric.property" -> "qwe",
       "list.property" -> "rimbaud,verlaine",
-      "utility.property" -> "utility")
+      "utility.property" -> "utility",
+      "password" -> "abc123",
+      "foo.password.blah" -> "abc123",
+      "blah.pass.foo" -> "abc123",
+      "key" -> "abc123",
+      "foo.key.blah" -> "abc123",
+      "akey" -> "abc123")
 
     configuration = new SystemEnvironmentConfiguration("TestEnvironment", environment)
   }

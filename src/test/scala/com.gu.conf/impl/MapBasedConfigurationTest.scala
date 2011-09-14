@@ -21,13 +21,18 @@ class MapBasedConfigurationTest extends AbstractConfigurationTestBase with Befor
 
   before {
     val mapBasedConfiguration = new MapBasedConfiguration("test", Map(
-      "precendence.test.property" -> "first",
       "double.property" -> "25.0",
       "precendence.test.property" -> "second",
       "integer.property" -> "23",
       "nonnumeric.property" -> "qwe",
       "list.property" -> "rimbaud,verlaine",
-      "utility.property" -> "utility"))
+      "utility.property" -> "utility",
+      "password" -> "abc123",
+      "foo.password.blah" -> "abc123",
+      "blah.pass.foo" -> "abc123",
+      "key" -> "abc123",
+      "foo.key.blah" -> "abc123",
+      "akey" -> "abc123"))
 
     configuration = mapBasedConfiguration
   }
@@ -43,10 +48,16 @@ class MapBasedConfigurationTest extends AbstractConfigurationTestBase with Befor
   test("should toString() in standard format") {
     configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
+        "akey=abc123\n" +
+        "blah.pass.foo=*** PASSWORD ***\n" +
         "double.property=25.0\n" +
+        "foo.key.blah=*** KEY ***\n" +
+        "foo.password.blah=*** PASSWORD ***\n" +
         "integer.property=23\n" +
+        "key=*** KEY ***\n" +
         "list.property=rimbaud,verlaine\n" +
         "nonnumeric.property=qwe\n" +
+        "password=*** PASSWORD ***\n" +
         "precendence.test.property=second\n" +
         "utility.property=utility\n" +
         "\n")

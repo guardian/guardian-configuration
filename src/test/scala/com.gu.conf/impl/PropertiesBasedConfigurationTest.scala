@@ -21,13 +21,26 @@ import org.scalatest.BeforeAndAfter
 class PropertiesBasedConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
 
   before {
+    val properties = Map(
+      "precendence.test.property" -> "first",
+      "double.property" -> "25.0",
+      "precendence.test.property" -> "second",
+      "integer.property" -> "23",
+      "nonnumeric.property" -> "qwe",
+      "list.property" -> "rimbaud,verlaine",
+      "utility.property" -> "utility",
+      "password" -> "abc123",
+      "foo.password.blah" -> "abc123",
+      "blah.pass.foo" -> "abc123",
+      "key" -> "abc123",
+      "foo.key.blah" -> "abc123",
+      "akey" -> "abc123")
+
     val builder = new PropertiesBuilder
-    builder.property("precendence.test.property", "first")
-    builder.property("double.property", "25.0")
-    builder.property("integer.property", "23")
-    builder.property("nonnumeric.property", "qwe")
-    builder.property("list.property", "rimbaud,verlaine")
-    builder.property("utility.property", "utility")
+    properties foreach {
+      case (key, value) =>
+        builder.property(key, value)
+    }
 
     configuration = new PropertiesBasedConfiguration("properties", builder.toProperties)
   }
@@ -39,11 +52,17 @@ class PropertiesBasedConfigurationTest extends AbstractConfigurationTestBase wit
   test("should toString() in standard format") {
     configuration.toString() should be(
       "# Properties from " + configuration.getIdentifier + "\n" +
+        "akey=abc123\n" +
+        "blah.pass.foo=*** PASSWORD ***\n" +
         "double.property=25.0\n" +
+        "foo.key.blah=*** KEY ***\n" +
+        "foo.password.blah=*** PASSWORD ***\n" +
         "integer.property=23\n" +
+        "key=*** KEY ***\n" +
         "list.property=rimbaud,verlaine\n" +
         "nonnumeric.property=qwe\n" +
-        "precendence.test.property=first\n" +
+        "password=*** PASSWORD ***\n" +
+        "precendence.test.property=second\n" +
         "utility.property=utility\n" +
         "\n")
   }

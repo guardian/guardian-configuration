@@ -23,7 +23,7 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   var configuration: AbstractConfiguration = _
 
   test("should have correct size") {
-    configuration.size should be(6)
+    configuration.size should be(12)
   }
 
   test("should have correct test data") {
@@ -33,6 +33,13 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
     configuration("integer.property") should be("23")
     configuration("nonnumeric.property") should be("qwe")
     configuration("list.property") should be("rimbaud,verlaine")
+
+    configuration("password") should be("abc123")
+    configuration("foo.password.blah") should be("abc123")
+    configuration("blah.pass.foo") should be("abc123")
+    configuration("key") should be("abc123")
+    configuration("foo.key.blah") should be("abc123")
+    configuration("akey") should be("abc123")
   }
 
   test("should get none for getPropertySource if not set") {
@@ -97,13 +104,19 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   test("should get property names") {
     val names = configuration.getPropertyNames
 
-    names.size should be(6)
+    names.size should be(12)
     names should contain("precendence.test.property")
     names should contain("double.property")
     names should contain("integer.property")
     names should contain("nonnumeric.property")
     names should contain("list.property")
     names should contain("utility.property")
+    names should contain("password")
+    names should contain("foo.password.blah")
+    names should contain("blah.pass.foo")
+    names should contain("key")
+    names should contain("foo.key.blah")
+    names should contain("akey")
   }
 
   test("should toProperties() with same properties") {
@@ -122,15 +135,17 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
       "double.property",
       "integer.property",
       "nonnumeric.property",
-      "utility.property")
+      "utility.property",
+      "list.property")
     val projection = configuration.project(projectionNames)
 
-    projection.size should be(5)
+    projection.size should be(6)
     projection.hasProperty("precendence.test.property") should be(true)
     projection.hasProperty("double.property") should be(true)
     projection.hasProperty("integer.property") should be(true)
     projection.hasProperty("nonnumeric.property") should be(true)
     projection.hasProperty("utility.property") should be(true)
+    projection.hasProperty("list.property") should be(true)
 
     projection.getPropertyNames foreach { property =>
       projection(property) should be(configuration(property))
@@ -138,15 +153,22 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   }
 
   test("should minus correctly") {
-    val minusNames = Set("precendence.test.property")
+    val minusNames = Set("password",
+      "foo.password.blah",
+      "blah.pass.foo",
+      "key",
+      "foo.key.blah",
+      "akey")
+
     val projection = configuration.minus(minusNames)
 
-    projection.size should be(5)
+    projection.size should be(6)
+    projection.hasProperty("precendence.test.property") should be(true)
     projection.hasProperty("double.property") should be(true)
     projection.hasProperty("integer.property") should be(true)
     projection.hasProperty("nonnumeric.property") should be(true)
-    projection.hasProperty("list.property") should be(true)
     projection.hasProperty("utility.property") should be(true)
+    projection.hasProperty("list.property") should be(true)
 
     projection.getPropertyNames foreach { property =>
       projection(property) should be(configuration(property))
@@ -159,19 +181,35 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
 
     val withOverrides = configuration overrideWith overrides
 
-    withOverrides.size should be(6)
+    withOverrides.size should be(12)
     withOverrides.hasProperty("double.property") should be(true)
     withOverrides.hasProperty("precendence.test.property") should be(true)
     withOverrides.hasProperty("integer.property") should be(true)
     withOverrides.hasProperty("nonnumeric.property") should be(true)
     withOverrides.hasProperty("list.property") should be(true)
     withOverrides.hasProperty("utility.property") should be(true)
+    withOverrides.hasProperty("password") should be(true)
+    withOverrides.hasProperty("foo.password.blah") should be(true)
+    withOverrides.hasProperty("blah.pass.foo") should be(true)
+    withOverrides.hasProperty("key") should be(true)
+    withOverrides.hasProperty("foo.key.blah") should be(true)
+    withOverrides.hasProperty("akey") should be(true)
 
     withOverrides("utility.property") should be("overriden")
     val unchanged = withOverrides.getPropertyNames -- Set("utility.property")
     unchanged foreach { property =>
       withOverrides(property) should be(configuration(property))
     }
+  }
+
+  test("should replace keys and passwords with placeholders") {
+    configuration.getPrintableProperty("password").get should be("*** PASSWORD ***")
+    configuration.getPrintableProperty("foo.password.blah").get should be("*** PASSWORD ***")
+    configuration.getPrintableProperty("blah.pass.foo").get should be("*** PASSWORD ***")
+    configuration.getPrintableProperty("key").get should be("*** KEY ***")
+    configuration.getPrintableProperty("foo.key.blah").get should be("*** KEY ***")
+
+    configuration.getPrintableProperty("akey").get should be("abc123")
   }
 
 }
