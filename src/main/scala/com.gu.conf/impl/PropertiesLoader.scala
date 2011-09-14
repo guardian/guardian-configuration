@@ -15,46 +15,28 @@
  */
 package com.gu.conf.impl
 
-import org.apache.commons.io.IOUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.gu.conf.vfs.ClasspathFileProvider
 import java.io._
 import java.util.Properties
+import org.apache.commons.io.IOUtils
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager
+import org.apache.commons.vfs2.provider.local.DefaultLocalFileProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 
 private[conf] class PropertiesLoader {
   private val LOG: Logger = LoggerFactory.getLogger(classOf[PropertiesLoader])
-  private val Descriptor = "(file|classpath):(.*)".r
 
-  private def getFile(location: String): Option[InputStream] = {
-    val file = new File(location)
+  private val vfs = {
+    val manager = new DefaultFileSystemManager
 
-    file.canRead match {
-      case true =>
-        Some(new BufferedInputStream(new FileInputStream(file)))
+    manager.addProvider("classpath", new ClasspathFileProvider)
+    manager.addProvider("file", new DefaultLocalFileProvider)
 
-      case false =>
-        LOG.info("Ignoring missing configuration file file:" + location)
-        None
-    }
-  }
+    manager.init()
 
-  private def getResource(location: String): Option[InputStream] = {
-    val url = Option(classOf[PropertiesLoader].getClassLoader getResource location)
-
-    url match {
-      case Some(existingUrl) => try {
-        Some(new BufferedInputStream(existingUrl.openStream))
-      } catch {
-        case ioe: IOException => {
-          LOG.warn("Cannot open resource trying to load properties from classpath:" + location, ioe)
-          None
-        }
-      }
-
-      case None =>
-        LOG.info("Ignoring missing configuration file classpath:" + location)
-        None
-    }
+    manager
   }
 
   def getPropertiesFrom(descriptor: String): Properties = {
@@ -62,20 +44,18 @@ private[conf] class PropertiesLoader {
     var inputStream: Option[InputStream] = None
 
     try {
-      inputStream = descriptor match {
-        case Descriptor("file", location) => getFile(location)
-        case Descriptor("classpath", location) => getResource(location)
-        case _ =>
-          LOG.warn("Unknown protocol trying to load properties from " + descriptor)
-          None
+      val file = Option(vfs resolveFile descriptor) filter { _.exists }
+      if (!file.isDefined) {
+        LOG.info("Ignoring missing configuration " + descriptor)
       }
+
+      inputStream = file map { _.getContent.getInputStream }
 
       inputStream foreach { properties.load }
 
     } catch {
       case ioe: IOException =>
-        LOG.warn("unexpected error reading from file " + descriptor, ioe)
-
+        LOG.warn("Unexpected error reading from " + descriptor, ioe)
     } finally {
       inputStream foreach { IOUtils.closeQuietly }
     }
