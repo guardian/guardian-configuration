@@ -15,9 +15,6 @@
  */
 package com.gu.conf
 
-import com.gu.conf.impl.PropertiesBasedConfiguration
-import java.util.Properties
-
 object ConfigurationFactory {
 
   def apply(applicationName: String): Configuration = {
@@ -34,9 +31,5 @@ object ConfigurationFactory {
 
   def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
     (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
-  }
-
-  def fromProperties(identifier: String, properties: Properties): Configuration = {
-    new PropertiesBasedConfiguration(identifier, properties)
   }
 }
