@@ -85,14 +85,14 @@ private[conf] trait AbstractConfiguration extends Configuration {
 
     builder append "# Properties from "
     builder append getIdentifier
-    builder.appendNewline()
+    builder append "\n"
 
     getPropertyNames.toList.sorted foreach { name =>
       val line = "%s=%s\n" format (name, getPrintableProperty(name).get)
       builder append line
     }
 
-    builder.appendNewline()
+    builder append "\n"
 
     builder.toString()
   }
