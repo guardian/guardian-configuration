@@ -1,6 +1,6 @@
 name := "configuration"
 
-version := "3.3-SNAPSHOT"
+version := "3.4-SNAPSHOT"
 
 organization := "com.gu"
 
