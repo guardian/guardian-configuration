@@ -10,6 +10,11 @@ crossScalaVersions ++= Seq("2.9.0-1", "2.8.1")
 
 seq(ScalariformPlugin.settings: _*)
 
+ivyXML :=
+    <dependencies>
+        <exclude module="log4j"/>
+    </dependencies>
+
 resolvers ++= Seq(
   "Scala Tools Repository" at "http://scala-tools.org/repo-releases",
   "Guardian GitHub" at "http://guardian.github.com/maven/repo-releases"
@@ -18,6 +23,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "1.4",
   "commons-lang" % "commons-lang" % "2.4",
+  "org.apache.commons" % "commons-vfs2" % "2.0",
   "org.slf4j" % "slf4j-api" % "1.6.1"
 )
 
