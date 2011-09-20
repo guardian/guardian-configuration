@@ -15,7 +15,7 @@
  */
 package com.gu.conf.impl
 
-import java.util.regex.Pattern
+import scala.util.matching.Regex.Match
 
 private[conf] class PlaceholderProcessingConfiguration(
   val delegate: AbstractConfiguration,
@@ -33,7 +33,7 @@ private[conf] class PlaceholderProcessingConfiguration(
 
   def getPropertyNames: Set[String] = delegate.getPropertyNames
 
-  override def toString(): String = placeholderResolver.substitutePlaceholders(delegate.toString())
+  override def toString: String = placeholderResolver.substitutePlaceholders(delegate.toString())
 
 }
 
@@ -41,31 +41,17 @@ private[conf] class PlaceholderResolver(
   val environment: SystemEnvironmentConfiguration = new SystemEnvironmentConfiguration,
   val system: SystemPropertiesConfiguration = new SystemPropertiesConfiguration) {
 
-  private val PLACEHOLDER: Pattern = Pattern.compile("\\$\\{(.*?)\\}")
-  private final val PLACEHOLDER_NAME: Pattern = Pattern.compile("(env\\.)?(.*)")
+  private val PLACEHOLDER = """\$\{(env\.)?(.+)\}""".r
 
   def substitutePlaceholders(text: String): String = {
-    val substituted: StringBuffer = new StringBuffer
+    PLACEHOLDER replaceSomeIn (text, (m: Match) => {
+      val property = m.group(2)
+      val substitution = Option(m.group(1)) match {
+        case None => system
+        case _ => environment
+      }
 
-    val matcher = PLACEHOLDER.matcher(text)
-    while (matcher.find) {
-      matcher.appendReplacement(substituted, resolvePlaceholder(matcher.group(1)))
-    }
-    matcher.appendTail(substituted)
-
-    substituted.toString
-  }
-
-  private def resolvePlaceholder(placeholder: String): String = {
-    val matcher = PLACEHOLDER_NAME.matcher(placeholder)
-    matcher.matches
-
-    val property: String = matcher.group(2)
-    val substitutionType = Option(matcher.group(1)).isDefined match {
-      case true => environment
-      case _ => system
-    }
-
-    substitutionType.getStringProperty(property) getOrElse ("${%s}" format placeholder)
+      substitution getStringProperty property
+    })
   }
 }
