@@ -36,18 +36,38 @@ class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBa
       "akey" -> "abc123",
       "utility.property" -> "has a ${placeholder}"))
 
-    val placeholderResolver = new PlaceholderResolver(
+    configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration,
       new SystemEnvironmentConfiguration("TestEnvironment", Map()),
       new SystemPropertiesConfiguration("TestSystem", new PropertiesBuilder().
-        property("placeholder", "resolved placeholder").
+        property("placeholder", "resolved system placeholder").
         toProperties))
-
-    configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, placeholderResolver)
   }
 
-  test("should replace placeholder with resolved value") {
-    configuration.hasProperty("utility.property") should be(true)
-    configuration("utility.property") should be("has a resolved placeholder")
+  test("should replace placeholder with resolved system value") {
+    val mapBasedConfiguration = new MapBasedConfiguration("test", Map(
+      "property" -> "has a ${placeholder}"))
+    val environment = new SystemEnvironmentConfiguration("TestEnvironment", Map())
+    val system = new SystemPropertiesConfiguration("TestSystem", new PropertiesBuilder().
+      property("placeholder", "resolved system placeholder").
+      toProperties)
+
+    configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, environment, system)
+
+    configuration.hasProperty("property") should be(true)
+    configuration("property") should be("has a resolved system placeholder")
+  }
+
+  test("should replace placeholder with resolved environment value") {
+    val mapBasedConfiguration = new MapBasedConfiguration("test", Map(
+      "property" -> "has a ${env.placeholder}"))
+    val environment = new SystemEnvironmentConfiguration("TestEnvironment", Map(
+      "placeholder" -> "resolved environment placeholder"))
+    val system = new SystemPropertiesConfiguration("TestSystem", new PropertiesBuilder().toProperties)
+
+    configuration = new PlaceholderProcessingConfiguration(mapBasedConfiguration, environment, system)
+
+    configuration.hasProperty("property") should be(true)
+    configuration("property") should be("has a resolved environment placeholder")
   }
 
   test("should toString() in standard format") {
@@ -64,7 +84,7 @@ class PlaceholderProcessingConfigurationTest extends AbstractConfigurationTestBa
         "nonnumeric.property=qwe\n" +
         "password=*** PASSWORD ***\n" +
         "precendence.test.property=second\n" +
-        "utility.property=has a resolved placeholder\n" +
+        "utility.property=has a resolved system placeholder\n" +
         "\n")
   }
 }

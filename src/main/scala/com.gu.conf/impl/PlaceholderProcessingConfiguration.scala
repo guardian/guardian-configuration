@@ -19,31 +19,12 @@ import scala.util.matching.Regex.Match
 
 private[conf] class PlaceholderProcessingConfiguration(
   val delegate: AbstractConfiguration,
-  private val placeholderResolver: PlaceholderResolver = new PlaceholderResolver) extends AbstractConfiguration {
-
-  def getIdentifier: String = delegate.getIdentifier
-
-  def getPropertySource(propertyName: String): Option[AbstractConfiguration] = {
-    delegate getPropertySource propertyName
-  }
-
-  def getStringProperty(propertyName: String): Option[String] = {
-    (delegate getStringProperty propertyName) map { placeholderResolver.substitutePlaceholders }
-  }
-
-  def getPropertyNames: Set[String] = delegate.getPropertyNames
-
-  override def toString: String = placeholderResolver.substitutePlaceholders(delegate.toString())
-
-}
-
-private[conf] class PlaceholderResolver(
-  val environment: SystemEnvironmentConfiguration = new SystemEnvironmentConfiguration,
-  val system: SystemPropertiesConfiguration = new SystemPropertiesConfiguration) {
+  private val environment: SystemEnvironmentConfiguration = new SystemEnvironmentConfiguration,
+  private val system: SystemPropertiesConfiguration = new SystemPropertiesConfiguration) extends AbstractConfiguration {
 
   private val PLACEHOLDER = """\$\{(env\.)?(.+)\}""".r
 
-  def substitutePlaceholders(text: String): String = {
+  private def substitutePlaceholders(text: String): String = {
     PLACEHOLDER replaceSomeIn (text, (m: Match) => {
       val property = m.group(2)
       val substitution = Option(m.group(1)) match {
@@ -54,4 +35,19 @@ private[conf] class PlaceholderResolver(
       substitution getStringProperty property
     })
   }
+
+  def getIdentifier: String = delegate.getIdentifier
+
+  def getPropertySource(propertyName: String): Option[AbstractConfiguration] = {
+    delegate getPropertySource propertyName
+  }
+
+  def getStringProperty(propertyName: String): Option[String] = {
+    (delegate getStringProperty propertyName) map { substitutePlaceholders }
+  }
+
+  def getPropertyNames: Set[String] = delegate.getPropertyNames
+
+  override def toString: String = substitutePlaceholders(delegate.toString())
+
 }
