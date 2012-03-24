@@ -18,6 +18,7 @@ package com.gu.conf
 import com.gu.conf.impl._
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.Properties
 
 private[conf] class GuardianConfigurationStrategy(
   val loader: PropertiesLoader = new PropertiesLoader,
@@ -35,7 +36,8 @@ private[conf] class GuardianConfigurationStrategy(
       getOperationsProperties(applicationName),
       getDeveloperStageBasedProperties(webappConfDirectory),
       getDeveloperServiceDomainBasedProperties(webappConfDirectory),
-      getDeveloperCommonProperties(webappConfDirectory))
+      getDeveloperCommonProperties(webappConfDirectory),
+      getEnvironmentProperties)
 
     val placeholderProcessed = new PlaceholderProcessingConfiguration(properties)
 
@@ -91,4 +93,14 @@ private[conf] class GuardianConfigurationStrategy(
 
     new PropertiesBasedConfiguration(location, properties)
   }
+
+  def getEnvironmentProperties = {
+    LOG.info("Loading environment properties")
+    val props = new Properties()
+
+    setup.getEnvironmentVariables.foreach { pair => props.setProperty(pair._1, pair._2) }
+
+    new PropertiesBasedConfiguration("Environment", props)
+  }
+
 }

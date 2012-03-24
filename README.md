@@ -89,6 +89,10 @@ or version control, according to their variety:
     These properties are provided by a war resource usually located at
     `/conf/global.properties`.
 
+8. _Environment properties_: Properties which are defined at the operating system level. 
+	These should not be used unless required by deployment in a restrictive hosting
+	environment, i.e. Heroku.
+
 
 Only properties of types 3 through 7 should be provided to applications. They
 should be sourced as specified, first property definition wins, in the order
@@ -274,6 +278,8 @@ And result in a `conf.toString` with contents:
     # Properties from classpath:conf/guqa.gnl.properties
 
     # Properties from classpath:conf/global.properties
+
+	# Properties from System
 
 Note that nonactive `datasource.connection.timeout.ms` from `global.properties`
 is not reported.
