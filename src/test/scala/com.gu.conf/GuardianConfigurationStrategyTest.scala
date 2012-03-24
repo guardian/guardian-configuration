@@ -40,6 +40,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
   before {
     when(setup.getServiceDomain).thenReturn("gudev.gnl")
     when(setup.getStage).thenReturn("DEV")
+    when(setup.getEnvironmentVariables).thenReturn(Map("foo" -> "bar"))
 
     when(loader.getPropertiesFrom(DEVELOPER_ACCOUNT_OVERRIDE_PROPERTIES)).
       thenReturn(new PropertiesBuilder().
@@ -93,7 +94,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
     configuration.hasProperty("stage") should be(false)
   }
 
-  test("should contain properties from system") {
+  test("should not override properties with system properties if defined") {
     try {
       System.setProperty("source", "system.override.property")
       System.setProperty("random.system.property", "meh")
@@ -101,7 +102,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
       val configuration = strategy.getConfiguration("webapp", "conf")
 
       configuration("source") should be("developer.account.override.properties")
-      configuration.hasProperty("random.system.property") should be(true)
+      configuration.hasProperty("random.system.property") should be(false)
     } finally {
       System.clearProperty("source")
       System.clearProperty("random.system.property")
@@ -148,6 +149,11 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
     configuration("developer.stage.based.properties.precendence") should be("developer.stage.based.properties")
   }
 
+  test("should provide environment variables") {
+    val configuration = strategy.getConfiguration("webapp", "conf")
+    configuration.hasProperty("foo") should be(true)
+  }
+
   test("should have pretty toString()") {
     val system = System.getProperties
     System.setProperties(new PropertiesBuilder().
@@ -155,7 +161,8 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
       toProperties)
 
     val configuration = strategy.getConfiguration("webapp", "conf")
-    configuration.toString should be(
+
+    configuration.toString.contains(
       "# Properties from file://" + System.getProperty("user.home") + "/.gu/webapp.properties\n" +
         "developer.account.override.properties=available\n" +
         "source=developer.account.override.properties\n" +
@@ -172,10 +179,9 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
         "\n" +
         "# Properties from classpath:conf/global.properties\n" +
         "developer.common.properties=available\n" +
-        "\n" +
-        "# Properties from System\n" +
-        "user.home=" + System.getProperty("user.home") + "\n" +
-        "\n")
+        "\n") should be(true)
+    configuration.toString.contains("# Properties from Environment") should be(true)
+    configuration.toString.contains("foo=bar\n") should be(true)
 
     System.setProperties(system)
   }
