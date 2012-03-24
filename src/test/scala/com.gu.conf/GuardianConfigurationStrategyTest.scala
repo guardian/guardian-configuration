@@ -93,7 +93,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
     configuration.hasProperty("stage") should be(false)
   }
 
-  test("should not override properties with system properties if defined") {
+  test("should contain properties from system") {
     try {
       System.setProperty("source", "system.override.property")
       System.setProperty("random.system.property", "meh")
@@ -101,7 +101,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
       val configuration = strategy.getConfiguration("webapp", "conf")
 
       configuration("source") should be("developer.account.override.properties")
-      configuration.hasProperty("random.system.property") should be(false)
+      configuration.hasProperty("random.system.property") should be(true)
     } finally {
       System.clearProperty("source")
       System.clearProperty("random.system.property")
@@ -172,6 +172,9 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
         "\n" +
         "# Properties from classpath:conf/global.properties\n" +
         "developer.common.properties=available\n" +
+        "\n" +
+        "# Properties from System\n" +
+        "user.home=" + System.getProperty("user.home") + "\n" +
         "\n")
 
     System.setProperties(system)

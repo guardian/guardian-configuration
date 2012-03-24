@@ -35,7 +35,8 @@ private[conf] class GuardianConfigurationStrategy(
       getOperationsProperties(applicationName),
       getDeveloperStageBasedProperties(webappConfDirectory),
       getDeveloperServiceDomainBasedProperties(webappConfDirectory),
-      getDeveloperCommonProperties(webappConfDirectory))
+      getDeveloperCommonProperties(webappConfDirectory),
+      getSystemProperties)
 
     val placeholderProcessed = new PlaceholderProcessingConfiguration(properties)
 
@@ -90,5 +91,10 @@ private[conf] class GuardianConfigurationStrategy(
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
+  }
+
+  def getSystemProperties = {
+    LOG.info("Loading system properties")
+    new PropertiesBasedConfiguration("System", System.getProperties())
   }
 }
