@@ -89,8 +89,8 @@ or version control, according to their variety:
     These properties are provided by a war resource usually located at
     `/conf/global.properties`.
 
-8. _Environment properties_: Properties which are defined at the operating system level. 
-	These should not be used unless required by deployment in a restrictive hosting
+8. _Environment properties_: Properties which are passed to the JVM when started. 
+	These should generally not be used unless required by deployment in a restrictive hosting
 	environment, i.e. Heroku.
 
 
@@ -279,7 +279,25 @@ And result in a `conf.toString` with contents:
 
     # Properties from classpath:conf/global.properties
 
-	# Properties from System
+	# Properties from Environment
 
 Note that nonactive `datasource.connection.timeout.ms` from `global.properties`
 is not reported.
+
+### Heroku Example
+
+When deploying to Heroku, the file system is not available to read properties from. 
+Heroku recommends Environment variables should be used when requiring properties from outside of the application.
+
+[An up to date article is available on Heroku](http://devcenter.heroku.com/articles/config-vars) about configuration but briefly, here is how you can use the Heroku CLI application: 
+
+	heroku config:add my.application.property=SomeValue -a my_app_name
+	
+You you view configuration:
+
+	heroku config -a my_app_name
+	
+Remove by:
+
+	heroku config:remove my.application.property -a my_app_name
+
