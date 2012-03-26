@@ -180,7 +180,7 @@ class GuardianConfigurationStrategyTest extends FunSuite with ShouldMatchers wit
         "# Properties from classpath:conf/global.properties\n" +
         "developer.common.properties=available\n" +
         "\n") should be(true)
-    configuration.toString.contains("# Properties from Environment") should be(true)
+    configuration.toString.contains("# Properties from Java System") should be(true)
     configuration.toString.contains("foo=bar\n") should be(true)
 
     System.setProperties(system)
