@@ -89,9 +89,9 @@ or version control, according to their variety:
     These properties are provided by a war resource usually located at
     `/conf/global.properties`.
 
-8. _Environment properties_: Properties which are passed to the JVM when started. 
+8. _Java System properties_: Properties which are passed to the JVM when started. 
 	These should generally not be used unless required by deployment in a restrictive hosting
-	environment, i.e. Heroku.
+	environment, i.e. Heroku. 
 
 
 Only properties of types 3 through 7 should be provided to applications. They
@@ -279,7 +279,7 @@ And result in a `conf.toString` with contents:
 
     # Properties from classpath:conf/global.properties
 
-	# Properties from Environment
+	# Properties from Java System
 
 Note that nonactive `datasource.connection.timeout.ms` from `global.properties`
 is not reported.
