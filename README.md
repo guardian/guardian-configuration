@@ -2,6 +2,10 @@
 
 Framework support for a standard webapp configuration scheme.
 
+## Building it ##
+
+* Ensure you have SBT installed, we recommend 0.11.3-2 for maximum backward compatibility
+
 
 ## Guiding Principles ##
 
@@ -89,9 +93,9 @@ or version control, according to their variety:
     These properties are provided by a war resource usually located at
     `/conf/global.properties`.
 
-8. _Java System properties_: Properties which are passed to the JVM when started. 
+8. _Java System properties_: Properties which are passed to the JVM when started.
 	These should generally not be used unless required by deployment in a restrictive hosting
-	environment, i.e. Heroku. 
+	environment, i.e. Heroku.
 
 
 Only properties of types 3 through 7 should be provided to applications. They
@@ -182,7 +186,7 @@ dependency management tool.
       libraryDependencies += "com.gu" % "configuration" % latestConfigurationVersion
 
 To process configuration property files:
-    
+
     object Configuration {
        import com.gu.conf.ConfigurationFactory
 
@@ -194,7 +198,7 @@ To process configuration property files:
 
 This defaults to reading resource configuration property files from `conf` on the classpath. In
 the case where there is contention for the default location, the configuration source location may be
-specified in the `getConfiguration` call:  
+specified in the `getConfiguration` call:
 
        private lazy val configuration = ConfigurationFactory("application-name", "conf/application-name")
 
@@ -286,17 +290,17 @@ is not reported.
 
 ### Heroku Example
 
-When deploying to Heroku, the file system is not available to read properties from. 
+When deploying to Heroku, the file system is not available to read properties from.
 Heroku recommends Environment variables should be used when requiring properties from outside of the application.
 
-[An up to date article is available on Heroku](http://devcenter.heroku.com/articles/config-vars) about configuration but briefly, here is how you can use the Heroku CLI application: 
+[An up to date article is available on Heroku](http://devcenter.heroku.com/articles/config-vars) about configuration but briefly, here is how you can use the Heroku CLI application:
 
 	heroku config:add my.application.property=SomeValue -a my_app_name
-	
+
 You you view configuration:
 
 	heroku config -a my_app_name
-	
+
 Remove by:
 
 	heroku config:remove my.application.property -a my_app_name
