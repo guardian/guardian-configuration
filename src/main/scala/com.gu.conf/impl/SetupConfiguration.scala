@@ -19,7 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 private[conf] class SetupConfiguration(
-  val loader: PropertiesLoader = new PropertiesLoader) extends AbstractConfiguration {
+    val loader: PropertiesLoader = new PropertiesLoader) extends AbstractConfiguration {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SetupConfiguration])
   val SETUP_PROPERTIES_LOCATION: String = "file:///etc/gu/install_vars"

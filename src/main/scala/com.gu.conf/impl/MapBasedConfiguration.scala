@@ -16,8 +16,8 @@
 package com.gu.conf.impl
 
 private[conf] class MapBasedConfiguration(
-  val identifier: String,
-  val properties: Map[String, String] = Map()) extends AbstractConfiguration {
+    val identifier: String,
+    val properties: Map[String, String] = Map()) extends AbstractConfiguration {
 
   def getIdentifier = identifier
 

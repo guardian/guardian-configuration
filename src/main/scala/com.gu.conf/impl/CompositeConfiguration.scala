@@ -26,8 +26,8 @@ private[conf] object CompositeConfiguration {
 }
 
 private[conf] class CompositeConfiguration(
-  val primary: AbstractConfiguration,
-  val secondary: AbstractConfiguration) extends AbstractConfiguration {
+    val primary: AbstractConfiguration,
+    val secondary: AbstractConfiguration) extends AbstractConfiguration {
 
   def getIdentifier = "composite[%s//%s]".format(primary.getIdentifier, secondary.getIdentifier)
 

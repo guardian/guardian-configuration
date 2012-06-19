@@ -16,8 +16,8 @@
 package com.gu.conf.impl
 
 private[conf] class ProjectedConfiguration(
-  val delegate: AbstractConfiguration,
-  val projection: Set[String]) extends AbstractConfiguration {
+    val delegate: AbstractConfiguration,
+    val projection: Set[String]) extends AbstractConfiguration {
 
   private val propertyNames = projection.intersect(delegate.getPropertyNames)
 

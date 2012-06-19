@@ -18,9 +18,9 @@ package com.gu.conf.impl
 import scala.util.matching.Regex.Match
 
 private[conf] class PlaceholderProcessingConfiguration(
-  val delegate: AbstractConfiguration,
-  private val environment: SystemEnvironmentConfiguration = new SystemEnvironmentConfiguration,
-  private val system: SystemPropertiesConfiguration = new SystemPropertiesConfiguration) extends AbstractConfiguration {
+    val delegate: AbstractConfiguration,
+    private val environment: SystemEnvironmentConfiguration = new SystemEnvironmentConfiguration,
+    private val system: SystemPropertiesConfiguration = new SystemPropertiesConfiguration) extends AbstractConfiguration {
 
   private val PLACEHOLDER = """\$\{(env\.)?(.+)\}""".r
 
