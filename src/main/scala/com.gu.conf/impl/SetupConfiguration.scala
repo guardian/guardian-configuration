@@ -28,11 +28,14 @@ private[conf] class SetupConfiguration(
   val properties = loader getPropertiesFrom SETUP_PROPERTIES_LOCATION
 
   val setup = new PropertiesBasedConfiguration(SETUP_PROPERTIES_LOCATION, properties)
+  val systemSetup = new SystemPropertiesConfiguration()
 
   def getIdentifier: String = "Setup"
 
   def getServiceDomain: String = {
-    getStringProperty("int.service.domain") orElse
+    getSystemProperty("int.service.domain") orElse
+      getSystemProperty("INT_SERVICE_DOMAIN") orElse
+      getStringProperty("int.service.domain") orElse
       getStringProperty("INT_SERVICE_DOMAIN") getOrElse {
         LOG.info("unable to find INT_SERVICE_DOMAIN in " + SETUP_PROPERTIES_LOCATION + " defaulting to \"default\"")
         "default"
@@ -40,7 +43,9 @@ private[conf] class SetupConfiguration(
   }
 
   def getStage: String = {
-    getStringProperty("stage") orElse
+    getSystemProperty("stage") orElse
+      getSystemProperty("STAGE") orElse
+      getStringProperty("stage") orElse
       getStringProperty("STAGE") getOrElse {
         LOG.info("unable to find STAGE in " + SETUP_PROPERTIES_LOCATION + " defaulting to \"default\"")
         "default"
@@ -55,7 +60,13 @@ private[conf] class SetupConfiguration(
     setup.getStringProperty(propertyName)
   }
 
-  def getPropertyNames: Set[String] = setup.getPropertyNames
+  def getSystemProperty(propertyName: String): Option[String] = {
+    systemSetup.getStringProperty(propertyName)
+  }
+
+  def getPropertyNames: Set[String] = {
+    setup.getPropertyNames ++ systemSetup.getPropertyNames
+  }
 
   def getEnvironmentVariables: Map[String, String] = {
     import scala.collection.JavaConversions._

@@ -32,4 +32,19 @@ object ConfigurationFactory {
   def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
     (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
   }
+
+  def getConfiguration(applicationName: String, webappConfDirectory: String, intServiceDomain: String, stage: String): Configuration = {
+    setSystemProperties(intServiceDomain, stage)
+    getConfiguration(applicationName, webappConfDirectory)
+  }
+
+  def getConfiguration(applicationName: String, intServiceDomain: String, stage: String): Configuration = {
+    setSystemProperties(intServiceDomain, stage)
+    getConfiguration(applicationName)
+  }
+
+  private def setSystemProperties(intServiceDomain: String, stage: String) {
+    System.setProperty("int.service.domain", intServiceDomain)
+    System.setProperty("stage", stage)
+  }
 }

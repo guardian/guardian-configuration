@@ -39,10 +39,10 @@ class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSu
     new SetupConfiguration(loader)
   }
 
-  test("should not return the value of the int service domain system property if set") {
+  test("should return the value of the int service domain system property if set") {
     try {
       System.setProperty("int.service.domain", "myintservicedomain")
-      installationConfiguration().getServiceDomain should be("default")
+      installationConfiguration().getServiceDomain should be("myintservicedomain")
     } finally {
       System.clearProperty("int.service.domain")
     }
@@ -55,10 +55,10 @@ class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSu
     configuration.getServiceDomain should be("myservicedomain")
   }
 
-  test("should not return the stage from system property if set") {
+  test("should return the stage from system property if set") {
     try {
       System.setProperty("stage", "SYSTEMPROPERTYSTAGE")
-      installationConfiguration().getStage should be("default")
+      installationConfiguration().getStage should be("SYSTEMPROPERTYSTAGE")
     } finally {
       System.clearProperty("stage")
     }
