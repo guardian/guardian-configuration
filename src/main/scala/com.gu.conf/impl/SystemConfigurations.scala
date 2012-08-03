@@ -27,5 +27,10 @@ private[conf] class SystemEnvironmentConfiguration(
   private val _properties: Map[String, String] = SystemEnvironmentConfiguration.environment) extends MapBasedConfiguration(_identifier, _properties)
 
 private[conf] class SystemPropertiesConfiguration(
-  private val _identifier: String = "System",
-  private val _properties: Properties = System.getProperties) extends PropertiesBasedConfiguration(_identifier, _properties)
+    private val _identifier: String = "System",
+    private val _properties: Properties = System.getProperties) extends PropertiesBasedConfiguration(_identifier, _properties) {
+
+  override def getStringProperty(propertyName: String): Option[String] = {
+    properties.get(propertyName)
+  }
+}
