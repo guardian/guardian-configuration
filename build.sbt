@@ -4,9 +4,11 @@ version := "3.8-SNAPSHOT"
 
 organization := "com.gu"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.10.0"
 
-crossScalaVersions ++= Seq("2.9.0-1", "2.8.1")
+crossVersion := CrossVersion.binary
+
+crossScalaVersions ++= Seq("2.8.2", "2.9.2", "2.10.0")
 
 scalariformSettings
 
@@ -29,19 +31,9 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
-  "org.slf4j" % "slf4j-simple" % "1.6.1" % "test"
+  "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
+  "org.scalatest" %% "scalatest" % "1.8" % "test" cross CrossVersion.full // scalatest publish with '2.10.0', not '2.10'
 )
-
-libraryDependencies <<= (scalaVersion, libraryDependencies) { (sv, deps) =>
-    val scalaTestVersion = sv match {
-       case "2.8.1" => "1.5.1"
-       case "2.9.0-1" => "1.6.1"
-       case "2.9.1" => "1.6.1"
-       case _ => error("Unsupported Scala version " + sv)
-    }
-    deps :+ ("org.scalatest" %% "scalatest" % scalaTestVersion % "test")
-}
-
 
 publishTo <<= (version) { version: String =>
     val publishType = if (version.endsWith("SNAPSHOT")) "snapshots" else "releases"
