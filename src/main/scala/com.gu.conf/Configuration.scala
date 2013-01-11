@@ -125,7 +125,7 @@ trait Configuration {
     val option = try {
       getStringProperty(propertyName) map { _.toInt }
     } catch {
-      case _ => None
+      case _: NumberFormatException => None
     }
 
     option getOrElse defaultValue
