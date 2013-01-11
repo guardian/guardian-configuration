@@ -10,6 +10,8 @@ crossVersion := CrossVersion.binary
 
 crossScalaVersions ++= Seq("2.8.2", "2.9.2", "2.10.0")
 
+releaseSettings
+
 scalariformSettings
 
 ivyXML :=
