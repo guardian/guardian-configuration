@@ -1,7 +1,5 @@
 name := "configuration"
 
-version := "3.8-SNAPSHOT"
-
 organization := "com.gu"
 
 scalaVersion := "2.10.0"
