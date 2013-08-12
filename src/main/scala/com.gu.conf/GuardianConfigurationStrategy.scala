@@ -95,12 +95,12 @@ private[conf] class GuardianConfigurationStrategy(
   }
 
   def getEnvironmentProperties = {
-    LOG.info("Loading Java system properties")
+    LOG.info("Loading system environment variables")
     val props = new Properties()
 
     setup.getEnvironmentVariables.foreach { pair => props.setProperty(pair._1, pair._2) }
 
-    new PropertiesBasedConfiguration("Java System", props)
+    new PropertiesBasedConfiguration("Environment", props)
   }
 
 }
