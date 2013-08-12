@@ -19,7 +19,6 @@ private[conf] object CompositeConfiguration {
   def from(conf: AbstractConfiguration, confs: AbstractConfiguration*): AbstractConfiguration = {
     confs.toList match {
       case Nil => conf
-      case head :: Nil => new CompositeConfiguration(conf, head)
       case head :: tail => new CompositeConfiguration(conf, from(head, tail: _*))
     }
   }
