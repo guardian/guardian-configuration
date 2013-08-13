@@ -60,7 +60,8 @@ trait Configuration {
    * @throws java.util.NoSuchElementException if property has not been set
    */
   def apply(propertyName: String): String = {
-    getStringProperty(propertyName).get
+    getStringProperty(propertyName)
+     .getOrElse(sys.error("Required configuration property is missing: " + propertyName))
   }
 
   /**
