@@ -6,7 +6,7 @@ scalaVersion := "2.10.0"
 
 crossVersion := CrossVersion.binary
 
-crossScalaVersions ++= Seq("2.9.2", "2.10.0")
+crossScalaVersions ++= Seq("2.9.2", "2.9.3", "2.10.0")
 
 releaseSettings
 
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
   "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
-  "org.scalatest" %% "scalatest" % "1.8" % "test" cross CrossVersion.full // scalatest publish with '2.10.0', not '2.10'
+  "org.scalatest" %% "scalatest" % "1.9.2" % "test"
 )
 
 publishTo <<= (version) { version: String =>
