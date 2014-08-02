@@ -2,15 +2,13 @@ name := "configuration"
 
 organization := "com.gu"
 
-scalaVersion := "2.10.0"
+scalaVersion in ThisBuild := "2.11.2"
 
 crossVersion := CrossVersion.binary
 
-crossScalaVersions ++= Seq("2.9.2", "2.9.3", "2.10.0")
+crossScalaVersions ++= Seq("2.10.4", "2.11.2")
 
 releaseSettings
-
-scalariformSettings
 
 ivyXML :=
     <dependencies>
@@ -32,7 +30,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
   "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
-  "org.scalatest" %% "scalatest" % "1.9.2" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
 
 publishTo <<= (version) { version: String =>

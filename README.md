@@ -4,8 +4,11 @@ Framework support for a standard webapp configuration scheme.
 
 ## Building it ##
 
-* Ensure you have SBT installed, we recommend 0.11.3-2 for maximum backward compatibility
+* Ensure you have SBT installed, we recommend 0.13.5
 
+## Compatibility  ##
+
+* Latest version 4.0 for Scala 2.10 & 2.11
 
 ## Guiding Principles ##
 

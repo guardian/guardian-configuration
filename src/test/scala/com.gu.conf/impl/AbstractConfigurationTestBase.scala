@@ -15,10 +15,9 @@
  */
 package com.gu.conf.impl
 
-import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{Matchers, FunSuite}
 
-trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
+trait AbstractConfigurationTestBase extends FunSuite with Matchers {
 
   var configuration: AbstractConfiguration = _
 
@@ -75,13 +74,13 @@ trait AbstractConfigurationTestBase extends FunSuite with ShouldMatchers {
   }
 
   test("should throw for integer property if not integer") {
-    evaluating {
+    an [NumberFormatException] should be thrownBy {
       configuration.getIntegerProperty("double.property")
-    } should produce[NumberFormatException]
+    }
 
-    evaluating {
+    an [NumberFormatException] should be thrownBy  {
       configuration.getIntegerProperty("nonnumeric.property")
-    } should produce[NumberFormatException]
+    }
   }
 
   test("should get default for integer property if not set") {

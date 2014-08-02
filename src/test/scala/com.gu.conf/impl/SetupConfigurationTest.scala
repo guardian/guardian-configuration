@@ -19,10 +19,10 @@ import com.gu.conf.fixtures.PropertiesBuilder
 import java.util.Properties
 import org.mockito.Mockito.when
 import org.scalatest.{ FunSuite, BeforeAndAfter }
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.mock.MockitoSugar
 
-class SetupConfigurationTest extends FunSuite with ShouldMatchers with MockitoSugar with BeforeAndAfter {
+class SetupConfigurationTest extends FunSuite with Matchers with MockitoSugar with BeforeAndAfter {
 
   var loader = mock[PropertiesLoader]
 

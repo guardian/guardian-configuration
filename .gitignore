@@ -6,3 +6,4 @@ target
 .idea
 project/boot
 project/plugins/boot
+.vagrant

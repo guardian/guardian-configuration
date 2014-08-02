@@ -16,10 +16,10 @@
 package com.gu.conf.impl
 
 import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import java.io.File
 
-class PropertiesLoaderTest extends FunSuite with ShouldMatchers {
+class PropertiesLoaderTest extends FunSuite with Matchers {
   val loader = new PropertiesLoader
   val basedir = "file:" + new File(".").getAbsolutePath
 
