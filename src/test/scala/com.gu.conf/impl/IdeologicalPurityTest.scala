@@ -16,9 +16,9 @@
 package com.gu.conf.impl
 
 import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 
-class IdeologicalPurityTest extends FunSuite with ShouldMatchers {
+class IdeologicalPurityTest extends FunSuite with Matchers {
 
   implicit def shouldBe2Is(actual: String) = new {
     def is(expected: String) = new StringShouldWrapper(actual) should be(expected)
