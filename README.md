@@ -160,6 +160,25 @@ possible.
 
     Use at your own risk.
 
+*   _Providing stage based properties for variants of stage name_
+
+    Provides support for allowing a replica environment to abide by a specific 
+    stage's properties when the stage already exists.
+
+    For example: 
+
+    A stage named 'CODE' already exists and you wish to test a feature on a 
+    replica stack with the same properties as the CODE environment.
+
+    To do this, simply give your stage name in the following format: 
+
+    stageNameOfPropertiesToReplicate___yourOwnUniqueStageName
+
+    E.g. CODE___TEST-NEW-FUNCTIONALITY
+
+    The delimiter to activate this is three underscores ('___') after the 
+    stage whose properties you wish to replicate its properties.
+
 
 ## Common Pitfalls ##
 
