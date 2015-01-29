@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory
 private[conf] class SetupConfiguration(
     val loader: PropertiesLoader = new PropertiesLoader) extends AbstractConfiguration {
 
+  private val stageDelimiter = "___"
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SetupConfiguration])
   val SETUP_PROPERTIES_LOCATION: String = "file:///etc/gu/install_vars"
 
@@ -41,10 +42,16 @@ private[conf] class SetupConfiguration(
 
   def getStage: String = {
     getStringProperty("stage") orElse
-      getStringProperty("STAGE") getOrElse {
+      getStringProperty("STAGE") map(translateIfDelimited(_)) getOrElse {
         LOG.info("unable to find STAGE in " + SETUP_PROPERTIES_LOCATION + " defaulting to \"default\"")
         "default"
       }
+  }
+
+  private[this] def translateIfDelimited(stage: String): String = {
+    if (stage.contains(stageDelimiter))
+      stage.split(stageDelimiter).head
+    else stage
   }
 
   def getPropertySource(propertyName: String): Option[AbstractConfiguration] = {
