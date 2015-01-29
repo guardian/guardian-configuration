@@ -168,7 +168,7 @@ possible.
     For example: 
 
     A stage named 'CODE' already exists and you wish to test a feature on a 
-    replica stack with the same properties as the CODE environment.
+    new stage with the same properties as the CODE environment.
 
     To do this, simply give your stage name in the following format: 
 
