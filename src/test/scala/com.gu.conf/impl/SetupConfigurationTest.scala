@@ -70,6 +70,13 @@ class SetupConfigurationTest extends FunSuite with Matchers with MockitoSugar wi
     configuration.getStage should be("STAGEFROMPROPERTIES")
   }
 
+  test("should read stage from installation properties file and translate to appropriate stage if stage delimiter used ('___') in stage name") {
+    System.getProperty("stage") should be(null)
+    val configuration = installationConfiguration("STAGE", "CODE---TEST-STAGE-NAME")
+    println(configuration.getStage)
+    configuration.getStage should be("CODE")
+  }
+
   test("should default when installation properties file exists but does not contain value") {
     installationConfiguration().getServiceDomain should be("default")
   }
