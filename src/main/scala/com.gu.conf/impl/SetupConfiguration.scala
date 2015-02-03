@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 private[conf] class SetupConfiguration(
     val loader: PropertiesLoader = new PropertiesLoader) extends AbstractConfiguration {
 
-  private val stageDelimiter = "___"
+  private val stageDelimiter = "---"
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SetupConfiguration])
   val SETUP_PROPERTIES_LOCATION: String = "file:///etc/gu/install_vars"
 

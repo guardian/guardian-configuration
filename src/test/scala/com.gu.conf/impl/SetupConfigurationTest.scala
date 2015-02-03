@@ -72,7 +72,7 @@ class SetupConfigurationTest extends FunSuite with Matchers with MockitoSugar wi
 
   test("should read stage from installation properties file and translate to appropriate stage if stage delimiter used ('___') in stage name") {
     System.getProperty("stage") should be(null)
-    val configuration = installationConfiguration("STAGE", "CODE___TEST-STAGE-NAME")
+    val configuration = installationConfiguration("STAGE", "CODE---TEST-STAGE-NAME")
     println(configuration.getStage)
     configuration.getStage should be("CODE")
   }

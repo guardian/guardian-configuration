@@ -172,11 +172,11 @@ possible.
 
     To do this, simply give your stage name in the following format: 
 
-    stageNameOfPropertiesToReplicate___yourOwnUniqueStageName
+    stageNameOfPropertiesToReplicate---yourOwnUniqueStageName
 
-    E.g. CODE___TEST-NEW-FUNCTIONALITY
+    E.g. CODE---TEST-NEW-FUNCTIONALITY
 
-    The delimiter to activate this is three underscores ('___') after the 
+    The delimiter to activate this is three underscores ('---') after the 
     stage whose properties you wish to replicate its properties.
 
 
