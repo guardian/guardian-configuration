@@ -39,11 +39,7 @@ private[conf] class GuardianConfigurationStrategy(
       getDeveloperCommonProperties(webappConfDirectory),
       getEnvironmentProperties)
 
-    val placeholderProcessed = new PlaceholderProcessingConfiguration(properties)
-
-    LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, placeholderProcessed)
-
-    placeholderProcessed
+    new PlaceholderProcessingConfiguration(properties)
   }
 
   def getDeveloperAccountOverrideProperties(applicationName: String) = {
