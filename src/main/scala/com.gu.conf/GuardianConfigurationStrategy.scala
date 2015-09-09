@@ -22,10 +22,10 @@ import java.util.Properties
 
 private[conf] class GuardianConfigurationStrategy(
     val loader: PropertiesLoader = new PropertiesLoader,
-    val setup: SetupConfiguration = new SetupConfiguration) {
+    val setup: SetupConfiguration = new SetupConfiguration,
+    val shouldLog: Boolean = true) {
 
   private final val LOG: Logger = LoggerFactory.getLogger(classOf[GuardianConfigurationStrategy])
-  val shouldLog: Boolean = true
 
   def log(message: String, objects: Object*) {
     if (shouldLog) {
@@ -103,13 +103,5 @@ private[conf] class GuardianConfigurationStrategy(
 
     new PropertiesBasedConfiguration("Environment", props)
   }
-
-}
-
-private[conf] class NonLoggingGuardianConfigurationStrategy(
-    override val loader: PropertiesLoader = new PropertiesLoader,
-    override val setup: SetupConfiguration = new SetupConfiguration) extends GuardianConfigurationStrategy(loader, setup) {
-
-  override val shouldLog: Boolean = false
 
 }
