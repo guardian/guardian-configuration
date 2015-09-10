@@ -22,14 +22,19 @@ import java.util.Properties
 
 private[conf] class GuardianConfigurationStrategy(
     val loader: PropertiesLoader = new PropertiesLoader,
-    val setup: SetupConfiguration = new SetupConfiguration) {
+    val setup: SetupConfiguration = new SetupConfiguration,
+    val shouldLog: Boolean = true) {
 
   private final val LOG: Logger = LoggerFactory.getLogger(classOf[GuardianConfigurationStrategy])
 
-  LOG.info("INT_SERVICE_DOMAIN: " + setup.getServiceDomain)
+  def log(message: String, objects: Object*) {
+    if (shouldLog) {
+      LOG.info(message, objects)
+    }
+  }
 
   def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
-    LOG.info("Configuring application {} using classpath configuration directory {}", applicationName, webappConfDirectory)
+    log("Configuring application {} using classpath configuration directory {}", applicationName, webappConfDirectory)
 
     val properties = CompositeConfiguration.from(
       getDeveloperAccountOverrideProperties(applicationName),
@@ -39,18 +44,14 @@ private[conf] class GuardianConfigurationStrategy(
       getDeveloperCommonProperties(webappConfDirectory),
       getEnvironmentProperties)
 
-    val placeholderProcessed = new PlaceholderProcessingConfiguration(properties)
-
-    LOG.info("Configured webapp {} with properties:\n\n{}", applicationName, placeholderProcessed)
-
-    placeholderProcessed
+    new PlaceholderProcessingConfiguration(properties)
   }
 
   def getDeveloperAccountOverrideProperties(applicationName: String) = {
     val home = System getProperty "user.home"
     val location = "file://%s/.gu/%s.properties".format(home, applicationName)
 
-    LOG.info("Loading developer account override properties from " + location)
+    log("Loading developer account override properties from " + location)
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
@@ -59,7 +60,7 @@ private[conf] class GuardianConfigurationStrategy(
   def getOperationsProperties(applicationName: String) = {
     val location = "file:///etc/gu/%s.properties" format applicationName
 
-    LOG.info("Loading operations properties from " + location)
+    log("Loading operations properties from " + location)
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
@@ -69,7 +70,7 @@ private[conf] class GuardianConfigurationStrategy(
     val stage = setup.getStage
     val location = "classpath:%s/%s.properties".format(confPrefix, stage)
 
-    LOG.info("Loading developer stage based properties from " + location)
+    log("Loading developer stage based properties from " + location)
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
@@ -79,7 +80,7 @@ private[conf] class GuardianConfigurationStrategy(
     val serviceDomain = setup.getServiceDomain
     val location = String.format("classpath:%s/%s.properties", confPrefix, serviceDomain)
 
-    LOG.info("Loading developer service domain based properties from " + location)
+    log("Loading developer service domain based properties from " + location)
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
@@ -88,14 +89,14 @@ private[conf] class GuardianConfigurationStrategy(
   def getDeveloperCommonProperties(webappConfDirectory: String) = {
     val location = "classpath:%s/global.properties" format webappConfDirectory
 
-    LOG.info("Loading developer common properties from " + location)
+    log("Loading developer common properties from " + location)
     val properties = loader getPropertiesFrom location
 
     new PropertiesBasedConfiguration(location, properties)
   }
 
   def getEnvironmentProperties = {
-    LOG.info("Loading system environment variables")
+    log("Loading system environment variables")
     val props = new Properties()
 
     setup.getEnvironmentVariables.foreach { pair => props.setProperty(pair._1, pair._2) }

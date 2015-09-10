@@ -32,4 +32,8 @@ object ConfigurationFactory {
   def getConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
     (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
   }
+
+  def getNonLoggingConfiguration(applicationName: String, webappConfDirectory: String): Configuration = {
+    (new GuardianConfigurationStrategy).getConfiguration(applicationName, webappConfDirectory)
+  }
 }
