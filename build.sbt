@@ -2,11 +2,11 @@ name := "configuration"
 
 organization := "com.gu"
 
-scalaVersion in ThisBuild := "2.11.2"
+scalaVersion in ThisBuild := "2.12.2"
 
 crossVersion := CrossVersion.binary
 
-crossScalaVersions ++= Seq("2.10.4", "2.11.2")
+crossScalaVersions ++= Seq("2.11.11", "2.12.2")
 
 releaseSettings
 
@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.8.5" % "test",
   "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
 
 publishTo <<= (version) { version: String =>
@@ -45,7 +45,7 @@ publishTo <<= (version) { version: String =>
 
 maxErrors := 20
 
-javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
 scalacOptions += "-deprecation"
 
