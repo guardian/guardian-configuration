@@ -20,15 +20,11 @@ import org.scalatest.Matchers
 
 class IdeologicalPurityTest extends FunSuite with Matchers {
 
-  implicit def shouldBe2Is(actual: String) = new {
-    def is(expected: String) = new StringShouldWrapper(actual) should be(expected)
-  }
-
   test("should be ideologically pure") {
     val configuration = new ConfigurationBuilder().
       property("property", "theft").
       toConfiguration
 
-    configuration("property") is ("theft")
+    configuration("property") should be("theft")
   }
 }
