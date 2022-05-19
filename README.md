@@ -4,7 +4,7 @@ Framework support for a standard webapp configuration scheme.
 
 ## Building it ##
 
-* Ensure you have SBT installed, we recommend 0.13.5
+* Ensure you have SBT installed
 
 ## Compatibility  ##
 
@@ -185,7 +185,7 @@ Include the most recent version of the framework using your favourite
 dependency management tool.
 
     build.sbt:
-      resolvers += "Guardian GitHub Repository" at "http://guardian.github.com/maven/repo-releases"
+      resolvers += "Sonatype Nexus Releases" at "https://oss.sonatype.org/content/repositories/releases"
       libraryDependencies += "com.gu" % "configuration" % latestConfigurationVersion
 
 To process configuration property files:
