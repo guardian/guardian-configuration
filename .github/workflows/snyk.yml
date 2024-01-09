@@ -4,8 +4,6 @@
 name: Snyk
 
 on:
-  schedule:
-    - cron: '0 6 * * *'
   push:
     branches:
       - main
@@ -15,7 +13,6 @@ jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
     with:
-      DEBUG: true
       ORG: guardian-devtools
       SKIP_NODE: true
     secrets:
