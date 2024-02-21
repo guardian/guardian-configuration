@@ -39,11 +39,6 @@ ivyXML :=
         <exclude module="log4j"/>
     </dependencies>
 
-resolvers ++= Seq(
-  "Scala Tools Repository" at "https://scala-tools.org/repo-releases",
-  "Guardian GitHub" at "https://guardian.github.com/maven/repo-releases"
-)
-
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "1.4",
   "commons-lang" % "commons-lang" % "2.4",
