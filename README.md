@@ -1,14 +1,13 @@
 # Guardian Configuration Framework #
 
+[![configuration Scala version support](https://index.scala-lang.org/guardian/guardian-configuration/configuration/latest-by-scala-version.svg?platform=jvm)](https://index.scala-lang.org/guardian/guardian-configuration/configuration)
+[![Release](https://github.com/guardian/guardian-configuration/actions/workflows/release.yml/badge.svg)](https://github.com/guardian/guardian-configuration/actions/workflows/release.yml)
+
 Framework support for a standard webapp configuration scheme.
 
 ## Building it ##
 
 * Ensure you have SBT installed
-
-## Compatibility  ##
-
-* Latest version 4.0 for Scala 2.10 & 2.11
 
 ## Guiding Principles ##
 
