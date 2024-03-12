@@ -23,8 +23,6 @@ releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRe
 
 scalaVersion := "2.12.19"
 
-crossScalaVersions ++= Seq(scalaVersion.value)
-
 ivyXML :=
     <dependencies>
         <exclude module="log4j"/>
