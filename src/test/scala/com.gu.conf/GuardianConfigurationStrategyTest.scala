@@ -18,10 +18,12 @@ package com.gu.conf
 import com.gu.conf.fixtures.PropertiesBuilder
 import com.gu.conf.impl._
 import org.mockito.Mockito.when
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{Matchers, BeforeAndAfter, FunSuite}
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
-class GuardianConfigurationStrategyTest extends FunSuite with Matchers with MockitoSugar with BeforeAndAfter {
+class GuardianConfigurationStrategyTest extends AnyFunSuite with Matchers with MockitoSugar with BeforeAndAfter {
 
   val SETUP_PROPERTIES = "file:/etc/gu/setup.properties"
 

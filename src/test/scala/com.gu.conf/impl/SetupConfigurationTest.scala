@@ -16,13 +16,15 @@
 package com.gu.conf.impl
 
 import com.gu.conf.fixtures.PropertiesBuilder
+
 import java.util.Properties
 import org.mockito.Mockito.when
-import org.scalatest.{ FunSuite, BeforeAndAfter }
-import org.scalatest.Matchers
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
-class SetupConfigurationTest extends FunSuite with Matchers with MockitoSugar with BeforeAndAfter {
+class SetupConfigurationTest extends AnyFunSuite with Matchers with MockitoSugar with BeforeAndAfter {
 
   var loader = mock[PropertiesLoader]
 

@@ -15,9 +15,10 @@
  */
 package com.gu.conf.impl
 
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-trait AbstractConfigurationTestBase extends FunSuite with Matchers {
+trait AbstractConfigurationTestBase extends AnyFunSuite with Matchers {
 
   var configuration: AbstractConfiguration = _
 

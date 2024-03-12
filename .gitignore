@@ -6,4 +6,6 @@ target
 .idea
 project/boot
 project/plugins/boot
-.vagrant
+.bsp/
+.metals/
+.vscode/
