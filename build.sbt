@@ -34,10 +34,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "1.4",
   "commons-lang" % "commons-lang" % "2.4",
   "org.apache.commons" % "commons-vfs2" % "2.1",
-  "org.slf4j" % "slf4j-api" % "1.6.1"
-)
-
-libraryDependencies ++= Seq(
+  "org.slf4j" % "slf4j-api" % "1.6.1",
   "org.scalatestplus" %% "mockito-5-10" % "3.2.18.0" % Test,
   "org.slf4j" % "slf4j-simple" % "1.6.1" % Test,
   "org.scalatest" %% "scalatest" % "3.2.18" % Test
@@ -47,4 +44,5 @@ maxErrors := 20
 
 scalacOptions ++= Seq("-deprecation", "-release:8")
 
-
+Test / testOptions +=
+  Tests.Argument(TestFrameworks.ScalaTest, "-u", s"test-results/scala-${scalaVersion.value}", "-o")
