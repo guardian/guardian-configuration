@@ -1,38 +1,29 @@
-import sbtrelease.ReleaseStateTransformations.{checkSnapshotDependencies, commitNextVersion, commitReleaseVersion, inquireVersions, pushChanges, runClean, runTest, setNextVersion, setReleaseVersion, tagRelease}
+import sbtrelease.ReleaseStateTransformations.{checkSnapshotDependencies, commitNextVersion, commitReleaseVersion, inquireVersions, runClean, runTest, setNextVersion, setReleaseVersion, tagRelease}
+import sbtversionpolicy.withsbtrelease.ReleaseVersion
 
 name := "configuration"
 
 organization := "com.gu"
 
-licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
-homepage := Some(url("https://github.com/guardian/guardian-configuration"))
-scmInfo := Some(ScmInfo(
-  url("https://github.com/guardian/guardian-configuration"),
-  "scm:git@github.com:guardian/guardian-configuration.git"
-))
-developers := List(
-  Developer(id="guardian", name="Guardian", email="", url=url("https://github.com/guardian")),
-)
-releasePublishArtifactsAction := PgpKeys.publishSigned.value
+licenses := Seq(License.Apache2)
+
+releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
-  releaseStepCommandAndRemaining("+test"),
+  runTest,
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
-  releaseStepCommandAndRemaining("+publishSigned"),
   setNextVersion,
-  commitNextVersion,
-  releaseStepCommand("sonatypeReleaseAll"),
-  pushChanges
+  commitNextVersion
 )
-scalaVersion in ThisBuild := "2.12.2"
+releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRelease().value
 
-crossVersion := CrossVersion.binary
+scalaVersion := "2.12.19"
 
-crossScalaVersions ++= Seq("2.11.11", "2.12.2")
+crossScalaVersions ++= Seq(scalaVersion.value)
 
 ivyXML :=
     <dependencies>
@@ -47,16 +38,13 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.mockito" % "mockito-all" % "1.8.5" % "test",
-  "org.slf4j" % "slf4j-simple" % "1.6.1" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+  "org.scalatestplus" %% "mockito-5-10" % "3.2.18.0" % Test,
+  "org.slf4j" % "slf4j-simple" % "1.6.1" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.18" % Test
 )
-publishTo := sonatypePublishTo.value
 
 maxErrors := 20
 
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
-
-scalacOptions += "-deprecation"
+scalacOptions ++= Seq("-deprecation", "-release:8")
 
 

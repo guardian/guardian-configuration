@@ -15,10 +15,10 @@
  */
 package com.gu.conf.impl
 
-import org.scalatest.FunSuite
-import org.scalatest.Matchers
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class IdeologicalPurityTest extends FunSuite with Matchers {
+class IdeologicalPurityTest extends AnyFunSuite with Matchers {
 
   test("should be ideologically pure") {
     val configuration = new ConfigurationBuilder().
