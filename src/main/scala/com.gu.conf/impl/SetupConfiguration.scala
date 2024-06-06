@@ -58,8 +58,8 @@ private[conf] class SetupConfiguration(
   def getPropertyNames: Set[String] = setup.getPropertyNames
 
   def getEnvironmentVariables: Map[String, String] = {
-    import scala.collection.JavaConversions._
-    System.getenv.toMap
+    import scala.jdk.CollectionConverters._
+    System.getenv.asScala.toMap
   }
 
   override def toString(): String = setup.toString()

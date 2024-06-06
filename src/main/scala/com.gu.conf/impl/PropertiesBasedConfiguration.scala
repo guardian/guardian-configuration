@@ -16,8 +16,8 @@
 package com.gu.conf.impl
 
 import java.util.Properties
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 private[conf] class PropertiesBasedConfiguration(
   private val _identifier: String,
-  private val _properties: Properties) extends MapBasedConfiguration(_identifier, _properties.toMap)
+  private val _properties: Properties) extends MapBasedConfiguration(_identifier, _properties.asScala.toMap)

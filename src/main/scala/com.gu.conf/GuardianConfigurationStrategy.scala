@@ -27,7 +27,7 @@ private[conf] class GuardianConfigurationStrategy(
 
   private final val LOG: Logger = LoggerFactory.getLogger(classOf[GuardianConfigurationStrategy])
 
-  def log(message: String, objects: Object*) {
+  def log(message: String, objects: Object*): Unit = {
     if (shouldLog) {
       LOG.info(message, objects)
     }

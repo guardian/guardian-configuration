@@ -16,7 +16,6 @@
 package com.gu.conf.impl
 
 import org.scalatest.BeforeAndAfter
-import scala.collection.JavaConversions._
 
 class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase with BeforeAndAfter {
   before {
@@ -40,7 +39,7 @@ class SystemPropertiesConfigurationTest extends AbstractConfigurationTestBase wi
         System.setProperty(key, value)
     }
 
-    configuration = new ProjectedConfiguration(new SystemPropertiesConfiguration, properties.keySet.toSet)
+    configuration = new ProjectedConfiguration(new SystemPropertiesConfiguration, properties.keySet)
   }
 
   after {
