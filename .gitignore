@@ -9,3 +9,4 @@ project/plugins/boot
 .bsp/
 .metals/
 .vscode/
+test-results/
