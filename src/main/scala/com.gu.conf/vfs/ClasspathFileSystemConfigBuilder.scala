@@ -23,7 +23,7 @@ import org.apache.commons.vfs2.provider.url.UrlFileSystem
 object ClasspathFileSystemConfigBuilder {
   lazy val instance: ClasspathFileSystemConfigBuilder = new ClasspathFileSystemConfigBuilder
 
-  def setClassLoader(opts: FileSystemOptions, classLoader: ClassLoader) {
+  def setClassLoader(opts: FileSystemOptions, classLoader: ClassLoader): Unit = {
     instance.setClassLoader(opts, classLoader)
   }
 
@@ -35,7 +35,7 @@ object ClasspathFileSystemConfigBuilder {
 class ClasspathFileSystemConfigBuilder extends FileSystemConfigBuilder("classpath.") {
   private val CLASSLOADER_OPTION_NAME = classOf[ClassLoader].getName
 
-  def setClassLoader(opts: FileSystemOptions, classLoader: ClassLoader) {
+  def setClassLoader(opts: FileSystemOptions, classLoader: ClassLoader): Unit = {
     setParam(opts, CLASSLOADER_OPTION_NAME, classLoader)
   }
 

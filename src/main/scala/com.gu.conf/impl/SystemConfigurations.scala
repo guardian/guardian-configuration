@@ -16,10 +16,10 @@
 package com.gu.conf.impl
 
 import java.util.Properties
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 private[conf] object SystemEnvironmentConfiguration {
-  val environment = System.getenv().toMap
+  val environment = System.getenv().asScala.toMap
 }
 
 private[conf] class SystemEnvironmentConfiguration(

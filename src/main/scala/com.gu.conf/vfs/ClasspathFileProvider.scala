@@ -18,7 +18,7 @@ package com.gu.conf.vfs
 import org.apache.commons.vfs2.provider.AbstractFileProvider
 import org.apache.commons.vfs2.provider.UriParser
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import org.apache.commons.vfs2._
 
 class ClasspathFileProvider extends AbstractFileProvider {
@@ -42,8 +42,8 @@ class ClasspathFileProvider extends AbstractFileProvider {
     ClasspathFileSystemConfigBuilder.instance
   }
 
-  override def closeFileSystem(filesystem: FileSystem) {
+  override def closeFileSystem(filesystem: FileSystem): Unit = {
   }
 
-  def getCapabilities: java.util.Collection[Capability] = Set(Capability.DISPATCHER)
+  def getCapabilities: java.util.Collection[Capability] = Set(Capability.DISPATCHER).asJava
 }
