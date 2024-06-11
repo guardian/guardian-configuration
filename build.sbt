@@ -29,12 +29,12 @@ ivyXML :=
     </dependencies>
 
 libraryDependencies ++= Seq(
-  "commons-io" % "commons-io" % "1.4",
-  "commons-lang" % "commons-lang" % "2.4",
-  "org.apache.commons" % "commons-vfs2" % "2.1",
-  "org.slf4j" % "slf4j-api" % "1.6.1",
+  "commons-io" % "commons-io" % "2.16.1",
+  "commons-lang" % "commons-lang" % "2.6",
+  "org.apache.commons" % "commons-vfs2" % "2.9.0",
+  "org.slf4j" % "slf4j-api" % "1.6.6",
   "org.scalatestplus" %% "mockito-5-10" % "3.2.18.0" % Test,
-  "org.slf4j" % "slf4j-simple" % "1.6.1" % Test,
+  "org.slf4j" % "slf4j-simple" % "1.6.6" % Test,
   "org.scalatest" %% "scalatest" % "3.2.18" % Test
 )
 
