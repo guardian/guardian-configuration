@@ -35,7 +35,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.36",
   "org.scalatestplus" %% "mockito-5-10" % "3.2.18.0" % Test,
   "org.slf4j" % "slf4j-simple" % "1.7.36" % Test,
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test
 )
 
 maxErrors := 20
