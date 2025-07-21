@@ -29,7 +29,7 @@ ivyXML :=
     </dependencies>
 
 libraryDependencies ++= Seq(
-  "commons-io" % "commons-io" % "2.19.0",
+  "commons-io" % "commons-io" % "2.20.0",
   "commons-lang" % "commons-lang" % "2.6",
   "org.apache.commons" % "commons-vfs2" % "2.10.0",
   "org.slf4j" % "slf4j-api" % "2.0.17",
