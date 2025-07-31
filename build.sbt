@@ -19,7 +19,7 @@ releaseProcess := Seq[ReleaseStep](
   setNextVersion,
   commitNextVersion
 )
-releaseVersion := ReleaseVersion.fromAggregatedAssessedCompatibilityWithLatestRelease().value
+releaseVersion := ReleaseVersion.fromAssessedCompatibilityWithLatestRelease().value
 
 scalaVersion := "2.13.16"
 
