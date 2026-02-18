@@ -1,1 +1,1 @@
-ThisBuild / version := "4.6.4"
+ThisBuild / version := "4.6.5-SNAPSHOT"
