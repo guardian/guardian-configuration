@@ -32,9 +32,9 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.22.0",
   "commons-lang" % "commons-lang" % "2.6",
   "org.apache.commons" % "commons-vfs2" % "2.10.0",
-  "org.slf4j" % "slf4j-api" % "2.0.18",
+  "org.slf4j" % "slf4j-api" % "2.0.19",
   "org.scalatestplus" %% "mockito-5-12" % "3.2.19.0" % Test,
-  "org.slf4j" % "slf4j-simple" % "2.0.18" % Test,
+  "org.slf4j" % "slf4j-simple" % "2.0.19" % Test,
   "org.scalatest" %% "scalatest" % "3.2.20" % Test
 )
 
