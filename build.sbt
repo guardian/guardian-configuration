@@ -21,7 +21,7 @@ releaseProcess := Seq[ReleaseStep](
 )
 releaseVersion := ReleaseVersion.fromAssessedCompatibilityWithLatestRelease().value
 
-scalaVersion := "2.13.18"
+scalaVersion := "3.9.0"
 
 ivyXML :=
     <dependencies>
