@@ -1,5 +1,8 @@
 # Guardian Configuration Framework #
 
+> [!WARNING]
+> This library is no longer current - it's due to be archived. Please use https://github.com/guardian/simple-configuration instead.
+
 [![configuration Scala version support](https://index.scala-lang.org/guardian/guardian-configuration/configuration/latest-by-scala-version.svg?platform=jvm)](https://index.scala-lang.org/guardian/guardian-configuration/configuration)
 [![Release](https://github.com/guardian/guardian-configuration/actions/workflows/release.yml/badge.svg)](https://github.com/guardian/guardian-configuration/actions/workflows/release.yml)
 
