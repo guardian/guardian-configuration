@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Java and sbt
-        uses: guardian/setup-scala@v1
+        uses: guardian/setup-scala@v2
       - name: Build and Test
         run: sbt -v +test
       - name: Test Summary
